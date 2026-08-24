@@ -2,6 +2,9 @@ import type { ExperienceModule, ExperienceTypeId } from "@/types/experience";
 import { VOICE_PHISHING_SCENARIOS } from "@/data/voice-phishing";
 import { CASE_SELECT_PAIRS } from "@/data/case-select";
 import { JEONSE_LISTING_PAIRS } from "@/data/jeonse";
+import { VoicePhishingExperience } from "@/components/experiences/VoicePhishingExperience";
+import { CaseSelectExperience } from "@/components/experiences/CaseSelectExperience";
+import { JeonseExperience } from "@/components/experiences/JeonseExperience";
 
 export const EXPERIENCE_MODULES: ExperienceModule[] = [
   {
@@ -11,12 +14,14 @@ export const EXPERIENCE_MODULES: ExperienceModule[] = [
       VOICE_PHISHING_SCENARIOS[
         Math.floor(Math.random() * VOICE_PHISHING_SCENARIOS.length)
       ],
+    Component: VoicePhishingExperience,
   },
   {
     typeId: "case-select",
     contentPool: CASE_SELECT_PAIRS,
     pickRandomContent: () =>
       CASE_SELECT_PAIRS[Math.floor(Math.random() * CASE_SELECT_PAIRS.length)],
+    Component: CaseSelectExperience,
   },
   {
     typeId: "jeonse",
@@ -25,8 +30,9 @@ export const EXPERIENCE_MODULES: ExperienceModule[] = [
       JEONSE_LISTING_PAIRS[
         Math.floor(Math.random() * JEONSE_LISTING_PAIRS.length)
       ],
+    Component: JeonseExperience,
   },
-];
+] as ExperienceModule[];
 
 function assertContentPools(modules: ExperienceModule[]): void {
   for (const mod of modules) {

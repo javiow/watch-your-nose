@@ -45,7 +45,10 @@
     {
       "step": 5,
       "name": "result-and-flow",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-08-24T13:43:29+0900",
+      "summary": "remediation.ts(오답 유형별 대응 방안 + 기본 안내 문구) 추가, layout에 SessionProvider 마운트, 랜딩(도발적 카피+SVG 라인아트+시작하기), /session(랜덤 순서 진행·N/3 진행률·중복 addResult 방지·빈 세션 리다이렉트), /result(집계 점수/등급·문항별 리뷰·대응방안·다시 체험하기 단일 CTA·미완료 시 리다이렉트)로 전체 플로우 연결",
+      "completed_at": "2026-08-24T13:55:00+0900"
     }
   ],
   "created_at": "2026-08-24T13:17:50+0900"

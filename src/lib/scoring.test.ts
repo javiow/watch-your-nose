@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 import type { ModuleResult } from "@/types/experience";
-import { aggregateResults, computeGrade } from "./scoring";
+import { GRADE_LABELS, aggregateResults, computeGrade } from "./scoring";
+
+describe("GRADE_LABELS", () => {
+  it("각 등급에 대한 한글 라벨을 제공한다", () => {
+    expect(GRADE_LABELS.safe).toBe("안전");
+    expect(GRADE_LABELS.caution).toBe("주의");
+    expect(GRADE_LABELS.danger).toBe("위험");
+  });
+});
 
 describe("computeGrade", () => {
   it("80% 이상이면 safe", () => {

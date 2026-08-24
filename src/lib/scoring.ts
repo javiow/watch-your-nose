@@ -5,6 +5,12 @@ export const GRADE_THRESHOLDS = {
   caution: 50,
 } as const;
 
+export const GRADE_LABELS: Record<Grade, string> = {
+  safe: "안전",
+  caution: "주의",
+  danger: "위험",
+};
+
 export function computeGrade(scorePercent: number): Grade {
   if (scorePercent >= GRADE_THRESHOLDS.safe) return "safe";
   if (scorePercent >= GRADE_THRESHOLDS.caution) return "caution";

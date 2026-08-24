@@ -10,6 +10,7 @@ function makeModule(
     typeId,
     contentPool,
     pickRandomContent: () => contentPool[0],
+    Component: () => null,
   };
 }
 

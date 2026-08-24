@@ -1,3 +1,5 @@
+import type { ComponentType } from "react";
+
 export type ExperienceTypeId = "voice-phishing" | "case-select" | "jeonse";
 
 export type Grade = "safe" | "caution" | "danger";
@@ -14,10 +16,16 @@ export interface ModuleResult {
   mistakeTag?: string; // 오답일 때만: remediation.ts 매핑 키
 }
 
+export interface ExperienceComponentProps<TContent> {
+  content: TContent;
+  onComplete: (result: ModuleResult) => void;
+}
+
 export interface ExperienceModule<TContent = unknown> {
   typeId: ExperienceTypeId;
   contentPool: TContent[];
   pickRandomContent(): TContent;
+  Component: ComponentType<ExperienceComponentProps<TContent>>;
 }
 
 export interface DialogueChoice {
