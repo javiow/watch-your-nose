@@ -13,14 +13,15 @@
 
 ## 작업
 
-Next.js 15(App Router) + TypeScript(strict) + Tailwind CSS 프로젝트를 리포 루트에 새로 세팅한다.
+Next.js 15(App Router) + TypeScript(strict) + Tailwind CSS 프로젝트를 리포 루트에 새로 세팅한다. **설정 파일을 손으로 작성하지 말고, 공식 CLI로 생성한다** — 직접 작성하면 next/tailwind/eslint 버전 간 미묘한 설정 불일치로 빌드가 깨지기 쉽다.
 
-1. `package.json`, `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.js`, `.eslintrc`(또는 `eslint.config.js`)를 생성한다. `tsconfig.json`은 `strict: true`로 설정.
-2. `package.json`의 `scripts`는 `CLAUDE.md`의 명령어와 정확히 일치해야 한다: `dev`, `build`, `lint`, `test`.
-3. 테스트 러너는 **Vitest + @testing-library/react + jsdom**로 세팅한다 (`vitest.config.ts`, `test`/`test:setup` 관련 devDependencies 포함).
-4. `src/app/layout.tsx`: 다크모드 고정 배경(`#0a0a0a`, `docs/UI_GUIDE.md` 색상표 참고), 기본 폰트, `<html lang="ko">`. 이 step에서는 `SessionProvider`를 아직 마운트하지 않는다 (step5에서 추가).
-5. `src/app/page.tsx`: 이 step에서는 최소 placeholder만 — "Watch Your Nose" 텍스트를 렌더하는 정도로 두고, 실제 랜딩 디자인은 step5에서 교체한다.
-6. `src/app/globals.css`: Tailwind 지시어 + 기본 배경/텍스트 색상.
+1. `npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --no-import-alias`(또는 동등한 비대화형 플래그)로 리포 루트에 스캐폴딩한다. 이미 존재하는 `CLAUDE.md`, `docs/`, `.claude/`, `scripts/`, `phases/`는 건드리지 않는다 — 충돌하는 파일(`README.md` 등)이 생기면 기존 것을 우선한다.
+2. 생성된 `tsconfig.json`에 `strict: true`가 켜져 있는지 확인한다(기본값이 아니면 켠다).
+3. `package.json`의 `scripts`가 `CLAUDE.md`의 명령어와 정확히 일치하는지 확인한다: `dev`, `build`, `lint`, `test`.
+4. 테스트 러너로 **Vitest + @testing-library/react + jsdom**만 추가로 설치·설정한다 (`vitest.config.ts`, `test` 스크립트 추가). Jest 등 다른 러너와 중복 설정하지 않는다.
+5. `src/app/layout.tsx`: 다크모드 고정 배경(`#0a0a0a`, `docs/UI_GUIDE.md` 색상표 참고), 기본 폰트, `<html lang="ko">`로 CLI 기본 템플릿을 교체한다. 이 step에서는 `SessionProvider`를 아직 마운트하지 않는다 (step5에서 추가).
+6. `src/app/page.tsx`: 이 step에서는 CLI가 생성한 기본 페이지를 최소 placeholder로 교체 — "Watch Your Nose" 텍스트를 렌더하는 정도로 두고, 실제 랜딩 디자인은 step5에서 교체한다.
+7. `src/app/globals.css`: CLI가 생성한 Tailwind 지시어를 유지하고, 기본 배경/텍스트 색상만 `docs/UI_GUIDE.md`에 맞게 조정한다.
 
 ## Acceptance Criteria
 

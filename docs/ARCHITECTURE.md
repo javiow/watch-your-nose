@@ -9,7 +9,7 @@ src/
 │   └── result/page.tsx              # 종합 평가 + 문항별 리뷰 + 대응방안 + "다시 체험하기"
 ├── components/
 │   ├── experiences/                 # VoicePhishingExperience, CaseSelectExperience, JeonseExperience
-│   └── ui/                          # ProgressBar, Card, ChoiceButton 등 공용 컴포넌트
+│   └── ui/                          # 공용 컴포넌트 — 처음부터 만들지 않고, 2곳 이상에서 중복되면 그때 추출
 ├── types/                           # ExperienceModule, ModuleResult, DialogueNode, ScamCasePair, ListingPair
 ├── lib/
 │   ├── registry.ts                  # 유형 등록 + 세션용 랜덤 순서/콘텐츠 선택
