@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/session-context";
 import { EXPERIENCE_MODULES } from "@/lib/registry";
@@ -19,9 +19,14 @@ export default function ResultPage() {
   const { results, resetSession } = useSession();
 
   const isComplete = results.length === EXPERIENCE_MODULES.length;
+  // "다시 체험하기" 클릭 시 resetSession()이 results를 비워 isComplete가 false로
+  // 바뀌는데, 이 컴포넌트가 아직 마운트된 채로 그 상태를 보고 아래 useEffect가
+  // /로 리다이렉트해버리면 곧이어 호출한 router.push("/session")과 경쟁해 언제나
+  // 리다이렉트가 이긴다. 의도된 재시작 중에는 이 가드를 건너뛰기 위한 플래그.
+  const isRetryingRef = useRef(false);
 
   useEffect(() => {
-    if (!isComplete) {
+    if (!isComplete && !isRetryingRef.current) {
       router.replace("/");
     }
   }, [isComplete, router]);
@@ -35,6 +40,7 @@ export default function ResultPage() {
   const incorrectResults = results.filter((result) => !result.isCorrect);
 
   const handleRetry = () => {
+    isRetryingRef.current = true;
     resetSession();
     router.push("/session");
   };
