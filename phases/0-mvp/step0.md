@@ -22,6 +22,8 @@ Next.js 15(App Router) + TypeScript(strict) + Tailwind CSS 프로젝트를 리�
 5. `src/app/layout.tsx`: 다크모드 고정 배경(`#0a0a0a`, `docs/UI_GUIDE.md` 색상표 참고), 기본 폰트, `<html lang="ko">`로 CLI 기본 템플릿을 교체한다. 이 step에서는 `SessionProvider`를 아직 마운트하지 않는다 (step5에서 추가).
 6. `src/app/page.tsx`: 이 step에서는 CLI가 생성한 기본 페이지를 최소 placeholder로 교체 — "Watch Your Nose" 텍스트를 렌더하는 정도로 두고, 실제 랜딩 디자인은 step5에서 교체한다.
 7. `src/app/globals.css`: CLI가 생성한 Tailwind 지시어를 유지하고, 기본 배경/텍스트 색상만 `docs/UI_GUIDE.md`에 맞게 조정한다.
+8. `next.config`에 기본 보안 헤더를 추가한다(`headers()` 설정): `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`. 백엔드/API 라우트가 없는 정적 앱이지만 방어적으로 미리 넣어둔다.
+9. `npm install`로 생성된 `package-lock.json`을 커밋 대상에 포함한다(의존성 버전 고정).
 
 ## Acceptance Criteria
 
@@ -39,10 +41,13 @@ npm test        # 테스트 통과 (이 step은 아직 테스트할 로직이 �
    - `docs/ARCHITECTURE.md`의 디렉토리 구조(`src/app`, `src/components`, `src/types`, `src/lib`, `src/data`)를 따르는가?
    - `docs/ADR.md`의 ADR-001(Next.js+TS+Tailwind) 기술 스택을 벗어나지 않았는가?
    - `CLAUDE.md` CRITICAL 규칙(백엔드/DB 없음, localStorage 없음)을 위반하지 않았는가?
-3. 결과에 따라 `phases/0-mvp/index.json`의 `step: 0` 항목을 업데이트한다.
+3. `curl -I http://localhost:3000`(또는 동등한 방법)로 `next.config`의 보안 헤더가 실제 응답에 붙는지 확인한다.
+4. `package-lock.json`이 git에 추가됐는지 확인한다.
+5. 결과에 따라 `phases/0-mvp/index.json`의 `step: 0` 항목을 업데이트한다.
 
 ## 금지사항
 
 - `src/app/session`, `src/app/result` 라우트나 실제 게임 로직, 타입, 데이터를 이 step에서 만들지 마라. 이유: step 범위를 프로젝트 스캐폴딩으로 최소화하기 위함 — 이후 step에서 다룬다.
 - `localStorage`나 다른 영속화 로직을 추가하지 마라. 이유: `docs/ADR.md` ADR-003.
 - 백엔드 서버, API 라우트, DB 클라이언트를 추가하지 마라. 이유: `docs/ADR.md` ADR-002.
+- `.env` 파일에 실제 시크릿 값을 커밋하지 마라. 이번 step은 시크릿이 필요 없다.

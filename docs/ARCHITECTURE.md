@@ -51,3 +51,11 @@ src/
 - 점수는 화면 표시 시 정수(%)로 반올림한다.
 - 보이스피싱 `DialogueNode`의 `next` 참조가 존재하지 않으면 크래시 대신 해당 시점에서 시나리오를 종료 처리한다.
 - "다시 체험하기"는 직전 콘텐츠를 제외하지 않는 순수 랜덤이다 (의도된 동작).
+
+## 보안
+- 모든 체험 콘텐츠는 피해자 관점(방어)만 다룬다 — 가해자 관점 콘텐츠 금지 (`docs/ADR.md` ADR-005).
+- 팀원이 채워 넣는 정적 콘텐츠(사례·매물·대화 본문)를 렌더링할 때 `dangerouslySetInnerHTML`을 쓰지 않는다 — React 기본 이스케이프 경로로만 렌더링해 XSS를 원천 차단.
+- `next.config`에 기본 보안 헤더를 추가한다: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`(또는 `frame-ancestors 'none'`), `Referrer-Policy: strict-origin-when-cross-origin`.
+- `package-lock.json`을 커밋해 의존성 버전을 고정한다. `npm audit`은 참고용으로만 사용하고 빌드를 막는 하드 게이트로 두지 않는다.
+- API 키·시크릿은 이번 MVP에서 필요 없다(완전 정적, LLM 미사용). 나중에 추가되면 `.env*`로만 다루고 코드에 하드코딩하지 않는다.
+- 정적 익스포트(`output: 'export'`) 여부는 아직 고정하지 않는다 — 배포 방식이 정해지는 단계에서 재검토.
