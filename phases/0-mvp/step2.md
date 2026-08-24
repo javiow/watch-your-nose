@@ -21,6 +21,7 @@
    - props: `content: VoicePhishingScenario`, `onComplete: (result: ModuleResult) => void`.
    - 턴마다 상대방 대사 + 선택지를 보여주고, 사용자가 선택하면 "다음" 버튼이 활성화되며, **사용자가 "다음"을 눌러야** 다음 턴/최종 판정으로 넘어간다. 선택 직후 정답/오답 피드백은 절대 보여주지 않는다.
    - 채점 규칙: **사기 시나리오에서 거절/전화 끊기 선택 = 정답. 정상 시나리오에서 거절/전화 끊기 선택 = 오답** ("무조건 거절" 패널티). 오답일 때 `mistakeTag`는 `"blind-refusal"`로 설정.
+   - 방어 로직: 선택지의 `next` 노드 참조가 존재하지 않는 경우(데이터 오타 등) 크래시시키지 말고 그 시점에서 시나리오를 종료 처리(최종 판정으로 진행)한다.
 3. `src/lib/registry.ts`에 이 모듈을 `EXPERIENCE_MODULES`에 등록한다 (`typeId: "voice-phishing"`, `contentPool`, `pickRandomContent()`).
 
 **TDD 필수**: `VoicePhishingExperience`의 채점 로직(정상 케이스 거절 시 오답, 사기 케이스 거절 시 정답)에 대한 테스트를 먼저 작성한 뒤 구현하라.
@@ -39,7 +40,7 @@ npm test
 2. 아키텍처 체크리스트를 확인한다:
    - `docs/ARCHITECTURE.md`의 `components/experiences/`, `data/` 구조를 따르는가?
    - `docs/ADR.md` ADR-002(선택지 기반 분기, LLM 자유대화 아님) 위반 없는가?
-3. 유닛 테스트로 다음을 검증한다: 정상 케이스에서 매 턴 "거절"만 선택 시 `isCorrect: false`, 사기 케이스에서 "거절" 선택 시 `isCorrect: true`.
+3. 유닛 테스트로 다음을 검증한다: 정상 케이스에서 매 턴 "거절"만 선택 시 `isCorrect: false`, 사기 케이스에서 "거절" 선택 시 `isCorrect: true`, 존재하지 않는 `next` 참조를 만나도 크래시 없이 시나리오가 종료되는지.
 4. 결과에 따라 `phases/0-mvp/index.json`의 `step: 2` 항목을 업데이트한다.
 
 ## 금지사항

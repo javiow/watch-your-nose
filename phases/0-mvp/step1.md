@@ -49,7 +49,8 @@
 
 3. `src/lib/registry.ts`:
    - `EXPERIENCE_MODULES: ExperienceModule[]` 배열 (이 step에서는 빈 배열로 시작 — step2~4에서 각 유형이 여기 등록한다).
-   - `pickSessionPlan(): { typeId: ExperienceTypeId }[]` — 등록된 모듈들의 순서를 셔플해서 반환하는 유틸.
+   - `pickSessionPlan(): { typeId: ExperienceTypeId }[]` — 등록된 모듈들의 순서를 셔플해서 반환하는 유틸. **등록된 유형 각각 정확히 1회씩만** 포함해야 한다(동일 유형 중복 금지).
+   - 모듈 등록 시점(또는 `pickSessionPlan()` 최초 호출 시점)에 각 모듈의 `contentPool.length === 0`이면 명확한 에러를 던진다 — 팀원이 콘텐츠 추가를 깜빡한 경우를 빈 화면이 아니라 눈에 띄는 에러로 드러내기 위함.
 
 4. `src/lib/session-context.tsx`:
    - `SessionProvider`(React Context, `"use client"`), `useSession()` 훅.
@@ -72,7 +73,8 @@ npm test
 2. 아키텍처 체크리스트를 확인한다:
    - `docs/ARCHITECTURE.md` 디렉토리 구조를 따르는가?
    - `docs/ADR.md` ADR-003(Context만, localStorage 없음), ADR-004(레지스트리 패턴) 위반 없는가?
-3. 결과에 따라 `phases/0-mvp/index.json`의 `step: 1` 항목을 업데이트한다.
+3. 유닛 테스트로 다음을 검증한다: `pickSessionPlan()` 결과에 중복 유형이 없는지, 빈 `contentPool`을 가진 모듈이 등록되면 에러가 발생하는지.
+4. 결과에 따라 `phases/0-mvp/index.json`의 `step: 1` 항목을 업데이트한다.
 
 ## 금지사항
 
