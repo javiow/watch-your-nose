@@ -7,7 +7,8 @@
       "name": "project-setup",
       "status": "completed",
       "started_at": "2026-08-24T13:17:50+0900",
-      "summary": "create-next-app로 Next.js 15(App Router)+TS strict+Tailwind 스캐폴딩, Vitest+RTL 테스트 러너, 다크모드 고정 레이아웃, next.config 보안 헤더 3종 추가"
+      "summary": "create-next-app로 Next.js 15(App Router)+TS strict+Tailwind 스캐폴딩, Vitest+RTL 테스트 러너, 다크모드 고정 레이아웃, next.config 보안 헤더 3종 추가",
+      "completed_at": "2026-08-24T13:26:43+0900"
     },
     {
       "step": 1,
