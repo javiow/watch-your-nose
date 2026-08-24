@@ -14,8 +14,12 @@ function makeModule(
 }
 
 describe("EXPERIENCE_MODULES", () => {
-  it("이 step에서는 빈 배열로 시작한다", () => {
-    expect(EXPERIENCE_MODULES).toEqual([]);
+  it("voice-phishing 유형이 등록되어 있고 contentPool이 비어있지 않다", () => {
+    const voicePhishing = EXPERIENCE_MODULES.find(
+      (mod) => mod.typeId === "voice-phishing"
+    );
+    expect(voicePhishing).toBeDefined();
+    expect(voicePhishing?.contentPool.length).toBeGreaterThan(0);
   });
 });
 

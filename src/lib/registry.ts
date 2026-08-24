@@ -1,7 +1,17 @@
 import type { ExperienceModule, ExperienceTypeId } from "@/types/experience";
+import { VOICE_PHISHING_SCENARIOS } from "@/data/voice-phishing";
 
-// step2~4에서 각 유형(보이스피싱/사례선택/전세매물)이 여기 등록한다.
-export const EXPERIENCE_MODULES: ExperienceModule[] = [];
+// step3~4에서 나머지 유형(사례선택/전세매물)이 여기 등록한다.
+export const EXPERIENCE_MODULES: ExperienceModule[] = [
+  {
+    typeId: "voice-phishing",
+    contentPool: VOICE_PHISHING_SCENARIOS,
+    pickRandomContent: () =>
+      VOICE_PHISHING_SCENARIOS[
+        Math.floor(Math.random() * VOICE_PHISHING_SCENARIOS.length)
+      ],
+  },
+];
 
 function assertContentPools(modules: ExperienceModule[]): void {
   for (const mod of modules) {
