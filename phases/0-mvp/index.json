@@ -2,11 +2,38 @@
   "project": "Watch Your Nose",
   "phase": "0-mvp",
   "steps": [
-    { "step": 0, "name": "project-setup", "status": "pending" },
-    { "step": 1, "name": "core-types-and-registry", "status": "pending" },
-    { "step": 2, "name": "experience-voice-phishing", "status": "pending" },
-    { "step": 3, "name": "experience-case-select", "status": "pending" },
-    { "step": 4, "name": "experience-jeonse", "status": "pending" },
-    { "step": 5, "name": "result-and-flow", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "project-setup",
+      "status": "completed",
+      "started_at": "2026-08-24T13:17:50+0900",
+      "summary": "create-next-app로 Next.js 15(App Router)+TS strict+Tailwind 스캐폴딩, Vitest+RTL 테스트 러너, 다크모드 고정 레이아웃, next.config 보안 헤더 3종 추가"
+    },
+    {
+      "step": 1,
+      "name": "core-types-and-registry",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "experience-voice-phishing",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "experience-case-select",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "experience-jeonse",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "name": "result-and-flow",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-08-24T13:17:50+0900"
 }
