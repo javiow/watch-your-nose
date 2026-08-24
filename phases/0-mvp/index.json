@@ -40,7 +40,7 @@
       "status": "completed",
       "started_at": "2026-08-24T13:40:54+0900",
       "summary": "전세매물 체험 유형(ListingPair 타입, 매물 쌍 2개), JeonseExperience 컴포넌트(선택 후 '다음' 클릭 시에만 진행, 즉시 피드백 없음, 사기 매물 선택=오답/missed-lease-fraud-signal 채점)를 구현하고 registry.ts에 등록",
-      "completed_at": "2026-08-24T13:45:00+0900"
+      "completed_at": "2026-08-24T13:43:29+0900"
     },
     {
       "step": 5,
