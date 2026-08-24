@@ -1,8 +1,8 @@
 import type { ExperienceModule, ExperienceTypeId } from "@/types/experience";
 import { VOICE_PHISHING_SCENARIOS } from "@/data/voice-phishing";
 import { CASE_SELECT_PAIRS } from "@/data/case-select";
+import { JEONSE_LISTING_PAIRS } from "@/data/jeonse";
 
-// step4에서 나머지 유형(전세매물)이 여기 등록한다.
 export const EXPERIENCE_MODULES: ExperienceModule[] = [
   {
     typeId: "voice-phishing",
@@ -17,6 +17,14 @@ export const EXPERIENCE_MODULES: ExperienceModule[] = [
     contentPool: CASE_SELECT_PAIRS,
     pickRandomContent: () =>
       CASE_SELECT_PAIRS[Math.floor(Math.random() * CASE_SELECT_PAIRS.length)],
+  },
+  {
+    typeId: "jeonse",
+    contentPool: JEONSE_LISTING_PAIRS,
+    pickRandomContent: () =>
+      JEONSE_LISTING_PAIRS[
+        Math.floor(Math.random() * JEONSE_LISTING_PAIRS.length)
+      ],
   },
 ];
 

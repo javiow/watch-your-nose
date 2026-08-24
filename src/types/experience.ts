@@ -51,3 +51,15 @@ export interface ScamCasePair {
   normalCase: ScamCaseSide;
   correctSide: "scam" | "normal"; // 확장성을 위한 필드. 이 유형은 항상 "scam"
 }
+
+export interface ListingSide {
+  title: string;
+  details: string;
+}
+
+export interface ListingPair {
+  id: string;
+  normalListing: ListingSide;
+  scamListing: ListingSide;
+  correctSide: "normal" | "scam"; // 확장성을 위한 필드. 이 유형은 항상 "normal"
+}
