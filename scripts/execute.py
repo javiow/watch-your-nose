@@ -19,6 +19,12 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
 
+if sys.platform == "win32":
+    # Windows 콘솔은 기본적으로 cp949 등 로케일 코드페이지를 쓰므로
+    # 유니코드 기호(✓, ✗, ⏸, 스피너 등)를 출력하면 UnicodeEncodeError로 죽는다.
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = Path(__file__).resolve().parent.parent
 
 
