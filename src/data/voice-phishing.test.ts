@@ -11,6 +11,16 @@ describe("VOICE_PHISHING_SCENARIOS", () => {
     ).toBe(true);
   });
 
+  it("정확히 4개 시나리오(정상 2개 + 사기 2개)로 구성된다", () => {
+    expect(VOICE_PHISHING_SCENARIOS).toHaveLength(4);
+    expect(
+      VOICE_PHISHING_SCENARIOS.filter((scenario) => scenario.isNormalCase)
+    ).toHaveLength(2);
+    expect(
+      VOICE_PHISHING_SCENARIOS.filter((scenario) => !scenario.isNormalCase)
+    ).toHaveLength(2);
+  });
+
   it("각 시나리오의 startNodeId는 nodes 안에 실제로 존재한다", () => {
     for (const scenario of VOICE_PHISHING_SCENARIOS) {
       const nodeIds = scenario.nodes.map((node) => node.id);

@@ -2,51 +2,101 @@ import type { VoicePhishingScenario } from "@/types/experience";
 
 export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
   {
-    id: "scam-loan-consolidation",
-    isNormalCase: false,
-    startNodeId: "scam-1",
+    id: "normal-overseas-payment-alert",
+    isNormalCase: true,
+    startNodeId: "n1",
     nodes: [
       {
-        id: "scam-1",
-        speaker: "발신번호 알 수 없음",
-        line: "안녕하세요, 고객님. △△저축은행 대출 상담팀입니다. 기존 대출을 더 낮은 금리로 갈아타실 수 있는 특별 상품이 있어 연락드렸습니다.",
+        id: "n1",
+        speaker: "OO은행 이상거래탐지팀",
+        line: "고객님, 방금 해외 가맹점에서 235,000원 결제 시도가 있어 자동으로 차단했습니다. 본인이 시도하신 결제가 맞을까요?",
         choices: [
-          { id: "listen-more", text: "어떤 상품인지 좀 더 들어본다", next: "scam-2" },
-          { id: "refuse-hangup", text: "필요 없다고 말하고 전화를 끊는다" },
+          { id: "confirm-not-me", text: "아니요, 저는 시도한 적 없어요", next: "n2" },
+          { id: "refuse-hangup", text: "모르는 번호라 미심쩍어 바로 끊는다" },
         ],
       },
       {
-        id: "scam-2",
-        speaker: "발신번호 알 수 없음",
-        line: "대환 심사를 도와드리려면 본인 확인이 필요합니다. 지금 문자로 보내드리는 앱을 설치하시고, 주민등록번호와 계좌 비밀번호를 입력해 주세요.",
+        id: "n2",
+        speaker: "OO은행 이상거래탐지팀",
+        line: "확인 감사합니다. 저희 쪽에서 이미 차단 처리했고 별도로 알려주실 정보는 없습니다. 다만 카드 재발급이 필요하시면 카드 뒷면의 대표번호로 직접 연락해 신청해 주세요.",
         choices: [
-          { id: "comply-provide-info", text: "안내에 따라 앱을 설치하고 정보를 입력한다" },
-          { id: "refuse-suspicious", text: "수상하다는 생각이 들어 전화를 끊는다" },
+          { id: "end-call-politely", text: "알겠다고 답하고 통화를 마친다" },
+          { id: "refuse-still-suspicious", text: "그래도 미심쩍어 전화를 끊는다" },
         ],
       },
     ],
   },
   {
-    id: "normal-card-confirm",
+    id: "normal-delivery-address-confirm",
     isNormalCase: true,
-    startNodeId: "normal-1",
+    startNodeId: "n1",
     nodes: [
       {
-        id: "normal-1",
-        speaker: "카드사 대표번호",
-        line: "고객님, 방금 편의점에서 32,000원 결제가 있었는데 본인이 이용하신 것이 맞을까요? 확인 차 전화드렸습니다.",
+        id: "n1",
+        speaker: "CJ○○ 택배 고객센터",
+        line: "고객님 앞으로 온 택배가 부재중으로 반송 처리 예정입니다. 오늘 중 재배송하지 않으면 물류센터로 회수됩니다. 배송지 다시 확인 도와드릴까요?",
         choices: [
-          { id: "confirm-purchase", text: "본인이 결제한 것이 맞다고 답한다", next: "normal-2" },
-          { id: "refuse-hangup", text: "모르는 번호라 바로 전화를 끊는다" },
+          { id: "confirm-address", text: "네, 배송지를 다시 알려준다", next: "n2" },
+          { id: "refuse-hangup", text: "보이스피싱 같아 바로 끊는다" },
         ],
       },
       {
-        id: "normal-2",
-        speaker: "카드사 대표번호",
-        line: "확인 감사합니다. 별도로 요청드릴 정보는 없으며, 이상 결제가 의심되면 카드 뒷면의 공식 번호로 다시 연락해 주세요.",
+        id: "n2",
+        speaker: "CJ○○ 택배 고객센터",
+        line: "확인 감사합니다. 결제나 배송비 관련해서는 요구드릴 내용이 없고, 오늘 중 다시 배송해드리겠습니다.",
         choices: [
           { id: "end-call-politely", text: "알겠다고 답하고 통화를 마친다" },
-          { id: "refuse-still-suspicious", text: "그래도 미심쩍어 전화를 끊는다" },
+          { id: "refuse-still-suspicious", text: "그래도 의심스러워 전화를 끊는다" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "scam-refund-remote-app",
+    isNormalCase: false,
+    startNodeId: "s1",
+    nodes: [
+      {
+        id: "s1",
+        speaker: "OO쇼핑 고객만족센터",
+        line: "안녕하세요 고객님, 지난달 주문하신 상품이 품절되어 환불 처리를 도와드리려고 연락드렸습니다. 잠시 시간 괜찮으실까요?",
+        choices: [
+          { id: "listen-more", text: "네, 말씀하세요", next: "s2" },
+          { id: "refuse-hangup", text: "주문한 적 없어서 바로 끊는다" },
+        ],
+      },
+      {
+        id: "s2",
+        speaker: "OO쇼핑 고객만족센터",
+        line: "환불 처리를 위해 원격지원 앱을 하나 설치해주시면 저희 상담원이 화면을 보면서 계좌로 바로 환불해드릴 수 있어요. 어렵지 않으니 안내해드릴게요.",
+        choices: [
+          { id: "comply-install-app", text: "안내에 따라 원격지원 앱을 설치한다" },
+          { id: "refuse-suspicious", text: "이상해서 설치를 거부하고 전화를 끊는다" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "scam-government-loan-program",
+    isNormalCase: false,
+    startNodeId: "s1",
+    nodes: [
+      {
+        id: "s1",
+        speaker: "서민금융지원센터",
+        line: "안녕하세요 고객님, 정부 지원 저금리 대환대출 대상자로 안내드리려 연락드렸습니다. 기존 대출을 더 낮은 금리로 바꿔드릴 수 있어요.",
+        choices: [
+          { id: "listen-more", text: "어떤 조건인지 들어본다", next: "s2" },
+          { id: "refuse-hangup", text: "필요 없다며 바로 끊는다" },
+        ],
+      },
+      {
+        id: "s2",
+        speaker: "서민금융지원센터",
+        line: "심사를 위해 성함, 주민등록번호, 그리고 신분 확인용으로 계좌 비밀번호 앞 두 자리만 확인 부탁드립니다. 절차대로 진행되는 거니 걱정 안 하셔도 돼요.",
+        choices: [
+          { id: "comply-provide-info", text: "안심하고 요청한 정보를 알려준다" },
+          { id: "refuse-suspicious", text: "비밀번호까지 요구하는게 이상해 전화를 끊는다" },
         ],
       },
     ],
