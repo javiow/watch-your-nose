@@ -7,7 +7,8 @@
       "name": "docs-update",
       "status": "completed",
       "started_at": "2026-08-25T22:45:21+0900",
-      "summary": "ADR-006 추가(보이스피싱 채팅형 UI 전환), PRD/ARCHITECTURE에 채팅형 UX 및 fell-for-scam mistakeTag 반영, UI_GUIDE.md 삭제 후 PRD 링크 정리"
+      "summary": "ADR-006 추가(보이스피싱 채팅형 UI 전환), PRD/ARCHITECTURE에 채팅형 UX 및 fell-for-scam mistakeTag 반영, UI_GUIDE.md 삭제 후 PRD 링크 정리",
+      "completed_at": "2026-08-25T22:47:43+0900"
     },
     {
       "step": 1,
