@@ -8,7 +8,7 @@ src/
 │   ├── session/page.tsx             # 체험 진행 (3단계, 수동 "다음" 전환, 즉시 피드백 없음)
 │   └── result/page.tsx              # 종합 평가 + 문항별 리뷰 + 대응방안 + "다시 체험하기"
 ├── components/
-│   ├── experiences/                 # VoicePhishingExperience, CaseSelectExperience, JeonseExperience
+│   ├── experiences/                 # VoicePhishingExperience(+ChatBubble/TypingIndicator/ChatChoiceButtons), CaseSelectExperience, JeonseExperience
 │   └── ui/                          # 공용 컴포넌트 — 처음부터 만들지 않고, 2곳 이상에서 중복되면 그때 추출
 ├── types/                           # ExperienceModule, ModuleResult, DialogueNode, ScamCasePair, ListingPair
 ├── lib/
@@ -32,7 +32,7 @@ src/
 "/" 랜딩에서 "시작하기" 클릭
 → 세션 초기화: 3개 유형 순서 셔플 + 유형별 콘텐츠 풀에서 1개씩 랜덤 선택 (registry.ts)
 → "/session": 단계별로 해당 유형 Experience 컴포넌트 렌더, 진행률(N/3) 표시
-   → 사용자가 선택 → "다음" 버튼 활성화 → 사용자가 "다음" 클릭 시에만 다음 단계로 (자동 전환/즉시 피드백 없음)
+   → 사용자가 선택 → 사례선택/전세매물은 "다음" 버튼 클릭 시, 보이스피싱은 채팅형 UI로 선택 즉시 다음 대사/단계로 진행 (자동 전환/즉시 피드백 없음은 공통)
    → 각 단계 완료 시 ModuleResult를 SessionProvider Context에 누적
 → 3단계 완료 → "/result": 평균 점수/등급 + 문항별 리뷰 + mistakeTag→대응방안(remediation.ts) 렌더
 → "다시 체험하기" → 세션 재초기화 → 랜딩을 거치지 않고 바로 "/session"
@@ -46,7 +46,8 @@ src/
 - `registry.ts`는 각 유형의 `contentPool`이 비어있으면 앱 로드 시점에 즉시 에러를 던진다 (팀원이 데이터 추가를 깜빡한 경우를 빈 화면이 아니라 눈에 띄는 에러로 드러내기 위함).
 - `pickSessionPlan()`은 등록된 유형 각각을 정확히 1회씩만 포함해야 한다 (동일 유형 중복 금지).
 - `/result`는 `results.length`가 등록된 유형 수와 정확히 일치할 때만 렌더하고, 그 외(0개 또는 일부만 완료)에는 `/`로 리다이렉트한다.
-- "다음" 버튼은 클릭 후 다음 화면으로 전환되기 전까지 비활성화해 중복 클릭으로 `ModuleResult`가 두 번 쌓이는 것을 막는다.
+- "다음" 버튼은 클릭 후 다음 화면으로 전환되기 전까지 비활성화해 중복 클릭으로 `ModuleResult`가 두 번 쌓이는 것을 막는다. (보이스피싱의 채팅 선택지는 "다음" 버튼이 없는 대신, 선택지 클릭 시 즉시 잠금 처리해 동일한 중복 클릭 방지를 보장한다.)
+- 보이스피싱 오답은 원인에 따라 두 가지 mistakeTag로 구분한다 — 정상 케이스를 거절: blind-refusal, 사기 케이스에 응함: fell-for-scam.
 - `mistakeTag`가 `remediation.ts`에 없는 경우(오타 등) 빈 화면 대신 일반 기본 안내 문구를 보여준다.
 - 점수는 화면 표시 시 정수(%)로 반올림한다.
 - 보이스피싱 `DialogueNode`의 `next` 참조가 존재하지 않으면 크래시 대신 해당 시점에서 시나리오를 종료 처리한다.

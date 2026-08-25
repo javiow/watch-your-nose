@@ -4,6 +4,10 @@
       "dir": "0-mvp",
       "status": "completed",
       "completed_at": "2026-08-24T13:55:18+0900"
+    },
+    {
+      "dir": "1-voice-phishing-chat",
+      "status": "pending"
     }
   ]
 }
