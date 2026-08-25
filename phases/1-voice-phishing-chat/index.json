@@ -21,7 +21,10 @@
     {
       "step": 2,
       "name": "voice-phishing-chat-ui",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-08-25T22:49:53+0900",
+      "summary": "VoicePhishingExperience를 타이핑 인디케이터+말풍선 채팅형 UI(ChatBubble/TypingIndicator/ChatChoiceButtons)로 재작성하고 선택 즉시 진행 방식으로 전환, 오답 mistakeTag를 blind-refusal/fell-for-scam으로 원인별 분리하는 버그 수정 포함",
+      "completed_at": "2026-08-25T23:05:00+0900"
     }
   ],
   "created_at": "2026-08-25T22:45:21+0900"

@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { VoicePhishingScenario } from "@/types/experience";
 import { VoicePhishingExperience } from "./VoicePhishingExperience";
 
@@ -66,20 +66,61 @@ const danglingScenario: VoicePhishingScenario = {
   ],
 };
 
+function advanceAllTimers() {
+  act(() => {
+    vi.advanceTimersByTime(3000);
+  });
+}
+
 describe("VoicePhishingExperience", () => {
-  it("선택 전에는 다음 버튼이 비활성화된다", () => {
-    render(
-      <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
-    );
-    expect(screen.getByText("다음")).toBeDisabled();
+  beforeEach(() => {
+    vi.useFakeTimers();
   });
 
-  it("선택 직후 정답/오답 피드백을 보여주지 않는다", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("마운트 직후에는 타이핑 인디케이터만 보이다가, 딜레이 이후 말풍선과 선택지가 나타난다", () => {
     render(
       <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
     );
+
+    expect(screen.getByTestId("typing-indicator")).toBeDefined();
+    expect(screen.queryByText("본인 확인 차 전화드렸습니다.")).toBeNull();
+    expect(screen.queryByText("확인해준다")).toBeNull();
+
+    advanceAllTimers();
+
+    expect(screen.queryByTestId("typing-indicator")).toBeNull();
+    expect(screen.getByText("본인 확인 차 전화드렸습니다.")).toBeDefined();
+    expect(screen.getByText("확인해준다")).toBeDefined();
+  });
+
+  it("선택지 클릭 시 다음 버튼 없이 즉시 진행된다", () => {
+    render(
+      <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
+    );
+    advanceAllTimers();
+
+    fireEvent.click(screen.getByText("확인해준다"));
+
+    expect(screen.getByText("확인해준다")).toBeDefined();
+    expect(screen.queryByText("다음")).toBeNull();
+
+    advanceAllTimers();
+
+    expect(screen.getByText("감사합니다. 통화를 마칩니다.")).toBeDefined();
+  });
+
+  it("선택 직후에도 정답/오답 피드백을 보여주지 않는다", () => {
+    render(
+      <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
+    );
+    advanceAllTimers();
+
     fireEvent.click(screen.getByText("전화를 끊는다"));
-    expect(screen.getByText("다음")).not.toBeDisabled();
+
     expect(screen.queryByText(/정답/)).toBeNull();
     expect(screen.queryByText(/오답/)).toBeNull();
   });
@@ -89,8 +130,10 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={normalScenario} onComplete={onComplete} />
     );
+    advanceAllTimers();
+
     fireEvent.click(screen.getByText("전화를 끊는다"));
-    fireEvent.click(screen.getByText("다음"));
+    advanceAllTimers();
 
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
@@ -105,13 +148,15 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={normalScenario} onComplete={onComplete} />
     );
+    advanceAllTimers();
+
     fireEvent.click(screen.getByText("확인해준다"));
-    fireEvent.click(screen.getByText("다음"));
+    advanceAllTimers();
 
     expect(screen.getByText("감사합니다. 통화를 마칩니다.")).toBeDefined();
 
     fireEvent.click(screen.getByText("통화를 마친다"));
-    fireEvent.click(screen.getByText("다음"));
+    advanceAllTimers();
 
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
@@ -124,10 +169,13 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={scamScenario} onComplete={onComplete} />
     );
+    advanceAllTimers();
+
     fireEvent.click(screen.getByText("더 들어본다"));
-    fireEvent.click(screen.getByText("다음"));
+    advanceAllTimers();
+
     fireEvent.click(screen.getByText("전화를 끊는다"));
-    fireEvent.click(screen.getByText("다음"));
+    advanceAllTimers();
 
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
@@ -135,20 +183,23 @@ describe("VoicePhishingExperience", () => {
     expect(result.mistakeTag).toBeUndefined();
   });
 
-  it("사기 케이스에서 거절하지 않고 정보를 제공하면 오답으로 채점된다", () => {
+  it("사기 케이스에서 거절하지 않고 응하면 오답(fell-for-scam)으로 채점된다", () => {
     const onComplete = vi.fn();
     render(
       <VoicePhishingExperience content={scamScenario} onComplete={onComplete} />
     );
+    advanceAllTimers();
+
     fireEvent.click(screen.getByText("더 들어본다"));
-    fireEvent.click(screen.getByText("다음"));
+    advanceAllTimers();
+
     fireEvent.click(screen.getByText("정보를 알려준다"));
-    fireEvent.click(screen.getByText("다음"));
+    advanceAllTimers();
 
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
     expect(result.isCorrect).toBe(false);
-    expect(result.mistakeTag).toBe("blind-refusal");
+    expect(result.mistakeTag).toBe("fell-for-scam");
   });
 
   it("next 참조가 존재하지 않는 노드를 가리키면 크래시 없이 시나리오를 종료 처리한다", () => {
@@ -156,8 +207,30 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={danglingScenario} onComplete={onComplete} />
     );
-    fireEvent.click(screen.getByText("다음으로"));
-    expect(() => fireEvent.click(screen.getByText("다음"))).not.toThrow();
+    advanceAllTimers();
+
+    expect(() => {
+      fireEvent.click(screen.getByText("다음으로"));
+      advanceAllTimers();
+    }).not.toThrow();
+
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it("같은 선택지를 연속으로 빠르게 두 번 클릭해도 onComplete가 중복 호출되지 않는다", () => {
+    const onComplete = vi.fn();
+    render(
+      <VoicePhishingExperience content={normalScenario} onComplete={onComplete} />
+    );
+    advanceAllTimers();
+
+    const choiceButton = screen.getByText("전화를 끊는다");
+    act(() => {
+      fireEvent.click(choiceButton);
+      fireEvent.click(choiceButton);
+    });
+
+    advanceAllTimers();
 
     expect(onComplete).toHaveBeenCalledTimes(1);
   });

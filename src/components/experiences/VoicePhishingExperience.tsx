@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   DialogueChoice,
   DialogueNode,
@@ -8,9 +8,14 @@ import type {
   VoicePhishingScenario,
 } from "@/types/experience";
 import { computeGrade } from "@/lib/scoring";
+import { ChatBubble } from "./ChatBubble";
+import { ChatChoiceButtons } from "./ChatChoiceButtons";
+import { TypingIndicator } from "./TypingIndicator";
 
-function isRefusalChoice(choice: DialogueChoice): boolean {
-  return choice.id.startsWith("refuse");
+interface HistoryEntry {
+  id: string;
+  speaker: "caller" | "me";
+  text: string;
 }
 
 function findNode(
@@ -18,6 +23,10 @@ function findNode(
   nodeId: string
 ): DialogueNode | undefined {
   return nodes.find((node) => node.id === nodeId);
+}
+
+function computeTypingDelay(text: string): number {
+  return Math.min(500 + text.length * 25, 2200);
 }
 
 function buildExplanation(isNormalCase: boolean, isCorrect: boolean): string {
@@ -40,22 +49,80 @@ export function VoicePhishingExperience({
   content,
   onComplete,
 }: VoicePhishingExperienceProps) {
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [currentNodeId, setCurrentNodeId] = useState(content.startNodeId);
-  const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(
-    null
-  );
+  const [typing, setTyping] = useState(false);
+  const [choicesReady, setChoicesReady] = useState(false);
+  const timers = useRef<number[]>([]);
+
+  const addTimer = (fn: () => void, delay: number) => {
+    const timerId = window.setTimeout(fn, delay);
+    timers.current.push(timerId);
+  };
+
+  const revealNode = (nodeId: string) => {
+    const node = findNode(content.nodes, nodeId);
+    if (!node) return;
+    setTyping(true);
+    setChoicesReady(false);
+    addTimer(() => {
+      setHistory((prev) => [
+        ...prev,
+        { id: `${node.id}-caller`, speaker: "caller", text: node.line },
+      ]);
+      setTyping(false);
+      setChoicesReady(true);
+    }, computeTypingDelay(node.line));
+  };
+
+  useEffect(() => {
+    revealNode(content.startNodeId);
+    return () => {
+      timers.current.forEach((timerId) => window.clearTimeout(timerId));
+      timers.current = [];
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const currentNode = findNode(content.nodes, currentNodeId);
 
-  if (!currentNode) {
-    return null;
-  }
+  const finishScenario = (choice: DialogueChoice) => {
+    const refused = choice.id.startsWith("refuse");
+    const isCorrect = content.isNormalCase ? !refused : refused;
+    const score = isCorrect ? 100 : 0;
+    const mistakeTag = isCorrect
+      ? undefined
+      : content.isNormalCase
+        ? "blind-refusal"
+        : "fell-for-scam";
 
-  const handleNext = () => {
-    const choice = currentNode.choices.find(
-      (c) => c.id === selectedChoiceId
-    );
+    addTimer(() => {
+      onComplete({
+        typeId: "voice-phishing",
+        contentId: content.id,
+        score,
+        grade: computeGrade(score),
+        userChoice: choice.text,
+        correctChoice: content.isNormalCase
+          ? "정상적으로 응대를 이어간다"
+          : "의심스러운 요청을 거절하고 전화를 끊는다",
+        isCorrect,
+        explanation: buildExplanation(content.isNormalCase, isCorrect),
+        mistakeTag,
+      });
+    }, 600);
+  };
+
+  const handleSelectChoice = (choiceId: string) => {
+    if (!currentNode) return;
+    const choice = currentNode.choices.find((c) => c.id === choiceId);
     if (!choice) return;
+
+    setHistory((prev) => [
+      ...prev,
+      { id: `${currentNode.id}-me`, speaker: "me", text: choice.text },
+    ]);
+    setChoicesReady(false);
 
     const nextNode = choice.next
       ? findNode(content.nodes, choice.next)
@@ -63,67 +130,29 @@ export function VoicePhishingExperience({
 
     if (choice.next && nextNode) {
       setCurrentNodeId(nextNode.id);
-      setSelectedChoiceId(null);
+      revealNode(nextNode.id);
       return;
     }
 
-    const refused = isRefusalChoice(choice);
-    const isCorrect = content.isNormalCase ? !refused : refused;
-    const score = isCorrect ? 100 : 0;
-
-    onComplete({
-      typeId: "voice-phishing",
-      contentId: content.id,
-      score,
-      grade: computeGrade(score),
-      userChoice: choice.text,
-      correctChoice: content.isNormalCase
-        ? "정상적으로 응대를 이어간다"
-        : "의심스러운 요청을 거절하고 전화를 끊는다",
-      isCorrect,
-      explanation: buildExplanation(content.isNormalCase, isCorrect),
-      mistakeTag: isCorrect ? undefined : "blind-refusal",
-    });
+    finishScenario(choice);
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2 rounded-lg border border-neutral-800 bg-[#141414] p-6">
-        <p className="text-sm font-medium text-neutral-400">
-          {currentNode.speaker}
-        </p>
-        <p className="text-sm leading-relaxed text-neutral-300">
-          {currentNode.line}
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        {currentNode.choices.map((choice) => (
-          <button
-            key={choice.id}
-            type="button"
-            onClick={() => setSelectedChoiceId(choice.id)}
-            className={`min-h-11 rounded-lg border p-4 text-left text-sm text-neutral-300 transition-colors ${
-              selectedChoiceId === choice.id
-                ? "border-blue-500 bg-blue-500/10"
-                : "border-neutral-800 bg-[#141414]"
-            }`}
-          >
-            {choice.text}
-          </button>
+    <div className="space-y-4">
+      <div className="space-y-3">
+        {history.map((entry) => (
+          <ChatBubble key={entry.id} speaker={entry.speaker} text={entry.text} />
         ))}
+        {typing && <TypingIndicator />}
       </div>
 
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={handleNext}
-          disabled={!selectedChoiceId}
-          className="min-h-11 rounded-lg bg-blue-500 px-6 text-sm font-medium text-white transition-colors hover:bg-blue-400 disabled:cursor-not-allowed disabled:bg-neutral-700 disabled:text-neutral-400"
-        >
-          다음
-        </button>
-      </div>
+      {choicesReady && currentNode && (
+        <ChatChoiceButtons
+          key={currentNode.id}
+          choices={currentNode.choices}
+          onSelect={handleSelectChoice}
+        />
+      )}
     </div>
   );
 }
