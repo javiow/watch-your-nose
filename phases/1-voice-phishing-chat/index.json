@@ -16,7 +16,7 @@
       "status": "completed",
       "started_at": "2026-08-25T22:47:43+0900",
       "summary": "voice-phishing.ts를 정상 2 + 사기 2개 시나리오(normal-overseas-payment-alert, normal-delivery-address-confirm, scam-refund-remote-app, scam-government-loan-program)로 전면 교체하고 remediation.ts에 fell-for-scam 대응 문구 추가, 관련 테스트 보강",
-      "completed_at": "2026-08-25T22:49:00+0900"
+      "completed_at": "2026-08-25T22:49:52+0900"
     },
     {
       "step": 2,
