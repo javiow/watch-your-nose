@@ -1,0 +1,24 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "3-fraud-judgment-cards",
+  "steps": [
+    {
+      "step": 0,
+      "name": "docs-update",
+      "status": "completed",
+      "started_at": "2026-08-26T16:04:44+0900",
+      "summary": "ADR-009 추가 및 PRD/ARCHITECTURE를 4번째 체험 유형(fraud-judgment) 흡수에 맞춰 갱신, src/는 미변경"
+    },
+    {
+      "step": 1,
+      "name": "data-model",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "fraud-judgment-experience",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-08-26T16:04:44+0900"
+}
