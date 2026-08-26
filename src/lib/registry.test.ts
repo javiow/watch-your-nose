@@ -22,6 +22,14 @@ describe("EXPERIENCE_MODULES", () => {
     expect(voicePhishing).toBeDefined();
     expect(voicePhishing?.contentPool.length).toBeGreaterThan(0);
   });
+
+  it("fraud-judgment 유형이 등록되어 있고 contentPool이 비어있지 않다", () => {
+    const fraudJudgment = EXPERIENCE_MODULES.find(
+      (mod) => mod.typeId === "fraud-judgment"
+    );
+    expect(fraudJudgment).toBeDefined();
+    expect(fraudJudgment?.contentPool.length).toBeGreaterThan(0);
+  });
 });
 
 describe("pickSessionPlan", () => {
@@ -30,13 +38,14 @@ describe("pickSessionPlan", () => {
       makeModule("voice-phishing"),
       makeModule("case-select"),
       makeModule("jeonse"),
+      makeModule("fraud-judgment"),
     ];
     const plan = pickSessionPlan(modules);
     const typeIds = plan.map((p) => p.typeId);
-    expect(typeIds).toHaveLength(3);
-    expect(new Set(typeIds).size).toBe(3);
+    expect(typeIds).toHaveLength(4);
+    expect(new Set(typeIds).size).toBe(4);
     expect([...typeIds].sort()).toEqual(
-      ["case-select", "jeonse", "voice-phishing"].sort()
+      ["case-select", "fraud-judgment", "jeonse", "voice-phishing"].sort()
     );
   });
 
