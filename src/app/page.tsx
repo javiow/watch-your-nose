@@ -34,7 +34,7 @@ export default function Home() {
         <p className="text-sm font-medium text-neutral-400">진행 방식</p>
         <ul className="space-y-2 text-sm leading-relaxed text-neutral-300">
           <li>총 3단계로 진행됩니다.</li>
-          <li>각 단계에서 선택한 뒤 &ldquo;다음&rdquo;을 눌러야 다음 단계로 넘어갑니다.</li>
+          <li>각 단계에서 선택하면 다음 단계로 넘어갑니다.</li>
           <li>
             정답과 오답은 그 자리에서 알려주지 않고, 결과는 마지막에 한 번에
             공개됩니다.
