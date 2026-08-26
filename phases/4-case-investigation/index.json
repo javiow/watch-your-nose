@@ -7,7 +7,8 @@
       "name": "docs-update",
       "status": "completed",
       "started_at": "2026-08-26T21:32:03+0900",
-      "summary": "ADR-010 추가, PRD 핵심기능 5번을 케이스 조사로 교체, ARCHITECTURE의 디렉토리 구조/엣지케이스에 case-investigation 반영 — src/ 미변경, build/lint/test 전부 통과"
+      "summary": "ADR-010 추가, PRD 핵심기능 5번을 케이스 조사로 교체, ARCHITECTURE의 디렉토리 구조/엣지케이스에 case-investigation 반영 — src/ 미변경, build/lint/test 전부 통과",
+      "completed_at": "2026-08-26T21:37:17+0900"
     },
     {
       "step": 1,
