@@ -36,7 +36,7 @@ describe("pickSessionPlan", () => {
   it("등록된 유형 각각을 정확히 1회씩만 포함한다", () => {
     const modules = [
       makeModule("voice-phishing"),
-      makeModule("case-select"),
+      makeModule("case-investigation"),
       makeModule("jeonse"),
       makeModule("fraud-judgment"),
     ];
@@ -45,7 +45,7 @@ describe("pickSessionPlan", () => {
     expect(typeIds).toHaveLength(4);
     expect(new Set(typeIds).size).toBe(4);
     expect([...typeIds].sort()).toEqual(
-      ["case-select", "fraud-judgment", "jeonse", "voice-phishing"].sort()
+      ["case-investigation", "fraud-judgment", "jeonse", "voice-phishing"].sort()
     );
   });
 

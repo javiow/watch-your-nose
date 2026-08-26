@@ -1,10 +1,10 @@
 import type { ExperienceModule, ExperienceTypeId } from "@/types/experience";
 import { VOICE_PHISHING_SCENARIOS } from "@/data/voice-phishing";
-import { CASE_SELECT_PAIRS } from "@/data/case-select";
+import { CASE_INVESTIGATION_CASES } from "@/data/case-investigation";
 import { JEONSE_HOUSE_SETS } from "@/data/jeonse";
 import { FRAUD_JUDGMENT_CARDS } from "@/data/fraud-judgment";
 import { VoicePhishingExperience } from "@/components/experiences/VoicePhishingExperience";
-import { CaseSelectExperience } from "@/components/experiences/CaseSelectExperience";
+import { CaseInvestigationExperience } from "@/components/experiences/CaseInvestigationExperience";
 import { JeonseExperience } from "@/components/experiences/JeonseExperience";
 import { FraudJudgmentExperience } from "@/components/experiences/FraudJudgmentExperience";
 
@@ -19,11 +19,11 @@ export const EXPERIENCE_MODULES: ExperienceModule[] = [
     Component: VoicePhishingExperience,
   },
   {
-    typeId: "case-select",
-    contentPool: CASE_SELECT_PAIRS,
+    typeId: "case-investigation",
+    contentPool: CASE_INVESTIGATION_CASES,
     pickRandomContent: () =>
-      CASE_SELECT_PAIRS[Math.floor(Math.random() * CASE_SELECT_PAIRS.length)],
-    Component: CaseSelectExperience,
+      CASE_INVESTIGATION_CASES[Math.floor(Math.random() * CASE_INVESTIGATION_CASES.length)],
+    Component: CaseInvestigationExperience,
   },
   {
     typeId: "jeonse",

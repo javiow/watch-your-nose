@@ -2,7 +2,6 @@ import type { ComponentType } from "react";
 
 export type ExperienceTypeId =
   | "voice-phishing"
-  | "case-select"
   | "case-investigation"
   | "jeonse"
   | "fraud-judgment";
@@ -66,18 +65,6 @@ export interface VoicePhishingScenario {
   category: VoicePhishingCategory;
   startNodeId: string;
   nodes: DialogueNode[];
-}
-
-export interface ScamCaseSide {
-  title: string;
-  body: string;
-}
-
-export interface ScamCasePair {
-  id: string;
-  scamCase: ScamCaseSide;
-  normalCase: ScamCaseSide;
-  correctSide: "scam" | "normal"; // 확장성을 위한 필드. 이 유형은 항상 "scam"
 }
 
 export type JeonseFieldStatus = "정상" | "주의" | "위험";
