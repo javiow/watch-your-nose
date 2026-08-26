@@ -7,7 +7,8 @@
       "name": "docs-update",
       "status": "completed",
       "started_at": "2026-08-26T16:04:44+0900",
-      "summary": "ADR-009 추가 및 PRD/ARCHITECTURE를 4번째 체험 유형(fraud-judgment) 흡수에 맞춰 갱신, src/는 미변경"
+      "summary": "ADR-009 추가 및 PRD/ARCHITECTURE를 4번째 체험 유형(fraud-judgment) 흡수에 맞춰 갱신, src/는 미변경",
+      "completed_at": "2026-08-26T16:07:25+0900"
     },
     {
       "step": 1,
