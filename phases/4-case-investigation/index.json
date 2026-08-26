@@ -24,7 +24,7 @@
       "status": "completed",
       "started_at": "2026-08-26T21:45:49+0900",
       "summary": "scoring.ts에 computeCaseInvestigationScore/getBestEndingOption 순수 함수 추가(위험신호40+증거품질20+모순15+효율10+최종판단, 합을 0~100 clamp), scoring.test.ts에 인라인 fixture 기반 테스트 7개 작성 — build/lint/test 전부 통과",
-      "completed_at": "2026-08-26T21:52:00+0900"
+      "completed_at": "2026-08-26T21:50:46+0900"
     },
     {
       "step": 3,
