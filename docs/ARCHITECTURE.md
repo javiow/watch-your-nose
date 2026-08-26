@@ -9,9 +9,9 @@ src/
 │   ├── session/page.tsx             # 체험 진행 (4단계, 수동 "다음" 전환, 즉시 피드백 없음)
 │   └── result/page.tsx              # 종합 평가 + 문항별 리뷰 + 대응방안 + "다시 체험하기"
 ├── components/
-│   ├── experiences/                 # VoicePhishingExperience(+ChatBubble/TypingIndicator/ChatChoiceButtons), CaseSelectExperience, JeonseExperience(+jeonse/ 하위: MapBoard/HouseDialogPanel/HouseSprite/PlayerSprite/sprites/boardConfig), FraudJudgmentExperience
+│   ├── experiences/                 # VoicePhishingExperience(+ChatBubble/TypingIndicator/ChatChoiceButtons), CaseInvestigationExperience, JeonseExperience(+jeonse/ 하위: MapBoard/HouseDialogPanel/HouseSprite/PlayerSprite/sprites/boardConfig), FraudJudgmentExperience
 │   └── ui/                          # 공용 컴포넌트 — 처음부터 만들지 않고, 2곳 이상에서 중복되면 그때 추출
-├── types/                           # ExperienceModule, ModuleResult, DialogueNode, ScamCasePair, JeonseHouse, FraudJudgmentCard
+├── types/                           # ExperienceModule, ModuleResult, DialogueNode, CaseInvestigationContent, JeonseHouse, FraudJudgmentCard
 │   └── player.ts                    # PlayerInfo
 ├── lib/
 │   ├── registry.ts                  # 유형 등록 + 세션용 랜덤 순서/콘텐츠 선택
@@ -19,7 +19,7 @@ src/
 │   └── session-context.tsx          # SessionProvider (React Context, localStorage 없음)
 └── data/
     ├── voice-phishing.ts
-    ├── case-select.ts
+    ├── case-investigation.ts          # red-flag(팀원 레포) 부동산 사기 조사 케이스 6종
     ├── jeonse.ts                    # 매물 42종 + 5채씩 정적 분할한 세트
     ├── fraud-judgment.ts             # 팀원 레포(fraudtest) 사기 판별 카드 74종
     └── remediation.ts               # 오답 유형별 대응 방안 카피
@@ -36,7 +36,7 @@ src/
 → "/setup": 나이대/직업/성별 선택 (1회, 화면 미노출 저장 — SessionProvider.playerInfo)
 → 세션 초기화: 4개 유형 순서 셔플 + 유형별 콘텐츠 풀에서 1개씩 랜덤 선택 (registry.ts)
 → "/session": 단계별로 해당 유형 Experience 컴포넌트 렌더, 진행률(N/4) 표시
-   → 사용자가 선택 → 사례선택/전세매물은 "다음" 버튼 클릭 시, 보이스피싱은 채팅형 UI로 선택 즉시 다음 대사/단계로 진행 (자동 전환/즉시 피드백 없음은 공통)
+   → 사용자가 선택 → 케이스 조사/전세매물은 "다음" 버튼 클릭 시, 보이스피싱은 채팅형 UI로 선택 즉시 다음 대사/단계로 진행 (자동 전환/즉시 피드백 없음은 공통)
    → 각 단계 완료 시 ModuleResult를 SessionProvider Context에 누적
 → 4단계 완료 → "/result": 평균 점수/등급 + 문항별 리뷰 + mistakeTag→대응방안(remediation.ts) 렌더
 → "다시 체험하기" → 세션 재초기화 → 랜딩·설정 화면 모두 건너뛰고 바로 "/session"
@@ -61,6 +61,12 @@ src/
 - 전세매물 진행 중에는 헤더 카운터·맵 위 집 배지·사이드바 점검기록 배지 어디에도 정오답을 노출하지 않는다 — "완료/미점검" 여부만 표시한다(즉시 피드백 금지 원칙의 연장).
 - 사기 판별 카드는 오답 원인에 따라 두 가지 mistakeTag로 구분한다 — 실제 사기를 정상으로 오판: `missed-scam-signal`(기존 재사용), 정상을 사기로 오판: `false-alarmed-safe-case`(신규).
 - 사기 판별 카드의 `source`(출처)는 정답을 암시할 수 있어 `explanation`과 결합해 결과 페이지에서만 노출하고, 체험 중에는 절대 렌더링하지 않는다.
+- 케이스 조사는 조사 포인트가 부족하거나 언락 조건이 충족되지 않은 조사 항목을 비활성화/비노출하며, 부분 조사만 하고 최종 판단으로 넘어가는 것도 허용한다(원작과 동일한 UX).
+- 케이스 조사의 모순 발견은 자동 판정이다 — 관련 NPC 질문을 클릭하고 관련 증거를 등록하면 자동으로 모순 점수를 획득하며, 모순 설명은 `/result`에서만 노출한다.
+- 케이스 조사의 `isCorrect`는 점수 임계치가 아니라 "사용자가 고른 최종 판단이 해당 케이스의 최고점 선택지와 일치하는가"로 정의한다 — 케이스에 따라 "진행 가능"이 최고점일 수 있다(원작의 교육 철학 보존).
+- 케이스 조사 오답은 두 가지 mistakeTag로 구분한다 — 최고점이 "진행 가능"인 케이스를 과도하게 의심해 오답 처리된 경우: `false-alarmed-safe-case`(기존 재사용), 그 외 위험 신호를 놓친 경우: `missed-realestate-investigation-signal`(신규).
+- 케이스 조사 진행 중에는 케이스 제목(스포일러성 문구)·최종판단 코멘트·정답 해설을 화면에 렌더링하지 않는다 — 헤딩은 매물/상황 위치 설명을 대신 쓴다.
+- 케이스 조사는 원작의 시간제한(`time_limit_seconds`) 카운트다운을 구현하지 않는다 — 시나리오 텍스트로만 서사적으로 유지한다.
 
 ## 보안
 - 모든 체험 콘텐츠는 피해자 관점(방어)만 다룬다 — 가해자 관점 콘텐츠 금지 (`docs/ADR.md` ADR-005).

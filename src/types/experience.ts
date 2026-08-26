@@ -2,7 +2,7 @@ import type { ComponentType } from "react";
 
 export type ExperienceTypeId =
   | "voice-phishing"
-  | "case-select"
+  | "case-investigation"
   | "jeonse"
   | "fraud-judgment";
 
@@ -67,18 +67,6 @@ export interface VoicePhishingScenario {
   nodes: DialogueNode[];
 }
 
-export interface ScamCaseSide {
-  title: string;
-  body: string;
-}
-
-export interface ScamCasePair {
-  id: string;
-  scamCase: ScamCaseSide;
-  normalCase: ScamCaseSide;
-  correctSide: "scam" | "normal"; // 확장성을 위한 필드. 이 유형은 항상 "scam"
-}
-
 export type JeonseFieldStatus = "정상" | "주의" | "위험";
 export type JeonseField = [label: string, value: string, status: JeonseFieldStatus];
 export type JeonseBuildingType = "다가구주택" | "아파트" | "오피스텔" | "빌라" | "단독주택";
@@ -130,4 +118,112 @@ export interface FraudJudgmentCard {
   answer: FraudJudgmentAnswer; // 정답: fraud=사기, safe=정상
   explanation: string; // /result에서만 노출 (체험 중 노출 금지, step2에서 강제)
   source: string; // 출처 — 사기 예방기관명이 정답을 암시하므로 /result에서만 노출 (step2에서 강제)
+}
+
+export type CaseDomain = "JEONSE" | "CHEONGYAK" | "BUNYANG";
+
+// 렌더링 금지 — 내부 채점/식별용. FraudJudgmentCategory와 동일 패턴.
+export type CaseFraudType =
+  | "HIGH_JEONSE_RATIO_RISK"
+  | "GAP_INVESTMENT_RISK"
+  | "TRUST_PROPERTY"
+  | "PRESALE_IMPERSONATION"
+  | "NONE_LIMITED_RISK"
+  | "COMPOUND_JEONSE_RISK";
+
+export interface CaseDocumentBlock {
+  blockId: string;
+  text: string;
+  evidencePattern: string | null; // null이면 증거 등록 불가한 일반 정보 텍스트
+}
+
+export interface CaseDocument {
+  documentId: string;
+  title: string;
+  blocks: CaseDocumentBlock[];
+}
+
+export interface CaseEvidenceDefinition {
+  pattern: string;
+  importance: 1 | 2;
+  description: string;
+}
+
+export type CaseInvestigationUnlock =
+  | { kind: "evidence"; pattern: string }
+  | { kind: "investigation"; investigationId: string };
+
+export interface CaseInvestigation {
+  investigationId: string;
+  name: string;
+  cost: number;
+  documentId: string;
+  unlockCondition: CaseInvestigationUnlock | null;
+  hiddenUntilUnlocked?: boolean; // true면 unlock 전 조사 목록 자체에서 숨김. 원본에 없으면 생략(비활성 표시만).
+}
+
+export interface CaseNpcStatement {
+  statementId: string;
+  text: string;
+}
+
+export interface CaseNpcQuestion {
+  questionId: string; // `${statementId}-q` 형식
+  prompt: string; // 버튼 라벨 — 원본 suggested_questions 중 아래 매핑표로 선별한 것만
+  statementId: string; // 클릭 시 노출되는 고정 대사
+}
+
+export interface CaseNpcPersona {
+  npcId: string;
+  displayName: string; // "공인중개사 박중개", "동생" 등 원본 그대로. "중개사" 하드코딩 금지 — 케이스마다 다르다.
+  statements: CaseNpcStatement[];
+  questions: CaseNpcQuestion[];
+}
+
+export interface CaseContradiction {
+  contradictionId: string;
+  statementId: string; // 원본 contradictions[].left
+  evidencePattern: string; // 원본 contradictions[].right
+  score: number;
+  explanation: string; // /result 전용
+}
+
+export type CaseFinalDecision =
+  | "SAFE_TO_PROCEED"
+  | "NEED_MORE_VERIFICATION"
+  | "STOP_CONTRACT";
+
+export interface CaseEndingOption {
+  decision: CaseFinalDecision;
+  score: number;
+  comment: string; // /result 전용 — 정답을 암시하므로 체험 중 노출 금지
+}
+
+export interface CaseHiddenTruth {
+  fraudType: CaseFraudType; // 렌더링 금지
+  riskPatterns: string[];
+  requiredEvidence: string[];
+  explanation: string; // /result 전용
+}
+
+export interface CaseInvestigationContent {
+  caseId: string;
+  title: string; // 렌더링 금지 — 내부 식별용, 스포일러성 문구 포함 (step3에서 강제)
+  domain: CaseDomain;
+  initialPoints: number;
+  scenario: {
+    description: string;
+    propertyLocation: string;
+    propertyPriceDescription: string;
+    brokerLine: string;
+    speakerLabel: string; // "중개사" | "분양상담사" | "발신 문자" | "동생" 등 — 하드코딩 금지
+    goal: string;
+  };
+  documents: CaseDocument[];
+  hiddenTruth: CaseHiddenTruth;
+  evidenceDefinitions: CaseEvidenceDefinition[];
+  investigations: CaseInvestigation[];
+  npc: CaseNpcPersona; // 6개 케이스 전부 npc_personas 길이 1 → 배열이 아닌 단일 필드
+  contradictions: CaseContradiction[];
+  endingOptions: CaseEndingOption[]; // 정확히 3개, decision 3종 각 1개
 }

@@ -19,6 +19,11 @@
       "dir": "3-fraud-judgment-cards",
       "status": "completed",
       "completed_at": "2026-08-26T16:13:56+0900"
+    },
+    {
+      "dir": "4-case-investigation",
+      "status": "completed",
+      "completed_at": "2026-08-26T22:16:37+0900"
     }
   ]
 }

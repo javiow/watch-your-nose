@@ -37,6 +37,12 @@ describe("getRemediation", () => {
     expect(message.length).toBeGreaterThan(0);
   });
 
+  it("missed-realestate-investigation-signal 태그에 대한 대응 방안을 반환한다", () => {
+    const message = getRemediation("missed-realestate-investigation-signal");
+    expect(message).not.toBe(DEFAULT_REMEDIATION_MESSAGE);
+    expect(message.length).toBeGreaterThan(0);
+  });
+
   it("매핑이 없는 태그는 기본 안내 문구를 반환한다", () => {
     expect(getRemediation("some-typo-tag")).toBe(DEFAULT_REMEDIATION_MESSAGE);
   });
