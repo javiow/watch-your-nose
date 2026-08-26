@@ -4,8 +4,8 @@ import type { DialogueChoice } from "@/types/experience";
 import { ChatChoiceButtons } from "./ChatChoiceButtons";
 
 const choices: DialogueChoice[] = [
-  { id: "a", text: "선택지 A" },
-  { id: "b", text: "선택지 B" },
+  { id: "a", text: "선택지 A", risk: "safe" },
+  { id: "b", text: "선택지 B", risk: "safe" },
 ];
 
 describe("ChatChoiceButtons", () => {

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
-import type { ModuleResult } from "@/types/experience";
-import { GRADE_LABELS, aggregateResults, computeGrade } from "./scoring";
+import type { ChoiceRisk, ModuleResult } from "@/types/experience";
+import {
+  GRADE_LABELS,
+  aggregateResults,
+  computeGrade,
+  computeVoicePhishingScore,
+} from "./scoring";
 
 describe("GRADE_LABELS", () => {
   it("각 등급에 대한 한글 라벨을 제공한다", () => {
@@ -55,5 +60,42 @@ describe("aggregateResults", () => {
     const { average, grade } = aggregateResults([]);
     expect(average).toBe(0);
     expect(grade).toBe("danger");
+  });
+});
+
+describe("computeVoicePhishingScore", () => {
+  it("safe로만 끝까지 진행하면 100점, 정답으로 채점된다", () => {
+    const path: ChoiceRisk[] = ["safe"];
+    const { score, isCorrect } = computeVoicePhishingScore(path);
+    expect(score).toBe(100);
+    expect(isCorrect).toBe(true);
+  });
+
+  it("caution 한 번 후 safe로 끝나면 80점, 정답으로 채점된다", () => {
+    const path: ChoiceRisk[] = ["caution", "safe"];
+    const { score, isCorrect } = computeVoicePhishingScore(path);
+    expect(score).toBe(80);
+    expect(isCorrect).toBe(true);
+  });
+
+  it("caution 두 번 후 safe로 끝나면 60점(주의 등급 경계), 정답으로 채점된다", () => {
+    const path: ChoiceRisk[] = ["caution", "caution", "safe"];
+    const { score, isCorrect } = computeVoicePhishingScore(path);
+    expect(score).toBe(60);
+    expect(isCorrect).toBe(true);
+  });
+
+  it("danger로 끝나면 앞서 뭘 골랐든 0점, 오답으로 채점된다", () => {
+    const path: ChoiceRisk[] = ["safe", "caution", "danger"];
+    const { score, isCorrect } = computeVoicePhishingScore(path);
+    expect(score).toBe(0);
+    expect(isCorrect).toBe(false);
+  });
+
+  it("바로 danger로 끝나도 0점, 오답으로 채점된다", () => {
+    const path: ChoiceRisk[] = ["danger"];
+    const { score, isCorrect } = computeVoicePhishingScore(path);
+    expect(score).toBe(0);
+    expect(isCorrect).toBe(false);
   });
 });

@@ -44,6 +44,8 @@ model: sonnet
 - **허용/권장**: 사기 유형, 전형적인 진행 단계(`typical_flow`), 사용된 심리적 압박 기법의
   유형(`psychological_pressure_patterns`: 권위 사칭, 공포/처벌 위협, 긴급성, 신뢰 증폭 등),
   피해자가 알아챌 수 있었던 신호(`red_flags_for_victims`) — 이 모두 "패턴" 수준으로 요약할 것.
+  `typical_flow`는 가능하면 3~5단계로 서술한다(`src/data/voice-phishing.ts`의 시나리오가
+  3~5턴짜리 대화 그래프로 만들어지므로, 후속 작성 에이전트가 바로 노드로 옮기기 쉬워진다).
 - 각 항목 끝에 `abstraction_note`로 "실제 대사·계좌번호·앱 이름·URL을 옮기지 않고 흐름/패턴만
   요약함"을 명시한다.
 

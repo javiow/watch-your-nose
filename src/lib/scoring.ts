@@ -1,4 +1,4 @@
-import type { Grade, ModuleResult } from "@/types/experience";
+import type { ChoiceRisk, Grade, ModuleResult } from "@/types/experience";
 
 export const GRADE_THRESHOLDS = {
   safe: 80,
@@ -27,4 +27,23 @@ export function aggregateResults(results: ModuleResult[]): {
   const average =
     results.reduce((sum, result) => sum + result.score, 0) / results.length;
   return { average, grade: computeGrade(average) };
+}
+
+export const VOICE_PHISHING_RISK_PENALTY: Record<ChoiceRisk, number> = {
+  safe: 0,
+  caution: 20,
+  danger: 100,
+};
+
+export function computeVoicePhishingScore(pathRisks: ChoiceRisk[]): {
+  score: number;
+  isCorrect: boolean;
+} {
+  const totalPenalty = pathRisks.reduce(
+    (sum, risk) => sum + VOICE_PHISHING_RISK_PENALTY[risk],
+    0
+  );
+  const score = Math.max(0, 100 - totalPenalty);
+  const finalRisk = pathRisks[pathRisks.length - 1];
+  return { score, isCorrect: finalRisk === "safe" };
 }

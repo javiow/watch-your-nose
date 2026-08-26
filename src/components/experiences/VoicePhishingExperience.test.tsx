@@ -14,15 +14,15 @@ const normalScenario: VoicePhishingScenario = {
       speaker: "상담원",
       line: "본인 확인 차 전화드렸습니다.",
       choices: [
-        { id: "confirm", text: "확인해준다", next: "n2" },
-        { id: "refuse-hangup", text: "전화를 끊는다" },
+        { id: "confirm", text: "확인해준다", next: "n2", risk: "safe" },
+        { id: "refuse-hangup", text: "전화를 끊는다", risk: "danger" },
       ],
     },
     {
       id: "n2",
       speaker: "상담원",
       line: "감사합니다. 통화를 마칩니다.",
-      choices: [{ id: "end-call", text: "통화를 마친다" }],
+      choices: [{ id: "end-call", text: "통화를 마친다", risk: "safe" }],
     },
   ],
 };
@@ -38,8 +38,8 @@ const scamScenario: VoicePhishingScenario = {
       speaker: "발신자",
       line: "대출 상담을 도와드립니다.",
       choices: [
-        { id: "listen-more", text: "더 들어본다", next: "s2" },
-        { id: "refuse-hangup", text: "전화를 끊는다" },
+        { id: "listen-more", text: "더 들어본다", next: "s2", risk: "safe" },
+        { id: "refuse-hangup", text: "전화를 끊는다", risk: "safe" },
       ],
     },
     {
@@ -47,8 +47,49 @@ const scamScenario: VoicePhishingScenario = {
       speaker: "발신자",
       line: "개인정보를 알려주세요.",
       choices: [
-        { id: "comply", text: "정보를 알려준다" },
-        { id: "refuse-suspicious", text: "전화를 끊는다" },
+        { id: "comply", text: "정보를 알려준다", risk: "danger" },
+        { id: "refuse-suspicious", text: "전화를 끊는다", risk: "safe" },
+      ],
+    },
+  ],
+};
+
+const cautionScamScenario: VoicePhishingScenario = {
+  id: "scam-caution-test",
+  isNormalCase: false,
+  category: "대출빙자형",
+  startNodeId: "c1",
+  nodes: [
+    {
+      id: "c1",
+      speaker: "발신자",
+      line: "대출 상담을 도와드립니다.",
+      choices: [
+        { id: "listen-more", text: "더 들어본다", next: "c2", risk: "safe" },
+        { id: "refuse-hangup", text: "전화를 끊는다", risk: "safe" },
+      ],
+    },
+    {
+      id: "c2",
+      speaker: "발신자",
+      line: "성함과 생년월일을 확인해주세요.",
+      choices: [
+        {
+          id: "vague-answer",
+          text: "대수롭지 않게 대충 알려준다",
+          next: "c3",
+          risk: "caution",
+        },
+        { id: "refuse-suspicious", text: "전화를 끊는다", risk: "safe" },
+      ],
+    },
+    {
+      id: "c3",
+      speaker: "발신자",
+      line: "계좌 비밀번호도 알려주세요.",
+      choices: [
+        { id: "comply", text: "정보를 알려준다", risk: "danger" },
+        { id: "refuse-suspicious-2", text: "전화를 끊는다", risk: "safe" },
       ],
     },
   ],
@@ -64,7 +105,14 @@ const danglingScenario: VoicePhishingScenario = {
       id: "d1",
       speaker: "발신자",
       line: "테스트 대사",
-      choices: [{ id: "go-nowhere", text: "다음으로", next: "does-not-exist" }],
+      choices: [
+        {
+          id: "go-nowhere",
+          text: "다음으로",
+          next: "does-not-exist",
+          risk: "safe",
+        },
+      ],
     },
   ],
 };
@@ -203,6 +251,51 @@ describe("VoicePhishingExperience", () => {
     const result = onComplete.mock.calls[0][0];
     expect(result.isCorrect).toBe(false);
     expect(result.mistakeTag).toBe("fell-for-scam");
+  });
+
+  it("중간에 caution 선택을 거쳐도 결국 거절하면 정답이지만 100점 미만으로 채점된다", () => {
+    const onComplete = vi.fn();
+    render(
+      <VoicePhishingExperience
+        content={cautionScamScenario}
+        onComplete={onComplete}
+      />
+    );
+    advanceAllTimers();
+
+    fireEvent.click(screen.getByText("더 들어본다"));
+    advanceAllTimers();
+
+    fireEvent.click(screen.getByText("대수롭지 않게 대충 알려준다"));
+    advanceAllTimers();
+
+    fireEvent.click(screen.getByText("전화를 끊는다"));
+    advanceAllTimers();
+
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    const result = onComplete.mock.calls[0][0];
+    expect(result.isCorrect).toBe(true);
+    expect(result.score).toBe(80);
+    expect(result.mistakeTag).toBeUndefined();
+  });
+
+  it("caution 없이 바로 거절하면 100점으로 채점된다", () => {
+    const onComplete = vi.fn();
+    render(
+      <VoicePhishingExperience
+        content={cautionScamScenario}
+        onComplete={onComplete}
+      />
+    );
+    advanceAllTimers();
+
+    fireEvent.click(screen.getByText("전화를 끊는다"));
+    advanceAllTimers();
+
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    const result = onComplete.mock.calls[0][0];
+    expect(result.isCorrect).toBe(true);
+    expect(result.score).toBe(100);
   });
 
   it("next 참조가 존재하지 않는 노드를 가리키면 크래시 없이 시나리오를 종료 처리한다", () => {

@@ -32,10 +32,13 @@ export interface ExperienceModule<TContent = unknown> {
   Component: ComponentType<ExperienceComponentProps<TContent>>;
 }
 
+export type ChoiceRisk = "safe" | "caution" | "danger";
+
 export interface DialogueChoice {
   id: string;
   text: string;
   next?: string; // 다음 DialogueNode의 id. 없으면 해당 시점에서 시나리오 종료.
+  risk: ChoiceRisk; // 이 선택이 이 시나리오에서 얼마나 부적절한 대응인지 (시나리오 상대적 기준)
 }
 
 export interface DialogueNode {
