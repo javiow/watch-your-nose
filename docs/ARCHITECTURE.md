@@ -5,12 +5,14 @@
 src/
 ├── app/
 │   ├── page.tsx                     # 랜딩: 헤드라인 + 규칙 안내 + "시작하기"
+│   ├── setup/page.tsx               # 캐릭터 설정(나이대/직업/성별), 랜딩 이후 1회성 전역 단계
 │   ├── session/page.tsx             # 체험 진행 (3단계, 수동 "다음" 전환, 즉시 피드백 없음)
 │   └── result/page.tsx              # 종합 평가 + 문항별 리뷰 + 대응방안 + "다시 체험하기"
 ├── components/
-│   ├── experiences/                 # VoicePhishingExperience(+ChatBubble/TypingIndicator/ChatChoiceButtons), CaseSelectExperience, JeonseExperience
+│   ├── experiences/                 # VoicePhishingExperience(+ChatBubble/TypingIndicator/ChatChoiceButtons), CaseSelectExperience, JeonseExperience(+jeonse/ 하위: MapBoard/HouseDialogPanel/HouseSprite/PlayerSprite/sprites/boardConfig)
 │   └── ui/                          # 공용 컴포넌트 — 처음부터 만들지 않고, 2곳 이상에서 중복되면 그때 추출
-├── types/                           # ExperienceModule, ModuleResult, DialogueNode, ScamCasePair, ListingPair
+├── types/                           # ExperienceModule, ModuleResult, DialogueNode, ScamCasePair, JeonseHouse
+│   └── player.ts                    # PlayerInfo
 ├── lib/
 │   ├── registry.ts                  # 유형 등록 + 세션용 랜덤 순서/콘텐츠 선택
 │   ├── scoring.ts                   # 등급 계산, 종합 평균 집계
@@ -18,7 +20,7 @@ src/
 └── data/
     ├── voice-phishing.ts
     ├── case-select.ts
-    ├── jeonse.ts
+    ├── jeonse.ts                    # 매물 42종 + 5채씩 정적 분할한 세트
     └── remediation.ts               # 오답 유형별 대응 방안 카피
 ```
 
@@ -30,16 +32,17 @@ src/
 ## 데이터 흐름
 ```
 "/" 랜딩에서 "시작하기" 클릭
+→ "/setup": 나이대/직업/성별 선택 (1회, 화면 미노출 저장 — SessionProvider.playerInfo)
 → 세션 초기화: 3개 유형 순서 셔플 + 유형별 콘텐츠 풀에서 1개씩 랜덤 선택 (registry.ts)
 → "/session": 단계별로 해당 유형 Experience 컴포넌트 렌더, 진행률(N/3) 표시
    → 사용자가 선택 → 사례선택/전세매물은 "다음" 버튼 클릭 시, 보이스피싱은 채팅형 UI로 선택 즉시 다음 대사/단계로 진행 (자동 전환/즉시 피드백 없음은 공통)
    → 각 단계 완료 시 ModuleResult를 SessionProvider Context에 누적
 → 3단계 완료 → "/result": 평균 점수/등급 + 문항별 리뷰 + mistakeTag→대응방안(remediation.ts) 렌더
-→ "다시 체험하기" → 세션 재초기화 → 랜딩을 거치지 않고 바로 "/session"
+→ "다시 체험하기" → 세션 재초기화 → 랜딩·설정 화면 모두 건너뛰고 바로 "/session"
 ```
 
 ## 상태 관리
-- 세션 상태는 root layout에 마운트된 `SessionProvider`(React Context)에만 존재. localStorage 등 영속화 계층 없음 — 새로고침 시 처음부터 재시작되는 것이 의도된 동작. 세션 도중 브라우저 뒤로가기로 이탈해도 경고 없이 그대로 허용한다(동일한 이유).
+- 세션 상태는 root layout에 마운트된 `SessionProvider`(React Context)에만 존재. localStorage 등 영속화 계층 없음 — 새로고침 시 처음부터 재시작되는 것이 의도된 동작. 세션 도중 브라우저 뒤로가기로 이탈해도 경고 없이 그대로 허용한다(동일한 이유). 세션에는 `playerInfo: PlayerInfo | null` 필드도 함께 보관한다 — 캐릭터 설정 화면에서 한 번 저장되면 `resetSession()`으로도 초기화되지 않는다.
 - 서버 상태 없음(백엔드 미사용).
 
 ## 엣지 케이스 / 방어 로직
@@ -52,6 +55,9 @@ src/
 - 점수는 화면 표시 시 정수(%)로 반올림한다.
 - 보이스피싱 `DialogueNode`의 `next` 참조가 존재하지 않으면 크래시 대신 해당 시점에서 시나리오를 종료 처리한다.
 - "다시 체험하기"는 직전 콘텐츠를 제외하지 않는 순수 랜덤이다 (의도된 동작).
+- `/session`은 `playerInfo`가 없으면(직접 URL 진입 등) `/`로 리다이렉트한다 — 기존 빈 세션 리다이렉트와 동일한 패턴.
+- 전세매물은 5채 판정을 하나의 `ModuleResult`로 집계한다 — `score`는 정답수/5*100, `isCorrect`는 등급이 "safe"(80%↑)일 때만 true, 그 외에는 `mistakeTag: "missed-lease-fraud-signal"`.
+- 전세매물 진행 중에는 헤더 카운터·맵 위 집 배지·사이드바 점검기록 배지 어디에도 정오답을 노출하지 않는다 — "완료/미점검" 여부만 표시한다(즉시 피드백 금지 원칙의 연장).
 
 ## 보안
 - 모든 체험 콘텐츠는 피해자 관점(방어)만 다룬다 — 가해자 관점 콘텐츠 금지 (`docs/ADR.md` ADR-005).
