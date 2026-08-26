@@ -22,7 +22,8 @@
     },
     {
       "dir": "4-case-investigation",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-08-26T22:16:37+0900"
     }
   ]
 }
