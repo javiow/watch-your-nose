@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "data-model",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-08-26T12:28:17+0900",
+      "summary": "JeonseHouse/JeonseField 등 타입과 PlayerInfo 타입 추가, 팀원 레포 houses.ts의 매물 42채를 JEONSE_HOUSES로 이식하고 5개씩 정적 분할한 JEONSE_HOUSE_SETS(8세트) 추가, 기존 ListingPair/JEONSE_LISTING_PAIRS는 그대로 유지 — build/lint/test 66건 모두 통과",
+      "completed_at": "2026-08-26T12:31:00+0900"
     },
     {
       "step": 2,

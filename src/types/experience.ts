@@ -71,3 +71,25 @@ export interface ListingPair {
   scamListing: ListingSide;
   correctSide: "normal" | "scam"; // 확장성을 위한 필드. 이 유형은 항상 "normal"
 }
+
+export type JeonseFieldStatus = "정상" | "주의" | "위험";
+export type JeonseField = [label: string, value: string, status: JeonseFieldStatus];
+export type JeonseBuildingType = "다가구주택" | "아파트" | "오피스텔" | "빌라" | "단독주택";
+
+export interface JeonseHouse {
+  id: string;
+  short: string;
+  name: string;
+  addr: string;
+  buildingType: JeonseBuildingType;
+  deposit: string;
+  monthlyRent?: string; // 반전세 매물일 때만 존재
+  market: string;
+  ratio: string;
+  ratioBad: boolean;
+  risky: boolean; // true = 정답 O(위험 있음), false = 정답 X(안전)
+  fields: JeonseField[];
+  explain: string;
+  lesson: string;
+  reason: string;
+}
