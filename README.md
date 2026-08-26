@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Watch Your Nose — 눈 뜨고 코 베인다
 
-## Getting Started
+"나는 절대 안 속아?" 그 자신감을 시험하는 금융 사기 교육 웹앱입니다. 어떤 체험이 나올지 미리 알려주지 않고, 실제 사기 수법을 본뜬 상황을 그 자리에서 판단하게 한 뒤 마지막에 결과와 대응법을 알려줍니다.
 
-First, run the development server:
+## 무엇을 체험하나요
+
+한 세션에서 아래 4가지 체험 유형 중 랜덤 순서로 하나씩, 총 4단계를 진행합니다. 어떤 유형이 몇 번째로 나올지는 알려주지 않으며, 각 단계에서 선택하면 정답/오답을 그 자리에서 알려주지 않고 마지막 결과 페이지에서 한 번에 공개합니다.
+
+- **보이스피싱** — 채팅형으로 이어지는 분기 대화에서 선택지를 고르며 대응합니다.
+- **사례선택** — 사기 사례와 정상 사례 두 개 중 사기 쪽을 골라냅니다.
+- **전세매물** — 골목 맵을 이동하며 매물 5채의 등기부·전세가율 등 서류를 확인하고 위험 여부를 O/X로 판정합니다.
+- **사기 판별 카드** — 실제 공개된 사기 유형(중고거래·투자리딩방·로맨스스캠·스미싱 등 15종)을 바탕으로 한 지문 카드를 보고 사기인지 정상인지 판정합니다.
+
+체험이 끝나면 유형별 정답률과 등급, 문항별 상세 리뷰(내 선택 vs 정답, 이유), 오답 유형에 맞는 대응 방안을 보여주는 종합 결과 리포트가 나옵니다.
+
+## 기술 스택
+
+- [Next.js 15](https://nextjs.org) (App Router) + TypeScript strict mode
+- Tailwind CSS
+- Vitest + React Testing Library
+- **완전 정적 구성** — 별도 백엔드/DB 없이 모든 콘텐츠를 `src/data/`의 정적 TypeScript 파일로 관리하고, 세션 상태는 React Context에만 보관합니다(새로고침 시 처음부터 다시 시작).
+
+## 시작하기
+
+Node.js가 설치되어 있어야 합니다.
 
 ```bash
+# 1. 의존성 설치
+npm install
+
+# 2. 개발 서버 실행
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+브라우저에서 [http://localhost:3000](http://localhost:3000) 을 열면 바로 체험할 수 있습니다. `src/app/page.tsx` 등 페이지 파일을 수정하면 자동으로 반영됩니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 그 외 명령어
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build   # 프로덕션 빌드
+npm run start   # 빌드 결과물 실행
+npm run lint    # ESLint 검사
+npm test        # 테스트 실행 (Vitest + React Testing Library)
+```
 
-## Learn More
+## 프로젝트 구조
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/                 # 페이지 (랜딩 → 캐릭터 설정 → 체험 세션 → 결과)
+├── components/
+│   ├── experiences/     # 체험 유형별 컴포넌트
+│   └── ui/               # 공용 UI 컴포넌트
+├── types/                # 체험 유형 공통 인터페이스, 콘텐츠 타입
+├── lib/                  # 체험 유형 등록(registry), 채점 로직, 세션 상태
+└── data/                 # 체험 콘텐츠(시나리오·사례·매물 등)와 대응 방안 카피
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+새 체험 유형은 `src/types/`의 `ExperienceModule` 인터페이스를 구현해 `src/lib/registry.ts`에 등록하는 방식으로 추가합니다. 프로젝트 설계 배경과 세부 규칙은 [`CLAUDE.md`](./CLAUDE.md)와 [`docs/`](./docs) 폴더(PRD, 아키텍처, 설계 결정 기록)를 참고하세요.
