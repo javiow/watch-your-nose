@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import type { JeonseHouse } from "@/types/experience";
+import type { JeonseFieldStatus, JeonseHouse } from "@/types/experience";
+
+function statusClassFor(status: JeonseFieldStatus): string {
+  if (status === "위험") return "border-red-500/60 text-red-400";
+  if (status === "주의") return "border-amber-500/60 text-amber-400";
+  return "border-neutral-700 text-neutral-500";
+}
 
 interface HouseDialogPanelProps {
   house: JeonseHouse;
@@ -101,9 +107,16 @@ export function HouseDialogPanel({ house, answered, onAnswer, onClose }: HouseDi
         </div>
 
         <div className="divide-y divide-neutral-800 px-5">
-          {house.fields.map(([label, value]) => (
+          {house.fields.map(([label, value, status]) => (
             <div key={label} className="py-3">
-              <p className="text-xs font-semibold text-neutral-400">{label}</p>
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-xs font-semibold text-neutral-400">{label}</p>
+                <span
+                  className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-semibold tracking-wide ${statusClassFor(status)}`}
+                >
+                  {status}
+                </span>
+              </div>
               <p className="mt-1 text-sm leading-relaxed text-neutral-300">{value}</p>
             </div>
           ))}

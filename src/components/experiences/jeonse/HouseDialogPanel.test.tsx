@@ -17,8 +17,8 @@ const house: JeonseHouse = {
   fields: [
     ["등기부등본", "근저당 없음", "정상"],
     ["선순위 보증금", "선순위 없음", "정상"],
-    ["시세 대비 전세가율", "66.7%", "정상"],
-    ["건축물대장", "위반 없음", "정상"],
+    ["시세 대비 전세가율", "80.0% — 다소 높은 편", "주의"],
+    ["건축물대장", "위반건축물 등재", "위험"],
     ["임대인 명의", "소유자 본인", "정상"],
     ["공인중개사", "등록 정상", "정상"],
     ["계약 특약", "특약 없음", "정상"],
@@ -47,6 +47,16 @@ describe("HouseDialogPanel", () => {
     expect(screen.getByText("전입세대 열람")).toBeDefined();
     expect(screen.getByRole("button", { name: "O — 위험 있음" })).toBeDefined();
     expect(screen.getByRole("button", { name: "X — 위험 없음" })).toBeDefined();
+  });
+
+  it("확인을 누르면 각 서류 항목의 위험도 태그(정상/주의/위험)가 함께 보인다", () => {
+    render(
+      <HouseDialogPanel house={house} answered={false} onAnswer={vi.fn()} onClose={vi.fn()} />
+    );
+    fireEvent.click(screen.getByText("확인"));
+    expect(screen.getAllByText("정상").length).toBeGreaterThan(0);
+    expect(screen.getByText("주의")).toBeDefined();
+    expect(screen.getByText("위험")).toBeDefined();
   });
 
   it("O를 선택하면 onAnswer(true)가 호출된다", () => {
