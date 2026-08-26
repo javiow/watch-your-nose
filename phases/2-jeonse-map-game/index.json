@@ -34,5 +34,6 @@
       "summary": "JEONSE_LISTING_PAIRS/ListingPair 삭제, jeonse/ 하위에 boardConfig·sprites·HouseSprite·PlayerSprite·HouseDialogPanel·MapBoard(캔버스 픽셀아트, 방향키/D-패드 이동, 문 자동입장) 신규 추가, JeonseExperience는 5채 판정을 집계해 ModuleResult 1건으로 onComplete 호출, registry.ts는 JEONSE_HOUSE_SETS로 등록 — 판정 직후 정답/해설 노출 없음, 유형명 비노출 확인, build/lint/test(92건) 모두 통과"
     }
   ],
-  "created_at": "2026-08-26T12:25:21+0900"
+  "created_at": "2026-08-26T12:25:21+0900",
+  "completed_at": "2026-08-26T12:58:13+0900"
 }

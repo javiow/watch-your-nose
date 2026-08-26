@@ -12,7 +12,8 @@
     },
     {
       "dir": "2-jeonse-map-game",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-08-26T12:58:13+0900"
     }
   ]
 }
