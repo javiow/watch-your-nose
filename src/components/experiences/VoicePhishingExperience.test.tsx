@@ -6,6 +6,7 @@ import { VoicePhishingExperience } from "./VoicePhishingExperience";
 const normalScenario: VoicePhishingScenario = {
   id: "normal-test",
   isNormalCase: true,
+  category: "정상금융확인형",
   startNodeId: "n1",
   nodes: [
     {
@@ -29,6 +30,7 @@ const normalScenario: VoicePhishingScenario = {
 const scamScenario: VoicePhishingScenario = {
   id: "scam-test",
   isNormalCase: false,
+  category: "대출빙자형",
   startNodeId: "s1",
   nodes: [
     {
@@ -55,6 +57,7 @@ const scamScenario: VoicePhishingScenario = {
 const danglingScenario: VoicePhishingScenario = {
   id: "dangling-test",
   isNormalCase: false,
+  category: "대출빙자형",
   startNodeId: "d1",
   nodes: [
     {

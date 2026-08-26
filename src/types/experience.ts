@@ -45,9 +45,21 @@ export interface DialogueNode {
   choices: DialogueChoice[];
 }
 
+// 렌더링 금지 — 내부 메타데이터. FraudJudgmentCategory와 동일 패턴.
+export type VoicePhishingCategory =
+  | "기관사칭형"
+  | "대출빙자형"
+  | "납치협박형"
+  | "메신저피싱형"
+  | "환불결제사칭형"
+  | "택배배송사칭형"
+  | "정상금융확인형"
+  | "정상생활안내형";
+
 export interface VoicePhishingScenario {
   id: string;
   isNormalCase: boolean; // true면 정상 케이스(거절이 오답으로 채점됨)
+  category: VoicePhishingCategory;
   startNodeId: string;
   nodes: DialogueNode[];
 }

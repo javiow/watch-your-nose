@@ -4,6 +4,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
   {
     id: "normal-overseas-payment-alert",
     isNormalCase: true,
+    category: "정상금융확인형",
     startNodeId: "n1",
     nodes: [
       {
@@ -29,6 +30,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
   {
     id: "normal-delivery-address-confirm",
     isNormalCase: true,
+    category: "정상생활안내형",
     startNodeId: "n1",
     nodes: [
       {
@@ -54,6 +56,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
   {
     id: "scam-refund-remote-app",
     isNormalCase: false,
+    category: "환불결제사칭형",
     startNodeId: "s1",
     nodes: [
       {
@@ -79,6 +82,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
   {
     id: "scam-government-loan-program",
     isNormalCase: false,
+    category: "대출빙자형",
     startNodeId: "s1",
     nodes: [
       {
@@ -97,6 +101,58 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
         choices: [
           { id: "comply-provide-info", text: "안심하고 요청한 정보를 알려준다" },
           { id: "refuse-suspicious", text: "비밀번호까지 요구하는게 이상해 전화를 끊는다" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "normal-sim-reissue-alert",
+    isNormalCase: true,
+    category: "정상생활안내형",
+    startNodeId: "n1",
+    nodes: [
+      {
+        id: "n1",
+        speaker: "OO텔레콤 보안센터",
+        line: "고객님, 방금 다른 기기에서 고객님 명의로 유심 재발급 시도가 있어 저희 쪽에서 자동으로 차단했습니다. 본인이 시도하신 게 맞을까요?",
+        choices: [
+          { id: "confirm-not-me", text: "아니요, 저는 시도한 적 없어요", next: "n2" },
+          { id: "refuse-hangup", text: "모르는 번호라 미심쩍어 바로 끊는다" },
+        ],
+      },
+      {
+        id: "n2",
+        speaker: "OO텔레콤 보안센터",
+        line: "확인 감사합니다. 시도는 이미 차단됐고 별도로 알려주실 정보는 없습니다. 유심 재발급이 필요하시면 대리점 방문이나 공식 앱에서 본인 인증 후 진행해 주세요.",
+        choices: [
+          { id: "end-call-politely", text: "알겠다고 답하고 통화를 마친다" },
+          { id: "refuse-still-suspicious", text: "그래도 미심쩍어 전화를 끊는다" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "scam-fake-prosecutor-safe-account",
+    isNormalCase: false,
+    category: "기관사칭형",
+    startNodeId: "s1",
+    nodes: [
+      {
+        id: "s1",
+        speaker: "OO지방검찰청 수사관",
+        line: "고객님 명의 계좌가 대포통장 개설 및 자금세탁 사건에 연루된 정황이 확인되어 연락드렸습니다. 본인 명의 계좌가 맞으신가요?",
+        choices: [
+          { id: "listen-more", text: "무슨 일인지 자세히 들어본다", next: "s2" },
+          { id: "refuse-hangup", text: "검찰이 전화로 연락할 리 없다며 바로 끊는다" },
+        ],
+      },
+      {
+        id: "s2",
+        speaker: "OO지방검찰청 수사관",
+        line: "수사 협조 차원에서 계좌 자금을 저희가 안내하는 안전계좌로 임시 이체해주셔야 합니다. 혐의 없음이 확인되면 수사 종료 후 바로 돌려드립니다.",
+        choices: [
+          { id: "comply-transfer-funds", text: "혐의를 벗으려 안내에 따라 이체한다" },
+          { id: "refuse-suspicious", text: "공공기관은 이체를 요구하지 않는다는 걸 알고 있어 전화를 끊는다" },
         ],
       },
     ],
