@@ -1,0 +1,32 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "3-fraud-judgment-cards",
+  "steps": [
+    {
+      "step": 0,
+      "name": "docs-update",
+      "status": "completed",
+      "started_at": "2026-08-26T16:04:44+0900",
+      "summary": "ADR-009 추가 및 PRD/ARCHITECTURE를 4번째 체험 유형(fraud-judgment) 흡수에 맞춰 갱신, src/는 미변경",
+      "completed_at": "2026-08-26T16:07:25+0900"
+    },
+    {
+      "step": 1,
+      "name": "data-model",
+      "status": "completed",
+      "started_at": "2026-08-26T16:07:26+0900",
+      "summary": "FraudJudgmentCard/FraudJudgmentCategory 타입 추가 및 fraudtest 원본 74개 카드를 src/data/fraud-judgment.ts에 정적 리터럴로 이식, 커버리지 테스트 작성",
+      "completed_at": "2026-08-26T16:10:11+0900"
+    },
+    {
+      "step": 2,
+      "name": "fraud-judgment-experience",
+      "status": "completed",
+      "started_at": "2026-08-26T16:10:11+0900",
+      "summary": "FraudJudgmentExperience 컴포넌트(1클릭 판정, source/category/explanation 미노출) 구현 및 registry.ts/remediation.ts(false-alarmed-safe-case)에 등록, page.tsx 문구 수정",
+      "completed_at": "2026-08-26T16:13:55+0900"
+    }
+  ],
+  "created_at": "2026-08-26T16:04:44+0900",
+  "completed_at": "2026-08-26T16:13:56+0900"
+}

@@ -14,6 +14,11 @@
       "dir": "2-jeonse-map-game",
       "status": "completed",
       "completed_at": "2026-08-26T12:58:13+0900"
+    },
+    {
+      "dir": "3-fraud-judgment-cards",
+      "status": "completed",
+      "completed_at": "2026-08-26T16:13:56+0900"
     }
   ]
 }

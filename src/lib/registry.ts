@@ -2,9 +2,11 @@ import type { ExperienceModule, ExperienceTypeId } from "@/types/experience";
 import { VOICE_PHISHING_SCENARIOS } from "@/data/voice-phishing";
 import { CASE_SELECT_PAIRS } from "@/data/case-select";
 import { JEONSE_HOUSE_SETS } from "@/data/jeonse";
+import { FRAUD_JUDGMENT_CARDS } from "@/data/fraud-judgment";
 import { VoicePhishingExperience } from "@/components/experiences/VoicePhishingExperience";
 import { CaseSelectExperience } from "@/components/experiences/CaseSelectExperience";
 import { JeonseExperience } from "@/components/experiences/JeonseExperience";
+import { FraudJudgmentExperience } from "@/components/experiences/FraudJudgmentExperience";
 
 export const EXPERIENCE_MODULES: ExperienceModule[] = [
   {
@@ -29,6 +31,13 @@ export const EXPERIENCE_MODULES: ExperienceModule[] = [
     pickRandomContent: () =>
       JEONSE_HOUSE_SETS[Math.floor(Math.random() * JEONSE_HOUSE_SETS.length)],
     Component: JeonseExperience,
+  },
+  {
+    typeId: "fraud-judgment",
+    contentPool: FRAUD_JUDGMENT_CARDS,
+    pickRandomContent: () =>
+      FRAUD_JUDGMENT_CARDS[Math.floor(Math.random() * FRAUD_JUDGMENT_CARDS.length)],
+    Component: FraudJudgmentExperience,
   },
 ] as ExperienceModule[];
 

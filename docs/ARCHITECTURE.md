@@ -6,12 +6,12 @@ src/
 ├── app/
 │   ├── page.tsx                     # 랜딩: 헤드라인 + 규칙 안내 + "시작하기"
 │   ├── setup/page.tsx               # 캐릭터 설정(나이대/직업/성별), 랜딩 이후 1회성 전역 단계
-│   ├── session/page.tsx             # 체험 진행 (3단계, 수동 "다음" 전환, 즉시 피드백 없음)
+│   ├── session/page.tsx             # 체험 진행 (4단계, 수동 "다음" 전환, 즉시 피드백 없음)
 │   └── result/page.tsx              # 종합 평가 + 문항별 리뷰 + 대응방안 + "다시 체험하기"
 ├── components/
-│   ├── experiences/                 # VoicePhishingExperience(+ChatBubble/TypingIndicator/ChatChoiceButtons), CaseSelectExperience, JeonseExperience(+jeonse/ 하위: MapBoard/HouseDialogPanel/HouseSprite/PlayerSprite/sprites/boardConfig)
+│   ├── experiences/                 # VoicePhishingExperience(+ChatBubble/TypingIndicator/ChatChoiceButtons), CaseSelectExperience, JeonseExperience(+jeonse/ 하위: MapBoard/HouseDialogPanel/HouseSprite/PlayerSprite/sprites/boardConfig), FraudJudgmentExperience
 │   └── ui/                          # 공용 컴포넌트 — 처음부터 만들지 않고, 2곳 이상에서 중복되면 그때 추출
-├── types/                           # ExperienceModule, ModuleResult, DialogueNode, ScamCasePair, JeonseHouse
+├── types/                           # ExperienceModule, ModuleResult, DialogueNode, ScamCasePair, JeonseHouse, FraudJudgmentCard
 │   └── player.ts                    # PlayerInfo
 ├── lib/
 │   ├── registry.ts                  # 유형 등록 + 세션용 랜덤 순서/콘텐츠 선택
@@ -21,23 +21,24 @@ src/
     ├── voice-phishing.ts
     ├── case-select.ts
     ├── jeonse.ts                    # 매물 42종 + 5채씩 정적 분할한 세트
+    ├── fraud-judgment.ts             # 팀원 레포(fraudtest) 사기 판별 카드 74종
     └── remediation.ts               # 오답 유형별 대응 방안 카피
 ```
 
 ## 패턴
 - 백엔드/DB 없음. 모든 콘텐츠는 `src/data/`의 정적 TS 파일.
-- 3개 체험 유형은 공통 인터페이스(`ExperienceModule`)를 구현해 `lib/registry.ts`에 등록하는 플러그인 패턴 — 홈/세션 오케스트레이션은 레지스트리만 순회, 유형을 직접 import하지 않는다.
+- 4개 체험 유형은 공통 인터페이스(`ExperienceModule`)를 구현해 `lib/registry.ts`에 등록하는 플러그인 패턴 — 홈/세션 오케스트레이션은 레지스트리만 순회, 유형을 직접 import하지 않는다.
 - 인터랙션이 있는 화면(session, result)은 Client Component. 랜딩은 정적 콘텐츠라 Server Component로 유지 가능.
 
 ## 데이터 흐름
 ```
 "/" 랜딩에서 "시작하기" 클릭
 → "/setup": 나이대/직업/성별 선택 (1회, 화면 미노출 저장 — SessionProvider.playerInfo)
-→ 세션 초기화: 3개 유형 순서 셔플 + 유형별 콘텐츠 풀에서 1개씩 랜덤 선택 (registry.ts)
-→ "/session": 단계별로 해당 유형 Experience 컴포넌트 렌더, 진행률(N/3) 표시
+→ 세션 초기화: 4개 유형 순서 셔플 + 유형별 콘텐츠 풀에서 1개씩 랜덤 선택 (registry.ts)
+→ "/session": 단계별로 해당 유형 Experience 컴포넌트 렌더, 진행률(N/4) 표시
    → 사용자가 선택 → 사례선택/전세매물은 "다음" 버튼 클릭 시, 보이스피싱은 채팅형 UI로 선택 즉시 다음 대사/단계로 진행 (자동 전환/즉시 피드백 없음은 공통)
    → 각 단계 완료 시 ModuleResult를 SessionProvider Context에 누적
-→ 3단계 완료 → "/result": 평균 점수/등급 + 문항별 리뷰 + mistakeTag→대응방안(remediation.ts) 렌더
+→ 4단계 완료 → "/result": 평균 점수/등급 + 문항별 리뷰 + mistakeTag→대응방안(remediation.ts) 렌더
 → "다시 체험하기" → 세션 재초기화 → 랜딩·설정 화면 모두 건너뛰고 바로 "/session"
 ```
 
@@ -58,6 +59,8 @@ src/
 - `/session`은 `playerInfo`가 없으면(직접 URL 진입 등) `/`로 리다이렉트한다 — 기존 빈 세션 리다이렉트와 동일한 패턴.
 - 전세매물은 5채 판정을 하나의 `ModuleResult`로 집계한다 — `score`는 정답수/5*100, `isCorrect`는 등급이 "safe"(80%↑)일 때만 true, 그 외에는 `mistakeTag: "missed-lease-fraud-signal"`.
 - 전세매물 진행 중에는 헤더 카운터·맵 위 집 배지·사이드바 점검기록 배지 어디에도 정오답을 노출하지 않는다 — "완료/미점검" 여부만 표시한다(즉시 피드백 금지 원칙의 연장).
+- 사기 판별 카드는 오답 원인에 따라 두 가지 mistakeTag로 구분한다 — 실제 사기를 정상으로 오판: `missed-scam-signal`(기존 재사용), 정상을 사기로 오판: `false-alarmed-safe-case`(신규).
+- 사기 판별 카드의 `source`(출처)는 정답을 암시할 수 있어 `explanation`과 결합해 결과 페이지에서만 노출하고, 체험 중에는 절대 렌더링하지 않는다.
 
 ## 보안
 - 모든 체험 콘텐츠는 피해자 관점(방어)만 다룬다 — 가해자 관점 콘텐츠 금지 (`docs/ADR.md` ADR-005).

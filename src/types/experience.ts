@@ -1,6 +1,10 @@
 import type { ComponentType } from "react";
 
-export type ExperienceTypeId = "voice-phishing" | "case-select" | "jeonse";
+export type ExperienceTypeId =
+  | "voice-phishing"
+  | "case-select"
+  | "jeonse"
+  | "fraud-judgment";
 
 export type Grade = "safe" | "caution" | "danger";
 
@@ -80,4 +84,35 @@ export interface JeonseHouse {
   explain: string;
   lesson: string;
   reason: string;
+}
+
+export type FraudJudgmentAnswer = "fraud" | "safe";
+
+// 원본 레포(fraudtest)의 15개 사기 유형을 그대로 옮긴 것. UI에는 절대 노출하지 않는다 —
+// 콘텐츠 커버리지 테스트용 내부 메타데이터일 뿐이다.
+export type FraudJudgmentCategory =
+  | "중고거래_사기"
+  | "투자리딩방_사기"
+  | "로맨스스캠"
+  | "스미싱"
+  | "대환작업대출_사기"
+  | "몸캠피싱"
+  | "가짜쇼핑몰"
+  | "대리입금"
+  | "지인사칭_메신저피싱"
+  | "취업사기"
+  | "전세사기"
+  | "택배기사_사칭피싱"
+  | "중고차_사기"
+  | "반려동물_분양사기"
+  | "티켓_되팔이_사기";
+
+export interface FraudJudgmentCard {
+  id: string;
+  category: FraudJudgmentCategory; // 렌더링 금지 — 내부 메타데이터 (step2에서 강제)
+  title: string;
+  content: string; // 판단 시점에서 끝나는 서술형 지문 (단일 문단)
+  answer: FraudJudgmentAnswer; // 정답: fraud=사기, safe=정상
+  explanation: string; // /result에서만 노출 (체험 중 노출 금지, step2에서 강제)
+  source: string; // 출처 — 사기 예방기관명이 정답을 암시하므로 /result에서만 노출 (step2에서 강제)
 }
