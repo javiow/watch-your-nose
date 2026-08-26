@@ -21,7 +21,10 @@
     {
       "step": 2,
       "name": "player-setup-flow",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-08-26T12:31:10+0900",
+      "summary": "PlayerInfo 수집용 전역 /setup 라우트와 PlayerSetupForm 추가, SessionProvider에 playerInfo/setPlayerInfo 추가(resetSession은 건드리지 않음), StartButton을 /setup으로, /session 가드에 playerInfo null 체크 추가 — build/lint/test 70건 모두 통과",
+      "completed_at": "2026-08-26T12:33:30+0900"
     },
     {
       "step": 3,

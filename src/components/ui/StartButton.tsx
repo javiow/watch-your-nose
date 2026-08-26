@@ -9,7 +9,7 @@ export function StartButton() {
 
   const handleStart = () => {
     resetSession();
-    router.push("/session");
+    router.push("/setup");
   };
 
   return (

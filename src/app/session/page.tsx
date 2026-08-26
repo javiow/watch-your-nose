@@ -8,7 +8,7 @@ import type { ModuleResult } from "@/types/experience";
 
 export default function SessionPage() {
   const router = useRouter();
-  const { sessionPlan, addResult } = useSession();
+  const { sessionPlan, addResult, playerInfo } = useSession();
   const [step, setStep] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -23,12 +23,17 @@ export default function SessionPage() {
   );
 
   useEffect(() => {
-    if (sessionPlan.length === 0) {
+    if (sessionPlan.length === 0 || playerInfo === null) {
       router.replace("/");
     }
-  }, [sessionPlan, router]);
+  }, [sessionPlan, playerInfo, router]);
 
-  if (sessionPlan.length === 0 || !currentModule || content === undefined) {
+  if (
+    sessionPlan.length === 0 ||
+    playerInfo === null ||
+    !currentModule ||
+    content === undefined
+  ) {
     return null;
   }
 

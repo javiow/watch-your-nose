@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import type { ExperienceTypeId, ModuleResult } from "@/types/experience";
+import type { PlayerInfo } from "@/types/player";
 import { pickSessionPlan } from "@/lib/registry";
 
 interface SessionContextValue {
@@ -16,6 +17,8 @@ interface SessionContextValue {
   results: ModuleResult[];
   addResult: (result: ModuleResult) => void;
   resetSession: () => void;
+  playerInfo: PlayerInfo | null;
+  setPlayerInfo: (info: PlayerInfo) => void;
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null);
@@ -23,6 +26,7 @@ const SessionContext = createContext<SessionContextValue | null>(null);
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [sessionPlan, setSessionPlan] = useState(() => pickSessionPlan());
   const [results, setResults] = useState<ModuleResult[]>([]);
+  const [playerInfo, setPlayerInfo] = useState<PlayerInfo | null>(null);
 
   const addResult = useCallback((result: ModuleResult) => {
     setResults((prev) => [...prev, result]);
@@ -34,8 +38,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ sessionPlan, results, addResult, resetSession }),
-    [sessionPlan, results, addResult, resetSession]
+    () => ({
+      sessionPlan,
+      results,
+      addResult,
+      resetSession,
+      playerInfo,
+      setPlayerInfo,
+    }),
+    [sessionPlan, results, addResult, resetSession, playerInfo]
   );
 
   return (

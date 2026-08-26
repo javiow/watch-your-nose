@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { ModuleResult } from "@/types/experience";
+import type { PlayerInfo } from "@/types/player";
 import { SessionProvider, useSession } from "./session-context";
 
 const sampleResult: ModuleResult = {
@@ -14,14 +15,27 @@ const sampleResult: ModuleResult = {
   explanation: "설명",
 };
 
+const samplePlayerInfo: PlayerInfo = {
+  ageGroup: "20대",
+  job: "직장인",
+  gender: "여성",
+};
+
 function TestConsumer() {
-  const { sessionPlan, results, addResult, resetSession } = useSession();
+  const { sessionPlan, results, addResult, resetSession, playerInfo, setPlayerInfo } =
+    useSession();
   return (
     <div>
       <span data-testid="plan-length">{sessionPlan.length}</span>
       <span data-testid="results-length">{results.length}</span>
+      <span data-testid="player-info">
+        {playerInfo ? JSON.stringify(playerInfo) : "null"}
+      </span>
       <button onClick={() => addResult(sampleResult)}>add</button>
       <button onClick={() => resetSession()}>reset</button>
+      <button onClick={() => setPlayerInfo(samplePlayerInfo)}>
+        set-player-info
+      </button>
     </div>
   );
 }
@@ -49,6 +63,35 @@ describe("SessionProvider", () => {
     expect(screen.getByTestId("results-length").textContent).toBe("2");
     fireEvent.click(screen.getByText("reset"));
     expect(screen.getByTestId("results-length").textContent).toBe("0");
+  });
+
+  it("setPlayerInfo를 호출하면 playerInfo가 갱신된다", () => {
+    render(
+      <SessionProvider>
+        <TestConsumer />
+      </SessionProvider>
+    );
+    expect(screen.getByTestId("player-info").textContent).toBe("null");
+    fireEvent.click(screen.getByText("set-player-info"));
+    expect(screen.getByTestId("player-info").textContent).toBe(
+      JSON.stringify(samplePlayerInfo)
+    );
+  });
+
+  it("setPlayerInfo 호출 후 resetSession()을 호출해도 playerInfo는 유지된다", () => {
+    render(
+      <SessionProvider>
+        <TestConsumer />
+      </SessionProvider>
+    );
+    fireEvent.click(screen.getByText("set-player-info"));
+    expect(screen.getByTestId("player-info").textContent).toBe(
+      JSON.stringify(samplePlayerInfo)
+    );
+    fireEvent.click(screen.getByText("reset"));
+    expect(screen.getByTestId("player-info").textContent).toBe(
+      JSON.stringify(samplePlayerInfo)
+    );
   });
 
   it("SessionProvider 밖에서 useSession을 사용하면 에러를 던진다", () => {
