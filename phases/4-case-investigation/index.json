@@ -29,7 +29,9 @@
     {
       "step": 3,
       "name": "case-investigation-experience",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-08-26T21:50:47+0900",
+      "summary": "CaseInvestigationExperience 컴포넌트(브리핑/조사/최종판단 3단계) + 테스트 15개 작성, registry.ts를 case-select→case-investigation으로 교체, remediation.ts에 missed-realestate-investigation-signal 태그 추가, CaseSelectExperience/case-select 데이터 4개 파일 삭제 — build/lint/test(158개) 전부 통과"
     }
   ],
   "created_at": "2026-08-26T21:32:03+0900"
