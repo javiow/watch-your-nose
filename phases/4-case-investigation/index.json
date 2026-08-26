@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "data-model",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-08-26T21:37:18+0900",
+      "summary": "red-flag 레포 6개 케이스(JEONSE_001/002/003, CHEONGYAK_004, BUNYANG_005, FINAL_001)를 CaseInvestigationContent 타입+데이터로 이식, case-investigation.test.ts 11개 무결성 테스트 작성 — build/lint/test 전부 통과",
+      "completed_at": "2026-08-26T21:47:00+0900"
     },
     {
       "step": 2,
