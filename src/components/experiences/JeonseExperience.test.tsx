@@ -99,4 +99,38 @@ describe("JeonseExperience", () => {
     expect(result.explanation).toContain(houses[0].reason);
     expect(result.explanation).toContain(houses[1].reason);
   });
+
+  it("힌트로 공개한 집은 판정 전에 닫았다가 다시 들어가도 서류 상태가 계속 보인다", () => {
+    const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
+    render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: `${houses[0].short} 입장` }));
+    fireEvent.click(screen.getByText("확인"));
+    expect(screen.queryAllByText("정상")).toHaveLength(0);
+
+    fireEvent.click(screen.getByRole("button", { name: "힌트 사용" }));
+    expect(screen.getAllByText("정상")).toHaveLength(8);
+
+    fireEvent.keyDown(window, { key: "Escape" });
+
+    fireEvent.click(screen.getByRole("button", { name: `${houses[0].short} 입장` }));
+    fireEvent.click(screen.getByText("확인"));
+    expect(screen.getAllByText("정상")).toHaveLength(8);
+    expect(screen.queryByRole("button", { name: "힌트 사용" })).toBeNull();
+  });
+
+  it("한 집에서 힌트를 쓰면 다른 집에서는 힌트 버튼이 비활성화된다", () => {
+    const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
+    render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: `${houses[0].short} 입장` }));
+    fireEvent.click(screen.getByText("확인"));
+    fireEvent.click(screen.getByRole("button", { name: "힌트 사용" }));
+    fireEvent.keyDown(window, { key: "Escape" });
+
+    fireEvent.click(screen.getByRole("button", { name: `${houses[1].short} 입장` }));
+    fireEvent.click(screen.getByText("확인"));
+    expect(screen.getByRole("button", { name: "힌트 사용" })).toBeDisabled();
+    expect(screen.queryAllByText("정상")).toHaveLength(0);
+  });
 });

@@ -28,6 +28,11 @@ function buildExplanation(
 export function JeonseExperience({ content, onComplete }: JeonseExperienceProps) {
   const [answers, setAnswers] = useState<Record<number, boolean>>({});
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [hintUsedIndex, setHintUsedIndex] = useState<number | null>(null);
+
+  const handleUseHint = (index: number) => {
+    setHintUsedIndex((prev) => (prev === null ? index : prev));
+  };
 
   const handleAnswer = (index: number, risky: boolean) => {
     if (isTransitioning || answers[index] !== undefined) return;
@@ -59,5 +64,13 @@ export function JeonseExperience({ content, onComplete }: JeonseExperienceProps)
     }
   };
 
-  return <MapBoard houses={content} answers={answers} onAnswer={handleAnswer} />;
+  return (
+    <MapBoard
+      houses={content}
+      answers={answers}
+      onAnswer={handleAnswer}
+      hintUsedIndex={hintUsedIndex}
+      onUseHint={handleUseHint}
+    />
+  );
 }

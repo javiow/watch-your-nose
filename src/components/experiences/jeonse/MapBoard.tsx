@@ -30,9 +30,11 @@ interface MapBoardProps {
   houses: JeonseHouse[];
   answers: Record<number, boolean>;
   onAnswer: (index: number, risky: boolean) => void;
+  hintUsedIndex: number | null;
+  onUseHint: (index: number) => void;
 }
 
-export function MapBoard({ houses, answers, onAnswer }: MapBoardProps) {
+export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }: MapBoardProps) {
   const posRef = useRef({ ...START_POS });
   const [renderPos, setRenderPos] = useState(START_POS);
   const facingRef = useRef<Facing>("down");
@@ -175,7 +177,9 @@ export function MapBoard({ houses, answers, onAnswer }: MapBoardProps) {
           <h1 className="text-2xl font-semibold text-white">골목을 돌며 매물을 점검하세요</h1>
           <p className="mt-1 max-w-prose text-sm text-neutral-400">
             방향키(또는 WASD)로 이동해 붉은 문에 서면 서류가 열립니다. 서류를 읽고{" "}
-            <strong className="text-neutral-200">위험 신호가 있는 집인지</strong> O · X로 판정하세요.
+            <strong className="text-neutral-200">위험 신호가 있는 집인지</strong> O · X로 판정하세요. 서류의
+            위험도 표시는 기본적으로 가려져 있으며,{" "}
+            <strong className="text-neutral-200">힌트는 매물 전체에서 딱 1번만</strong> 확인할 수 있습니다.
           </p>
         </div>
         <p className="shrink-0 text-sm text-neutral-500">
@@ -335,6 +339,9 @@ export function MapBoard({ houses, answers, onAnswer }: MapBoardProps) {
           answered={answers[activeIndex] !== undefined}
           onAnswer={(risky) => onAnswer(activeIndex, risky)}
           onClose={closeDialog}
+          hintRevealed={hintUsedIndex === activeIndex}
+          hintAvailable={hintUsedIndex === null}
+          onUseHint={() => onUseHint(activeIndex)}
         />
       )}
     </div>
