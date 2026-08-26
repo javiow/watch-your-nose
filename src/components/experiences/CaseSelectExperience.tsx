@@ -50,14 +50,14 @@ export function CaseSelectExperience({
       key={side}
       type="button"
       onClick={() => setSelectedSide(side)}
-      className={`min-h-11 flex-1 rounded-lg border p-4 text-left transition-colors ${
+      className={`min-h-11 flex-1 rounded-xl border p-4 text-left transition-colors ${
         selectedSide === side
-          ? "border-blue-500 bg-blue-500/10"
-          : "border-neutral-800 bg-[#141414]"
+          ? "border-accent bg-accent-soft"
+          : "border-border bg-surface"
       }`}
     >
-      <p className="text-sm font-medium text-neutral-400">{caseSide.title}</p>
-      <p className="mt-2 text-sm leading-relaxed text-neutral-300">
+      <p className="text-sm font-medium text-muted">{caseSide.title}</p>
+      <p className="mt-2 text-sm leading-relaxed text-muted">
         {caseSide.body}
       </p>
     </button>
@@ -75,7 +75,7 @@ export function CaseSelectExperience({
           type="button"
           onClick={handleNext}
           disabled={!selectedSide}
-          className="min-h-11 rounded-lg bg-blue-500 px-6 text-sm font-medium text-white transition-colors hover:bg-blue-400 disabled:cursor-not-allowed disabled:bg-neutral-700 disabled:text-neutral-400"
+          className="min-h-11 rounded-xl bg-accent px-6 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-subtle"
         >
           다음
         </button>

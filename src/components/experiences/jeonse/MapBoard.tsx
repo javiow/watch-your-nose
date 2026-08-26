@@ -174,22 +174,22 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-white">골목을 돌며 매물을 점검하세요</h1>
-          <p className="mt-1 max-w-prose text-sm text-neutral-400">
+          <h1 className="text-2xl font-semibold text-foreground">골목을 돌며 매물을 점검하세요</h1>
+          <p className="mt-1 max-w-prose text-sm text-muted">
             방향키(또는 WASD)로 이동해 붉은 문에 서면 서류가 열립니다. 서류를 읽고{" "}
-            <strong className="text-neutral-200">위험 신호가 있는 집인지</strong> O · X로 판정하세요. 서류의
+            <strong className="text-foreground">위험 신호가 있는 집인지</strong> O · X로 판정하세요. 서류의
             위험도 표시는 기본적으로 가려져 있으며,{" "}
-            <strong className="text-neutral-200">힌트는 매물 전체에서 딱 1번만</strong> 확인할 수 있습니다.
+            <strong className="text-foreground">힌트는 매물 전체에서 딱 1번만</strong> 확인할 수 있습니다.
           </p>
         </div>
-        <p className="shrink-0 text-sm text-neutral-500">
+        <p className="shrink-0 text-sm text-subtle">
           점검 {answeredCount} / {houses.length}
         </p>
       </div>
 
       <div ref={boardWrapRef} style={{ width: "100%", maxWidth: BOARD_WIDTH, height: BOARD_HEIGHT * boardScale }}>
         <div
-          className="relative select-none overflow-hidden rounded-lg border border-neutral-800 bg-[#141414]"
+          className="relative select-none overflow-hidden rounded-lg border border-border bg-surface-muted"
           style={{
             width: BOARD_WIDTH,
             height: BOARD_HEIGHT,
@@ -206,18 +206,18 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
                   type="button"
                   aria-label={`${house.short} 입장`}
                   onClick={() => enter(i)}
-                  className="block w-full border-2 border-neutral-700 bg-[#0c0c0c] text-left text-white"
+                  className="block w-full border-2 border-border bg-surface text-left text-foreground"
                   style={{ height: HOUSE_HEIGHT }}
                 >
                   <div style={{ height: HOUSE_HEIGHT - 34, position: "relative" }}>
                     <HouseSprite type={house.buildingType} width={HOUSE_WIDTH} height={HOUSE_HEIGHT - 34} />
                     {done && <div className="absolute inset-0 bg-black/40" />}
                   </div>
-                  <div className="flex h-[34px] items-center justify-between gap-2 border-t-2 border-neutral-700 px-2">
-                    <span className="min-w-0 truncate text-[11px] text-neutral-300">{house.short}</span>
+                  <div className="flex h-[34px] items-center justify-between gap-2 border-t-2 border-border px-2">
+                    <span className="min-w-0 truncate text-[11px] text-muted">{house.short}</span>
                     <span
                       className={`shrink-0 rounded border px-1.5 py-0.5 text-[9px] font-semibold tracking-wide ${
-                        done ? "border-neutral-500 text-neutral-300" : "border-neutral-700 text-neutral-500"
+                        done ? "border-muted text-muted" : "border-border text-subtle"
                       }`}
                     >
                       {done ? "완료" : "미점검"}
@@ -232,7 +232,7 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
                     width: 26,
                     height: 8,
                   }}
-                  className="bg-blue-500"
+                  className="bg-accent"
                 />
               </div>
             );
@@ -253,7 +253,7 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
         </div>
       </div>
 
-      <p className="flex flex-wrap gap-4 text-xs text-neutral-500">
+      <p className="flex flex-wrap gap-4 text-xs text-subtle">
         <span>↑ ↓ ← → / WASD — 이동</span>
         <span>붉은 문에 서면 자동 입장</span>
         <span>집을 클릭해도 입장</span>
@@ -263,7 +263,7 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
         <button
           type="button"
           aria-label="위로 이동"
-          className="col-start-2 min-h-11 rounded-lg border border-neutral-700 bg-[#141414] text-neutral-300"
+          className="col-start-2 min-h-11 rounded-lg border border-border bg-surface text-muted"
           onPointerDown={dpadPress("arrowup")}
           onPointerUp={dpadRelease("arrowup")}
           onPointerCancel={dpadRelease("arrowup")}
@@ -274,7 +274,7 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
         <button
           type="button"
           aria-label="왼쪽으로 이동"
-          className="col-start-1 row-start-2 min-h-11 rounded-lg border border-neutral-700 bg-[#141414] text-neutral-300"
+          className="col-start-1 row-start-2 min-h-11 rounded-lg border border-border bg-surface text-muted"
           onPointerDown={dpadPress("arrowleft")}
           onPointerUp={dpadRelease("arrowleft")}
           onPointerCancel={dpadRelease("arrowleft")}
@@ -285,7 +285,7 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
         <button
           type="button"
           aria-label="오른쪽으로 이동"
-          className="col-start-3 row-start-2 min-h-11 rounded-lg border border-neutral-700 bg-[#141414] text-neutral-300"
+          className="col-start-3 row-start-2 min-h-11 rounded-lg border border-border bg-surface text-muted"
           onPointerDown={dpadPress("arrowright")}
           onPointerUp={dpadRelease("arrowright")}
           onPointerCancel={dpadRelease("arrowright")}
@@ -296,7 +296,7 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
         <button
           type="button"
           aria-label="아래로 이동"
-          className="col-start-2 row-start-3 min-h-11 rounded-lg border border-neutral-700 bg-[#141414] text-neutral-300"
+          className="col-start-2 row-start-3 min-h-11 rounded-lg border border-border bg-surface text-muted"
           onPointerDown={dpadPress("arrowdown")}
           onPointerUp={dpadRelease("arrowdown")}
           onPointerCancel={dpadRelease("arrowdown")}
@@ -307,21 +307,21 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
       </div>
 
       <div className="space-y-2">
-        <div className="h-1 w-full overflow-hidden rounded-full bg-neutral-800">
+        <div className="h-1 w-full overflow-hidden rounded-full bg-surface-muted">
           <div
-            className="h-full bg-blue-500 transition-all"
+            className="h-full bg-accent transition-all"
             style={{ width: `${(answeredCount / houses.length) * 100}%` }}
           />
         </div>
-        <ul className="divide-y divide-neutral-800 border-t border-neutral-800">
+        <ul className="divide-y divide-border border-t border-border">
           {houses.map((house, i) => {
             const done = answers[i] !== undefined;
             return (
               <li key={house.id} className="flex items-center justify-between gap-3 py-2 text-sm">
-                <span className="truncate text-neutral-300">{house.short}</span>
+                <span className="truncate text-muted">{house.short}</span>
                 <span
                   className={`shrink-0 rounded border px-2 py-0.5 text-xs ${
-                    done ? "border-neutral-500 text-neutral-300" : "border-neutral-700 text-neutral-500"
+                    done ? "border-muted text-muted" : "border-border text-subtle"
                   }`}
                 >
                   {done ? "완료" : "미점검"}

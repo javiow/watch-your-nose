@@ -56,13 +56,13 @@ export default function SessionPage() {
   return (
     <main className="mx-auto max-w-5xl space-y-8 px-4 py-10 md:px-8">
       <div className="space-y-2">
-        <div className="h-1 w-full overflow-hidden rounded-full bg-neutral-800">
+        <div className="h-1 w-full overflow-hidden rounded-full bg-surface-muted">
           <div
-            className="h-full bg-blue-500 transition-all"
+            className="h-full bg-accent transition-all"
             style={{ width: `${((step + 1) / sessionPlan.length) * 100}%` }}
           />
         </div>
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-subtle">
           {step + 1}/{sessionPlan.length}
         </p>
       </div>

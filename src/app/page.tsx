@@ -1,38 +1,24 @@
+import { Mascot } from "@/components/ui/Mascot";
 import { StartButton } from "@/components/ui/StartButton";
 
 export default function Home() {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center gap-10 px-4 py-16 text-center">
-      <svg
-        width="64"
-        height="64"
-        viewBox="0 0 64 64"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-        className="text-blue-500"
-      >
-        <path
-          d="M4 32C4 32 16 14 32 14C48 14 60 32 60 32C60 32 48 50 32 50C16 50 4 32 4 32Z"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <circle cx="32" cy="32" r="8" stroke="currentColor" strokeWidth="1.5" />
-      </svg>
+      <Mascot className="h-36 w-auto sm:h-44" />
 
       <div className="space-y-4">
-        <p className="text-sm font-medium text-blue-500">Watch Your Nose</p>
-        <h1 className="text-5xl font-bold text-white sm:text-6xl">
+        <p className="text-sm font-medium text-accent">Watch Your Nose</p>
+        <h1 className="text-5xl font-bold text-foreground sm:text-6xl">
           눈 뜨고 코 베인다
         </h1>
-        <p className="text-base text-neutral-300">
+        <p className="text-base text-muted">
           나는 절대 안 속아? 그 자신감, 지금 바로 확인해보자.
         </p>
       </div>
 
-      <div className="w-full space-y-3 rounded-lg border border-neutral-800 bg-[#141414] p-6 text-left">
-        <p className="text-sm font-medium text-neutral-400">진행 방식</p>
-        <ul className="space-y-2 text-sm leading-relaxed text-neutral-300">
+      <div className="w-full space-y-3 rounded-xl border border-border bg-surface p-6 text-left shadow-sm">
+        <p className="text-sm font-medium text-muted">진행 방식</p>
+        <ul className="space-y-2 text-sm leading-relaxed text-muted">
           <li>여러 단계로 진행됩니다.</li>
           <li>각 단계에서 선택하면 다음 단계로 넘어갑니다.</li>
           <li>

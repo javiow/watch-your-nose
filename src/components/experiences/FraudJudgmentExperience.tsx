@@ -44,9 +44,9 @@ export function FraudJudgmentExperience({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-neutral-800 bg-[#141414] p-4">
-        <p className="text-sm font-medium text-neutral-400">{content.title}</p>
-        <p className="mt-2 text-sm leading-relaxed text-neutral-300">
+      <div className="rounded-xl border border-border bg-surface p-4">
+        <p className="text-sm font-medium text-muted">{content.title}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
           {content.content}
         </p>
       </div>
@@ -56,7 +56,7 @@ export function FraudJudgmentExperience({
           type="button"
           onClick={() => handleAnswer("fraud")}
           disabled={locked}
-          className="min-h-11 flex-1 rounded-lg bg-blue-500 px-6 text-sm font-medium text-white transition-colors hover:bg-blue-400 disabled:cursor-not-allowed disabled:bg-neutral-700 disabled:text-neutral-400"
+          className="min-h-11 flex-1 rounded-xl bg-accent px-6 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-subtle"
         >
           사기예요
         </button>
@@ -64,7 +64,7 @@ export function FraudJudgmentExperience({
           type="button"
           onClick={() => handleAnswer("safe")}
           disabled={locked}
-          className="min-h-11 flex-1 rounded-lg border border-neutral-800 bg-[#141414] px-6 text-sm font-medium text-neutral-300 transition-colors hover:border-blue-500 disabled:cursor-not-allowed"
+          className="min-h-11 flex-1 rounded-xl border border-border bg-surface px-6 text-sm font-medium text-muted transition-colors hover:border-accent disabled:cursor-not-allowed"
         >
           정상이에요
         </button>

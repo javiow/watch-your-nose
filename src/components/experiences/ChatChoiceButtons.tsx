@@ -27,7 +27,7 @@ export function ChatChoiceButtons({ choices, onSelect }: ChatChoiceButtonsProps)
           type="button"
           onClick={() => handleClick(choice.id)}
           disabled={locked}
-          className="min-h-11 rounded-lg border border-neutral-800 bg-[#141414] p-4 text-left text-sm text-neutral-300 transition-colors hover:border-blue-500 disabled:cursor-not-allowed"
+          className="min-h-11 rounded-xl border border-border bg-surface p-4 text-left text-sm text-muted transition-colors hover:border-accent disabled:cursor-not-allowed"
         >
           {choice.text}
         </button>

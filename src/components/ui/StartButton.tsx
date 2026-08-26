@@ -16,7 +16,7 @@ export function StartButton() {
     <button
       type="button"
       onClick={handleStart}
-      className="min-h-11 rounded-lg bg-blue-500 px-8 text-sm font-medium text-white transition-colors hover:bg-blue-400"
+      className="min-h-11 rounded-xl bg-accent px-8 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
     >
       시작하기
     </button>

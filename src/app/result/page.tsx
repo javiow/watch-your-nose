@@ -9,9 +9,9 @@ import { getRemediation } from "@/data/remediation";
 import type { Grade } from "@/types/experience";
 
 const GRADE_TEXT_COLOR: Record<Grade, string> = {
-  safe: "text-[#22c55e]",
-  caution: "text-neutral-400",
-  danger: "text-[#ef4444]",
+  safe: "text-safe",
+  caution: "text-subtle",
+  danger: "text-danger",
 };
 
 export default function ResultPage() {
@@ -47,41 +47,41 @@ export default function ResultPage() {
 
   return (
     <main className="mx-auto max-w-5xl space-y-8 px-4 py-10 md:px-8">
-      <h1 className="text-4xl font-semibold text-white">결과</h1>
+      <h1 className="text-4xl font-semibold text-foreground">결과</h1>
 
-      <section className="space-y-1 rounded-lg border border-neutral-800 bg-[#141414] p-6">
-        <p className="text-sm font-medium text-neutral-400">종합 정답률</p>
-        <p className="text-4xl font-semibold text-white">
+      <section className="space-y-1 rounded-xl border border-border bg-surface p-6 shadow-sm">
+        <p className="text-sm font-medium text-muted">종합 정답률</p>
+        <p className="text-4xl font-semibold text-foreground">
           {roundedAverage}%{" "}
           <span className={GRADE_TEXT_COLOR[grade]}>{GRADE_LABELS[grade]}</span>
         </p>
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-medium text-neutral-400">문항별 리뷰</h2>
+        <h2 className="text-sm font-medium text-muted">문항별 리뷰</h2>
         <ul className="flex flex-col gap-3">
           {results.map((result, index) => (
             <li
               key={`${result.typeId}-${result.contentId}`}
-              className="space-y-2 rounded-lg border border-neutral-800 bg-[#141414] p-4"
+              className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
             >
               <div className="flex items-center gap-2">
-                <p className="text-sm text-neutral-500">{index + 1}번</p>
+                <p className="text-sm text-subtle">{index + 1}번</p>
                 <p
                   className={`text-sm font-medium ${
-                    result.isCorrect ? "text-[#22c55e]" : "text-[#ef4444]"
+                    result.isCorrect ? "text-safe" : "text-danger"
                   }`}
                 >
                   {result.isCorrect ? "정답" : "오답"}
                 </p>
               </div>
-              <p className="text-sm text-neutral-300">
+              <p className="text-sm text-muted">
                 내 선택: {result.userChoice}
               </p>
-              <p className="text-sm text-neutral-300">
+              <p className="text-sm text-muted">
                 정답: {result.correctChoice}
               </p>
-              <p className="text-sm leading-relaxed text-neutral-400">
+              <p className="text-sm leading-relaxed text-muted">
                 {result.explanation}
               </p>
             </li>
@@ -91,14 +91,14 @@ export default function ResultPage() {
 
       {incorrectResults.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-sm font-medium text-neutral-400">대응 방안</h2>
+          <h2 className="text-sm font-medium text-muted">대응 방안</h2>
           <ul className="flex flex-col gap-3">
             {incorrectResults.map((result, index) => (
               <li
                 key={`${result.typeId}-remediation-${index}`}
-                className="rounded-lg border border-neutral-800 bg-[#141414] p-4"
+                className="rounded-xl border border-border bg-surface p-4 shadow-sm"
               >
-                <p className="text-sm leading-relaxed text-neutral-300">
+                <p className="text-sm leading-relaxed text-muted">
                   {getRemediation(result.mistakeTag)}
                 </p>
               </li>
@@ -111,7 +111,7 @@ export default function ResultPage() {
         <button
           type="button"
           onClick={handleRetry}
-          className="min-h-11 rounded-lg bg-blue-500 px-6 text-sm font-medium text-white transition-colors hover:bg-blue-400"
+          className="min-h-11 rounded-xl bg-accent px-6 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
         >
           다시 체험하기
         </button>

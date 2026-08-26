@@ -26,17 +26,17 @@ function ChoiceGroup<T extends string>({
 }: ChoiceGroupProps<T>) {
   return (
     <div className="space-y-3">
-      <p className="text-sm font-medium text-neutral-400">{label}</p>
+      <p className="text-sm font-medium text-muted">{label}</p>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
         {options.map((option) => (
           <button
             key={option}
             type="button"
             onClick={() => onSelect(option)}
-            className={`min-h-11 rounded-lg border px-3 text-sm transition-colors ${
+            className={`min-h-11 rounded-xl border px-3 text-sm transition-colors ${
               value === option
-                ? "border-blue-500 bg-blue-500/10 text-white"
-                : "border-neutral-800 bg-[#141414] text-neutral-300"
+                ? "border-accent bg-accent-soft text-foreground"
+                : "border-border bg-surface text-muted"
             }`}
           >
             {option}
@@ -80,7 +80,7 @@ export function PlayerSetupForm({ onComplete }: PlayerSetupFormProps) {
           type="button"
           onClick={handleStart}
           disabled={!isComplete}
-          className="min-h-11 rounded-lg bg-blue-500 px-8 text-sm font-medium text-white transition-colors hover:bg-blue-400 disabled:cursor-not-allowed disabled:bg-neutral-700 disabled:text-neutral-400"
+          className="min-h-11 rounded-xl bg-accent px-8 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-subtle"
         >
           시작하기
         </button>

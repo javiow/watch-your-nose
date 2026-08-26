@@ -9,10 +9,10 @@ export function ChatBubble({ speaker, text }: ChatBubbleProps) {
   return (
     <div className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[80%] rounded-lg px-4 py-3 text-sm leading-relaxed ${
+        className={`max-w-[80%] rounded-xl px-4 py-3 text-sm leading-relaxed ${
           isMe
-            ? "bg-blue-500 text-white"
-            : "border border-neutral-800 bg-[#141414] text-neutral-300"
+            ? "bg-accent text-white"
+            : "border border-border bg-surface text-muted"
         }`}
       >
         {text}
