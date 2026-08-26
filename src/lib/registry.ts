@@ -1,7 +1,7 @@
 import type { ExperienceModule, ExperienceTypeId } from "@/types/experience";
 import { VOICE_PHISHING_SCENARIOS } from "@/data/voice-phishing";
 import { CASE_SELECT_PAIRS } from "@/data/case-select";
-import { JEONSE_LISTING_PAIRS } from "@/data/jeonse";
+import { JEONSE_HOUSE_SETS } from "@/data/jeonse";
 import { VoicePhishingExperience } from "@/components/experiences/VoicePhishingExperience";
 import { CaseSelectExperience } from "@/components/experiences/CaseSelectExperience";
 import { JeonseExperience } from "@/components/experiences/JeonseExperience";
@@ -25,11 +25,9 @@ export const EXPERIENCE_MODULES: ExperienceModule[] = [
   },
   {
     typeId: "jeonse",
-    contentPool: JEONSE_LISTING_PAIRS,
+    contentPool: JEONSE_HOUSE_SETS,
     pickRandomContent: () =>
-      JEONSE_LISTING_PAIRS[
-        Math.floor(Math.random() * JEONSE_LISTING_PAIRS.length)
-      ],
+      JEONSE_HOUSE_SETS[Math.floor(Math.random() * JEONSE_HOUSE_SETS.length)],
     Component: JeonseExperience,
   },
 ] as ExperienceModule[];

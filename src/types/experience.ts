@@ -60,18 +60,6 @@ export interface ScamCasePair {
   correctSide: "scam" | "normal"; // 확장성을 위한 필드. 이 유형은 항상 "scam"
 }
 
-export interface ListingSide {
-  title: string;
-  details: string;
-}
-
-export interface ListingPair {
-  id: string;
-  normalListing: ListingSide;
-  scamListing: ListingSide;
-  correctSide: "normal" | "scam"; // 확장성을 위한 필드. 이 유형은 항상 "normal"
-}
-
 export type JeonseFieldStatus = "정상" | "주의" | "위험";
 export type JeonseField = [label: string, value: string, status: JeonseFieldStatus];
 export type JeonseBuildingType = "다가구주택" | "아파트" | "오피스텔" | "빌라" | "단독주택";
