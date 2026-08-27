@@ -19,6 +19,13 @@ describe("ChatChoiceButtons", () => {
     expect(onSelect).toHaveBeenCalledWith("a");
   });
 
+  it("선택지 버튼은 채팅 말풍선과 구분되는 스타일(점선 테두리 + accent-soft 배경)로 렌더된다", () => {
+    render(<ChatChoiceButtons choices={choices} onSelect={vi.fn()} />);
+    const button = screen.getByText("선택지 A");
+    expect(button.className).toContain("border-dashed");
+    expect(button.className).toContain("bg-accent-soft");
+  });
+
   it("잠금 이후 추가 클릭은 무시되어 onSelect가 중복 호출되지 않는다", () => {
     const onSelect = vi.fn();
     render(<ChatChoiceButtons choices={choices} onSelect={onSelect} />);

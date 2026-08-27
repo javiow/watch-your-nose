@@ -313,6 +313,48 @@ describe("VoicePhishingExperience", () => {
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
 
+  it("spokenText가 있으면 버튼에는 text가, 채팅 말풍선에는 spokenText가 노출된다", () => {
+    const scenarioWithSpokenText: VoicePhishingScenario = {
+      id: "spoken-text-test",
+      isNormalCase: true,
+      category: "정상금융확인형",
+      startNodeId: "n1",
+      nodes: [
+        {
+          id: "n1",
+          speaker: "상담원",
+          line: "본인 확인 차 전화드렸습니다.",
+          choices: [
+            {
+              id: "confirm",
+              text: "본인 확인 절차임을 이해하고 알려준다",
+              spokenText: "네, 알려드릴게요.",
+              risk: "safe",
+            },
+          ],
+        },
+      ],
+    };
+
+    render(
+      <VoicePhishingExperience
+        content={scenarioWithSpokenText}
+        onComplete={vi.fn()}
+      />
+    );
+    advanceAllTimers();
+
+    expect(screen.getByText("본인 확인 절차임을 이해하고 알려준다")).toBeDefined();
+    expect(screen.queryByText("네, 알려드릴게요.")).toBeNull();
+
+    fireEvent.click(screen.getByText("본인 확인 절차임을 이해하고 알려준다"));
+
+    expect(screen.getByText("네, 알려드릴게요.")).toBeDefined();
+    expect(
+      screen.queryByText("본인 확인 절차임을 이해하고 알려준다")
+    ).toBeNull();
+  });
+
   it("같은 선택지를 연속으로 빠르게 두 번 클릭해도 onComplete가 중복 호출되지 않는다", () => {
     const onComplete = vi.fn();
     render(

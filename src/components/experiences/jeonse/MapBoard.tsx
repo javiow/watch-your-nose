@@ -175,7 +175,7 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">골목을 돌며 매물을 점검하세요</h1>
-          <p className="mt-1 max-w-prose text-sm text-muted">
+          <p className="mt-1 max-w-prose pl-4 text-xs leading-relaxed text-muted">
             방향키(또는 WASD)로 이동해 붉은 문에 서면 서류가 열립니다. 서류를 읽고{" "}
             <strong className="text-foreground">위험 신호가 있는 집인지</strong> O · X로 판정하세요. 서류의
             위험도 표시는 기본적으로 가려져 있으며,{" "}

@@ -138,7 +138,11 @@ export function VoicePhishingExperience({
     pathRisks.current.push(choice.risk);
     setHistory((prev) => [
       ...prev,
-      { id: `${currentNode.id}-me`, speaker: "me", text: choice.text },
+      {
+        id: `${currentNode.id}-me`,
+        speaker: "me",
+        text: choice.spokenText ?? choice.text,
+      },
     ]);
     setChoicesReady(false);
 

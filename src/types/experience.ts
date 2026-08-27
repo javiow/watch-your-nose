@@ -36,7 +36,8 @@ export type ChoiceRisk = "safe" | "caution" | "danger";
 
 export interface DialogueChoice {
   id: string;
-  text: string;
+  text: string; // 선택지 버튼에 노출되는 설명 문구
+  spokenText?: string; // 채팅 말풍선에 노출될 실제 발화체 문구. 없으면 text를 그대로 사용한다.
   next?: string; // 다음 DialogueNode의 id. 없으면 해당 시점에서 시나리오 종료.
   risk: ChoiceRisk; // 이 선택이 이 시나리오에서 얼마나 부적절한 대응인지 (시나리오 상대적 기준)
 }

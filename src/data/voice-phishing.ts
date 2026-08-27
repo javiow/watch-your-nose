@@ -15,6 +15,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "blind-hangup",
             text: "듣지도 않고 보이스피싱 같아 바로 끊는다",
+            spokenText: "이거 보이스피싱이죠? 됐고요, 끊을게요.",
             risk: "danger",
           },
           {
@@ -33,17 +34,20 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-info-request",
             text: "개인정보를 왜 자꾸 묻냐며 그냥 끊어버린다",
+            spokenText: "개인정보를 왜 자꾸 물어보세요? 그냥 끊을게요.",
             risk: "danger",
           },
           {
             id: "vague-answer",
             text: "찜찜해하면서도 정확히 확인은 안 하고 대충 얼버무려 넘어간다",
+            spokenText: "어... 그냥 대충 아시는 대로 하시면 안 될까요?",
             next: "n3",
             risk: "caution",
           },
           {
             id: "confirm-identity",
             text: "본인 확인 절차임을 이해하고 이름과 생년월일을 알려준다",
+            spokenText: "네, 홍길동이고 생년월일은 1990년 1월 1일이에요.",
             next: "n3",
             risk: "safe",
           },
@@ -57,11 +61,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "hangup-still-suspicious",
             text: "말이 끝나기도 전에 의심된다며 끊는다",
+            spokenText: "아, 됐어요. 아무래도 의심스러우니까 끊을게요.",
             risk: "danger",
           },
           {
             id: "end-call-politely",
             text: "알겠다고 답하고, 필요하면 카드 뒷면 대표번호로 직접 확인해보겠다고 말한 뒤 통화를 마친다",
+            spokenText: "네, 알겠습니다. 필요하면 카드 뒷면 번호로 직접 확인해볼게요. 감사합니다.",
             risk: "safe",
           },
         ],
@@ -82,11 +88,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "blind-hangup",
             text: "듣지도 않고 스팸 같아 바로 끊는다",
+            spokenText: "스팸 전화 같은데요, 끊을게요.",
             risk: "danger",
           },
           {
             id: "confirm-address",
             text: "네, 확인해달라고 답한다",
+            spokenText: "네, 확인 부탁드려요.",
             next: "n2",
             risk: "safe",
           },
@@ -100,17 +108,20 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-address-check",
             text: "주소를 왜 자꾸 확인하냐며 그냥 끊어버린다",
+            spokenText: "주소를 왜 자꾸 확인하시는 거예요? 그냥 끊을게요.",
             risk: "danger",
           },
           {
             id: "careless-answer",
             text: "제대로 안 보고 대충 맞다고만 대답한다",
+            spokenText: "네네, 맞아요 맞아요.",
             next: "n3",
             risk: "caution",
           },
           {
             id: "confirm-address-carefully",
             text: "주소를 차분히 확인하고 정확히 답한다",
+            spokenText: "잠시만요, 확인해보니 OO동 12-3 맞아요.",
             next: "n3",
             risk: "safe",
           },
@@ -124,17 +135,20 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "hangup-now-suspicious",
             text: "이제 와서 의심된다며 끊는다",
+            spokenText: "가만 보니 좀 의심스럽네요. 끊을게요.",
             risk: "danger",
           },
           {
             id: "shrug-off",
             text: "별생각 없이 알겠다고만 하고 넘긴다",
+            spokenText: "아 네, 알겠어요.",
             next: "n4",
             risk: "caution",
           },
           {
             id: "note-official-channel",
             text: "결제 요구가 오면 공식 고객센터로 재확인하겠다고 답한다",
+            spokenText: "네, 혹시 결제 요구하시면 공식 고객센터로 다시 확인해볼게요.",
             next: "n4",
             risk: "safe",
           },
@@ -148,11 +162,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "hangup-at-the-end",
             text: "끝까지 의심하며 필요없다고 끊는다",
+            spokenText: "아뇨, 됐어요. 필요 없어요. 끊을게요.",
             risk: "danger",
           },
           {
             id: "end-call-politely",
             text: "없다고 답하고 정중히 통화를 마친다",
+            spokenText: "네, 없습니다. 감사합니다.",
             risk: "safe",
           },
         ],
@@ -173,6 +189,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-hangup",
             text: "주문한 적 없어서 바로 끊는다",
+            spokenText: "저 주문한 적 없는데요. 끊을게요.",
             risk: "safe",
           },
           {
@@ -191,17 +208,20 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-no-order",
             text: "주문 내역이 없는 게 이상해서 끊는다",
+            spokenText: "주문한 적 없는데 이상하네요. 끊을게요.",
             risk: "safe",
           },
           {
             id: "vague-answer",
             text: "정확히 기억 안 나지만 대충 둘러대며 답한다",
+            spokenText: "음... 정확히는 기억 안 나는데, 그냥 카드로 했던 것 같아요.",
             next: "s3",
             risk: "caution",
           },
           {
             id: "deny-order-again",
             text: "주문한 적이 없다고 다시 한번 분명히 말한다",
+            spokenText: "저 진짜 주문한 적 없어요.",
             next: "s3",
             risk: "safe",
           },
@@ -215,11 +235,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-remote-app",
             text: "환불에 원격 앱 설치가 필요할 리 없다며 설치를 거부하고 끊는다",
+            spokenText: "환불하는데 앱 설치가 왜 필요해요? 안 할게요. 끊습니다.",
             risk: "safe",
           },
           {
             id: "ask-more-about-app",
             text: "앱이 뭔지 이름이나 좀 더 물어본다",
+            spokenText: "그 앱 이름이 뭔데요?",
             next: "s4",
             risk: "caution",
           },
@@ -233,11 +255,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-suspicious",
             text: "그래도 이상해서 설치를 거부하고 전화를 끊는다",
+            spokenText: "아무래도 이상한데요. 설치 안 할게요. 끊습니다.",
             risk: "safe",
           },
           {
             id: "comply-install-app",
             text: "안내에 따라 원격지원 앱을 설치한다",
+            spokenText: "네, 알려주시는 대로 설치할게요.",
             risk: "danger",
           },
         ],
@@ -258,11 +282,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-hangup",
             text: "필요 없다며 바로 끊는다",
+            spokenText: "필요 없어요. 끊을게요.",
             risk: "safe",
           },
           {
             id: "listen-more",
             text: "어떤 조건인지 들어본다",
+            spokenText: "어떤 조건인지 한번 들어볼게요.",
             next: "s2",
             risk: "safe",
           },
@@ -276,17 +302,20 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-loan-info",
             text: "대출 정보를 왜 전화로 묻냐며 끊는다",
+            spokenText: "그런 걸 왜 전화로 물어보세요? 끊을게요.",
             risk: "safe",
           },
           {
             id: "vague-answer",
             text: "정확하지 않게 대충 얼버무려 답한다",
+            spokenText: "어디였더라... 잘 기억이 안 나는데 대충 어디 은행이었던 것 같아요.",
             next: "s3",
             risk: "caution",
           },
           {
             id: "ask-official-process",
             text: "공식 절차인지 먼저 확인하고 싶다고 답한다",
+            spokenText: "이게 공식적인 절차가 맞는지 먼저 확인하고 싶어요.",
             next: "s3",
             risk: "safe",
           },
@@ -300,11 +329,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-urgency-pressure",
             text: "선착순·마감 재촉이 수상해서 끊는다",
+            spokenText: "선착순에 마감이라니 좀 수상하네요. 끊을게요.",
             risk: "safe",
           },
           {
             id: "keep-listening",
             text: "서두르는 게 미심쩍지만 일단 조건을 더 물어본다",
+            spokenText: "좀 이상하긴 한데, 조건이 뭔지 더 말씀해주세요.",
             next: "s4",
             risk: "safe",
           },
@@ -318,11 +349,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-ssn-request",
             text: "공공기관·금융사는 전화로 주민등록번호를 묻지 않는다는 걸 알고 있어 끊는다",
+            spokenText: "주민등록번호는 전화로 안 알려드려요. 끊을게요.",
             risk: "safe",
           },
           {
             id: "provide-ssn",
             text: "찜찜하지만 이름과 주민등록번호를 알려준다",
+            spokenText: "음... 홍길동이고 주민등록번호는 900101-1234567이에요.",
             next: "s5",
             risk: "caution",
           },
@@ -336,11 +369,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-password-request",
             text: "비밀번호까지 요구하는 게 이상해 전화를 끊는다",
+            spokenText: "비밀번호는 왜 물어보세요? 그건 안 알려드려요. 끊을게요.",
             risk: "safe",
           },
           {
             id: "comply-provide-info",
             text: "안심하고 요청한 정보를 알려준다",
+            spokenText: "네, 앞 두 자리는 12예요.",
             risk: "danger",
           },
         ],
@@ -361,6 +396,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "blind-hangup",
             text: "듣지도 않고 스팸 같아 바로 끊는다",
+            spokenText: "스팸 같은데요, 끊을게요.",
             risk: "danger",
           },
           {
@@ -379,17 +415,20 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-info-request",
             text: "그런 걸 왜 묻냐며 그냥 끊어버린다",
+            spokenText: "그런 걸 왜 물어보세요? 그냥 끊을게요.",
             risk: "danger",
           },
           {
             id: "vague-answer",
             text: "잘 기억도 안 나는데 대충 아무렇게나 답한다",
+            spokenText: "어... 잘 기억 안 나는데 아마 그랬을걸요.",
             next: "n3",
             risk: "caution",
           },
           {
             id: "answer-carefully",
             text: "기억나는 대로 차분히 답한다",
+            spokenText: "음, 지난주에 대리점 가서 요금제 바꿨어요.",
             next: "n3",
             risk: "safe",
           },
@@ -403,11 +442,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "hangup-still-suspicious",
             text: "그래도 미심쩍다며 끊는다",
+            spokenText: "그래도 좀 미심쩍네요. 끊을게요.",
             risk: "danger",
           },
           {
             id: "end-call-politely",
             text: "알겠다고 답하고, 필요하면 공식 앱에서 직접 확인해보겠다고 말한 뒤 통화를 마친다",
+            spokenText: "네, 알겠습니다. 필요하면 공식 앱에서 직접 확인해볼게요. 감사합니다.",
             risk: "safe",
           },
         ],
@@ -428,11 +469,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-hangup",
             text: "검찰이 전화로 연락할 리 없다며 바로 끊는다",
+            spokenText: "검찰이 전화로 이런 연락을 할 리가 없죠. 끊을게요.",
             risk: "safe",
           },
           {
             id: "listen-more",
             text: "무슨 일인지 자세히 들어본다",
+            spokenText: "무슨 일인지 자세히 좀 말씀해주세요.",
             next: "s2",
             risk: "safe",
           },
@@ -446,17 +489,20 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-no-info-by-phone",
             text: "공공기관은 전화로 개인정보를 묻지 않는다는 걸 알고 있어 끊는다",
+            spokenText: "공공기관은 전화로 개인정보 안 물어보잖아요. 끊을게요.",
             risk: "safe",
           },
           {
             id: "vague-answer",
             text: "대수롭지 않게 이름과 생년월일을 알려준다",
+            spokenText: "홍길동이고 90년 1월 1일생이에요.",
             next: "s3",
             risk: "caution",
           },
           {
             id: "ask-badge-number",
             text: "먼저 소속과 사건번호부터 확인해달라고 요구한다",
+            spokenText: "먼저 소속이랑 사건번호부터 알려주세요.",
             next: "s3",
             risk: "safe",
           },
@@ -470,11 +516,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-no-transfer-request",
             text: "공공기관은 이체를 요구하지 않는다는 걸 알고 있어 전화를 끊는다",
+            spokenText: "공공기관은 이체 요구 안 하잖아요. 끊을게요.",
             risk: "safe",
           },
           {
             id: "double-check-procedure",
             text: "정말 그런 절차가 있는지 재차 확인해본다",
+            spokenText: "정말 그런 절차가 있는 게 맞아요? 다시 한번 확인해주세요.",
             next: "s4",
             risk: "caution",
           },
@@ -488,11 +536,13 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
           {
             id: "refuse-and-verify-officially",
             text: "그래도 미심쩍어 끊고 검찰청 대표번호로 직접 확인한다",
+            spokenText: "그래도 미심쩍네요. 끊고 검찰청 대표번호로 직접 확인해볼게요.",
             risk: "safe",
           },
           {
             id: "comply-transfer-funds",
             text: "혐의를 벗으려 안내에 따라 이체한다",
+            spokenText: "네, 알려주시는 계좌로 바로 이체할게요.",
             risk: "danger",
           },
         ],
