@@ -26,6 +26,19 @@ describe("JEONSE_HOUSES", () => {
     const ids = JEONSE_HOUSES.map((house) => house.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
+
+  it("모든 매물은 difficulty를 easy/medium/hard 중 하나로 가진다", () => {
+    for (const house of JEONSE_HOUSES) {
+      expect(["easy", "medium", "hard"]).toContain(house.difficulty);
+    }
+  });
+
+  it("easy/medium/hard 난이도가 각각 최소 1개 이상 존재한다", () => {
+    const difficulties = new Set(JEONSE_HOUSES.map((house) => house.difficulty));
+    expect(difficulties.has("easy")).toBe(true);
+    expect(difficulties.has("medium")).toBe(true);
+    expect(difficulties.has("hard")).toBe(true);
+  });
 });
 
 describe("JEONSE_HOUSE_SETS", () => {

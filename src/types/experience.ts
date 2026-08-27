@@ -72,6 +72,11 @@ export type JeonseFieldStatus = "정상" | "주의" | "위험";
 export type JeonseField = [label: string, value: string, status: JeonseFieldStatus];
 export type JeonseBuildingType = "다가구주택" | "아파트" | "오피스텔" | "빌라" | "단독주택";
 
+// 렌더링 금지 — 내부 메타데이터. FraudJudgmentCategory와 동일 패턴.
+// easy: risky/safe 판정을 뒷받침하는 위험 신호가 다수·명확. medium: 항목을 종합하거나 계산해야 판정 가능.
+// hard: 숫자·용어만 보면 반대로 오판하기 쉬운 반전형(예: 전세가율은 안전권인데 숨은 위험이 있는 경우, 또는 그 반대).
+export type JeonseDifficulty = "easy" | "medium" | "hard";
+
 export interface JeonseHouse {
   id: string;
   short: string;
@@ -84,6 +89,7 @@ export interface JeonseHouse {
   ratio: string;
   ratioBad: boolean;
   risky: boolean; // true = 정답 O(위험 있음), false = 정답 X(안전)
+  difficulty: JeonseDifficulty;
   fields: JeonseField[];
   explain: string;
   lesson: string;
