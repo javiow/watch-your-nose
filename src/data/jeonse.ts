@@ -12,6 +12,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "90.6%",
     ratioBad: true,
     risky: true,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당권 1억 2,000만 (2023.04, 제2금융권). 압류 없음.", "위험"],
       ["선순위 보증금", "같은 건물 5세대 합계 9억 8,000만. 임대인이 총액 고지 거부.", "위험"],
@@ -39,6 +40,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "57.1%",
     ratioBad: false,
     risky: false,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당·압류·가압류 없음. 소유권 이전 2019년, 변동 없음.", "정상"],
       ["선순위 보증금", "단독 세대 아파트, 선순위 임차인 없음.", "정상"],
@@ -66,6 +68,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "94.7%",
     ratioBad: true,
     risky: true,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "소유자 법인(설립 8개월). 신탁등기 설정 — 수탁사 동의서 없음.", "위험"],
       ["선순위 보증금", "확인 불가. 관리사무소 응답 없음.", "위험"],
@@ -93,6 +96,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "71.4%",
     ratioBad: true,
     risky: true,
+    difficulty: "medium",
     fields: [
       ["등기부등본", "가압류 1건(2025.11, 채권액 6,000만), 국세 체납 압류 예고.", "위험"],
       ["선순위 보증금", "1층 임차인 8,000만, 확정일자 2024년.", "위험"],
@@ -120,6 +124,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "61.8%",
     ratioBad: false,
     risky: false,
+    difficulty: "medium",
     fields: [
       ["등기부등본", "근저당 4,000만 (2021년, 1금융권). 압류·가압류 없음.", "주의"],
       ["선순위 보증금", "1층은 소유자 거주, 선순위 임차인 없음.", "정상"],
@@ -147,6 +152,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "96.3%",
     ratioBad: true,
     risky: true,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "소유자 명의 최근 3개월 내 변경. 근저당은 없으나 소유자 개인 신용 취약.", "위험"],
       ["선순위 보증금", "동일 소유자 명의로 인근 오피스텔 19채 임대 중, 보증금 상환 능력 의심.", "위험"],
@@ -173,6 +179,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "72.7%",
     ratioBad: false,
     risky: true,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "소유자가 부동산신탁회사로 등록, 위탁자와 계약 진행 중.", "위험"],
       ["선순위 보증금", "확인 불가 — 신탁원부 미제공.", "위험"],
@@ -199,6 +206,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "94.7%",
     ratioBad: true,
     risky: true,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당 3,000만 (2024년, 저축은행). 압류 없음.", "주의"],
       ["선순위 보증금", "확인 불가, 관리사무소 부재.", "위험"],
@@ -225,6 +233,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "82.6%",
     ratioBad: true,
     risky: true,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당 8,000만 (2022년, 2금융권).", "위험"],
       ["선순위 보증금", "같은 건물 6세대, 합계 미공개. 임대인 \"나중에 알려주겠다\"며 계약 재촉.", "위험"],
@@ -251,6 +260,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "73.7%",
     ratioBad: false,
     risky: true,
+    difficulty: "medium",
     fields: [
       ["등기부등본", "가압류 1건 (2026.02, 채권액 4,500만).", "위험"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -277,6 +287,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "62.2%",
     ratioBad: false,
     risky: true,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당·압류 없음, 소유자 해외 거주(장기 출국).", "주의"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -303,6 +314,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "71.4%",
     ratioBad: false,
     risky: true,
+    difficulty: "medium",
     fields: [
       ["등기부등본", "근저당 1억 2,000만 (2025.09, 3금융권). 최근 3개월 내 설정.", "위험"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -329,6 +341,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "104.8%",
     ratioBad: true,
     risky: true,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당 없음, 신축 직후 소유권보존등기.", "정상"],
       ["선순위 보증금", "선순위 없음(신축 첫 세입자).", "정상"],
@@ -355,6 +368,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "70.6%",
     ratioBad: false,
     risky: true,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당 없음.", "정상"],
       ["선순위 보증금", "1층 세입자 보증금 9,000만, 확정일자가 내 전입일보다 하루 빠름.", "위험"],
@@ -381,6 +395,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "81.0%",
     ratioBad: true,
     risky: true,
+    difficulty: "medium",
     fields: [
       ["등기부등본", "소유자는 배우자 명의이나, 계약 및 대화는 실거주 남편이 전담.", "주의"],
       ["선순위 보증금", "같은 건물 4세대 합계 6억 2,000만, 총액이 시세에 근접.", "위험"],
@@ -407,6 +422,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "71.4%",
     ratioBad: false,
     risky: true,
+    difficulty: "medium",
     fields: [
       ["등기부등본", "근저당·압류 없음.", "정상"],
       ["선순위 보증금", "등기부 소유자와 별개로, 계약 상대가 \"2년 전세권자\"라며 재임대 제안.", "위험"],
@@ -433,6 +449,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "75.0%",
     ratioBad: false,
     risky: true,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당 3억 (2024년, 저축은행) — 인근 5개 필지 공동담보.", "위험"],
       ["선순위 보증금", "확인 불가, 공동담보 물건 전체 파악 어려움.", "위험"],
@@ -459,6 +476,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "56.5%",
     ratioBad: false,
     risky: false,
+    difficulty: "hard",
     fields: [
       [
         "등기부등본",
@@ -489,6 +507,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "65.0%",
     ratioBad: false,
     risky: false,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당 없음, 압류·가압류 없음.", "정상"],
       ["선순위 보증금", "1층 소유자 거주, 선순위 임차인 없음.", "정상"],
@@ -515,6 +534,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "69.6%",
     ratioBad: false,
     risky: false,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당 없음.", "정상"],
       ["선순위 보증금", "선순위 임차인 없음(신축 첫 입주).", "정상"],
@@ -541,6 +561,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "66.7%",
     ratioBad: false,
     risky: false,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당·압류 없음.", "정상"],
       [
@@ -571,6 +592,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "47.1%",
     ratioBad: false,
     risky: false,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당·압류 없음.", "정상"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -597,6 +619,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "63.9%",
     ratioBad: false,
     risky: false,
+    difficulty: "medium",
     fields: [
       ["등기부등본", "근저당 5,000만 (1금융권), 압류 없음.", "주의"],
       ["선순위 보증금", "같은 건물 3세대 합계 4,000만(소액), 총액 서면 고지 받음.", "정상"],
@@ -623,6 +646,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "66.7%",
     ratioBad: false,
     risky: false,
+    difficulty: "medium",
     fields: [
       ["등기부등본", "근저당 3,000만 (1금융권, 2020년 설정).", "주의"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -649,6 +673,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "65.5%",
     ratioBad: false,
     risky: false,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당·압류·가압류 없음.", "정상"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -675,6 +700,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "62.5%",
     ratioBad: false,
     risky: false,
+    difficulty: "hard",
     fields: [
       [
         "등기부등본",
@@ -705,6 +731,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "66.7%",
     ratioBad: false,
     risky: false,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당·압류 없음.", "정상"],
       ["선순위 보증금", "선순위 없음.", "정상"],
@@ -731,6 +758,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "68.4%",
     ratioBad: false,
     risky: false,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "신탁등기 없음, 소유자 단독 명의 10년 보유.", "정상"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -757,6 +785,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "40.0%",
     ratioBad: false,
     risky: false,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당 없음.", "정상"],
       ["선순위 보증금", "같은 건물 4세대 합계 1억 5,000만, 총액 서면 고지.", "정상"],
@@ -787,6 +816,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "45.0%",
     ratioBad: false,
     risky: false,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당·압류 없음.", "정상"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -818,6 +848,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "159.1%",
     ratioBad: true,
     risky: true,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "근저당 없음. 소유자가 준공 6개월 전 시행사에서 개인 명의로 이전.", "주의"],
       ["선순위 보증금", "같은 건물 다른 호실 다수가 유사 조건으로 계약 진행 중, 총액 확인 불가.", "위험"],
@@ -845,6 +876,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "84.2%",
     ratioBad: true,
     risky: true,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당·압류·가압류 없음, 소유권 정상.", "정상"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -872,6 +904,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "95.7%",
     ratioBad: true,
     risky: true,
+    difficulty: "medium",
     fields: [
       ["등기부등본", "소유권 이전 3주 전, 분양대행사 관계자 명의로 신규 등기.", "위험"],
       ["선순위 보증금", "신축이라 선순위 임차인 없음.", "정상"],
@@ -900,6 +933,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "60.0%",
     ratioBad: false,
     risky: false,
+    difficulty: "medium",
     fields: [
       ["등기부등본", "근저당 3,000만(1금융권, 2022년), 압류·가압류 없음.", "정상"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -927,6 +961,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "81.8%",
     ratioBad: true,
     risky: false,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당·압류·가압류 없음, 소유권 변동 없음(7년 보유).", "정상"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -954,6 +989,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "70.0%",
     ratioBad: false,
     risky: false,
+    difficulty: "hard",
     fields: [
       [
         "등기부등본",
@@ -984,6 +1020,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "58.9%",
     ratioBad: false,
     risky: false,
+    difficulty: "hard",
     fields: [
       [
         "등기부등본",
@@ -1014,6 +1051,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "61.5%",
     ratioBad: false,
     risky: false,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당 없음.", "정상"],
       [
@@ -1044,6 +1082,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "55.6%",
     ratioBad: false,
     risky: true,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당·압류 없음, 소유자 김O훈, 소유권 변동 없음(8년 보유).", "정상"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -1074,6 +1113,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "68.0%",
     ratioBad: false,
     risky: true,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당 없음, 압류·가압류 없음.", "정상"],
       ["선순위 보증금", "제공된 전입세대 열람 내역상 선순위 없음.", "정상"],
@@ -1100,6 +1140,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "64.3%",
     ratioBad: false,
     risky: true,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당·압류·가압류 없음, 소유권 변동 없음(5년 보유).", "정상"],
       ["선순위 보증금", "선순위 임차인 없음.", "정상"],
@@ -1126,6 +1167,7 @@ export const JEONSE_HOUSES: JeonseHouse[] = [
     ratio: "65.4%",
     ratioBad: false,
     risky: true,
+    difficulty: "hard",
     fields: [
       ["등기부등본", "근저당 없음, 압류·가압류 없음.", "정상"],
       ["선순위 보증금", "등기부·전입세대 열람상 3세대만 확인.", "정상"],
