@@ -21,7 +21,7 @@ src/
     ├── voice-phishing.ts
     ├── case-investigation.ts          # red-flag(팀원 레포) 부동산 사기 조사 케이스 6종
     ├── jeonse.ts                    # 매물 42종 + 5채씩 정적 분할한 세트
-    ├── fraud-judgment.ts             # 팀원 레포(fraudtest) 사기 판별 카드 74종
+    ├── fraud-judgment.ts             # 팀원 레포(fraudtest) 사기 판별 카드 90종
     └── remediation.ts               # 오답 유형별 대응 방안 카피
 ```
 

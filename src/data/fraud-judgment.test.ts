@@ -18,6 +18,10 @@ const ALL_CATEGORIES: FraudJudgmentCategory[] = [
   "중고차_사기",
   "반려동물_분양사기",
   "티켓_되팔이_사기",
+  "가상자산_사기",
+  "파밍_사기",
+  "보험사기",
+  "명의도용_사기",
 ];
 
 describe("FRAUD_JUDGMENT_CARDS", () => {
@@ -45,7 +49,7 @@ describe("FRAUD_JUDGMENT_CARDS", () => {
     }
   });
 
-  it("15개 카테고리 각각 최소 1개 이상의 카드가 존재한다", () => {
+  it("19개 카테고리 각각 최소 1개 이상의 카드가 존재한다", () => {
     const categories = new Set(FRAUD_JUDGMENT_CARDS.map((card) => card.category));
     for (const category of ALL_CATEGORIES) {
       expect(categories.has(category)).toBe(true);
