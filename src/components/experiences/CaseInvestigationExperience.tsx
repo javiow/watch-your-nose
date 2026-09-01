@@ -13,6 +13,15 @@ import {
   getBestEndingOption,
   type CaseInvestigationScoreBreakdown,
 } from "@/lib/scoring";
+import { isMeaningfulQuestion } from "@/lib/npc-chat";
+import { classifyQuestion } from "@/lib/npc-chat-client";
+
+interface ChatEntry {
+  key: string;
+  userText: string;
+  npcText: string;
+  statementId: string | null; // 매칭 실패(fallback)면 null — 채점에 반영하지 않는다.
+}
 
 type Phase = "briefing" | "investigating" | "decision";
 
@@ -78,7 +87,10 @@ export function CaseInvestigationExperience({
   );
   const [openDocumentId, setOpenDocumentId] = useState<string | null>(null);
   const [registeredEvidence, setRegisteredEvidence] = useState<Set<string>>(new Set());
-  const [triggeredStatementIds, setTriggeredStatementIds] = useState<Set<string>>(new Set());
+  const [chatLog, setChatLog] = useState<ChatEntry[]>([]);
+  const [questionInput, setQuestionInput] = useState("");
+  const [inputError, setInputError] = useState<string | null>(null);
+  const [isClassifying, setIsClassifying] = useState(false);
   const [decisionLocked, setDecisionLocked] = useState(false);
   const lockedRef = useRef(false);
 
@@ -95,11 +107,26 @@ export function CaseInvestigationExperience({
     });
   };
 
-  const handleAskQuestion = (statementId: string) => {
-    setTriggeredStatementIds((prev) => {
-      if (prev.has(statementId)) return prev;
-      return new Set(prev).add(statementId);
-    });
+  const handleSubmitQuestion = async (rawInput: string) => {
+    const trimmed = rawInput.trim();
+    if (!isMeaningfulQuestion(trimmed)) {
+      setInputError("조금 더 구체적으로 물어봐 주세요.");
+      return;
+    }
+    setInputError(null);
+    setIsClassifying(true);
+    const matched = await classifyQuestion(content.npc, trimmed);
+    setChatLog((prev) => [
+      ...prev,
+      {
+        key: `entry-${prev.length}`,
+        userText: trimmed,
+        npcText: matched ? matched.text : content.npc.fallbackLine,
+        statementId: matched ? matched.statementId : null,
+      },
+    ]);
+    setQuestionInput("");
+    setIsClassifying(false);
   };
 
   const handleDecision = (decision: CaseFinalDecision) => {
@@ -107,6 +134,9 @@ export function CaseInvestigationExperience({
     lockedRef.current = true;
     setDecisionLocked(true);
 
+    const triggeredStatementIds = new Set(
+      chatLog.flatMap((entry) => (entry.statementId ? [entry.statementId] : []))
+    );
     const breakdown = computeCaseInvestigationScore(content, {
       registeredEvidence,
       completedInvestigationIds,
@@ -257,28 +287,75 @@ export function CaseInvestigationExperience({
         )}
 
         <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
-          <p className="text-sm font-medium text-muted">{content.npc.displayName}</p>
-          <div className="mt-3 flex flex-wrap gap-3">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent">
+              {content.npc.displayName.slice(-1)}
+            </span>
+            <p className="text-sm font-medium text-muted">{content.npc.displayName}</p>
+          </div>
+
+          <div className="mt-3 space-y-2">
+            <div className="flex justify-start">
+              <p className="max-w-[85%] rounded-2xl rounded-bl-sm bg-surface-muted px-3 py-2 text-sm leading-relaxed text-muted">
+                {content.npc.greeting}
+              </p>
+            </div>
+            {chatLog.map((entry) => (
+              <div key={entry.key} className="space-y-2">
+                <div className="flex justify-end">
+                  <p className="max-w-[85%] rounded-2xl rounded-br-sm bg-accent px-3 py-2 text-sm leading-relaxed text-white">
+                    {entry.userText}
+                  </p>
+                </div>
+                <div className="flex justify-start">
+                  <p className="max-w-[85%] rounded-2xl rounded-bl-sm bg-surface-muted px-3 py-2 text-sm leading-relaxed text-muted">
+                    {entry.npcText}
+                  </p>
+                </div>
+              </div>
+            ))}
+            {isClassifying && (
+              <div className="flex justify-start">
+                <p className="max-w-[85%] rounded-2xl rounded-bl-sm bg-surface-muted px-3 py-2 text-sm text-subtle">
+                  ...
+                </p>
+              </div>
+            )}
+          </div>
+
+          <form
+            className="mt-3 flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void handleSubmitQuestion(questionInput);
+            }}
+          >
+            <input
+              type="text"
+              value={questionInput}
+              onChange={(e) => setQuestionInput(e.target.value)}
+              placeholder="궁금한 점을 자유롭게 물어보세요"
+              disabled={isClassifying}
+              className="min-h-11 flex-1 rounded-xl border border-border bg-surface px-3 text-sm text-muted placeholder:text-subtle disabled:cursor-not-allowed disabled:opacity-60"
+            />
+            <button type="submit" disabled={isClassifying} className={outlineButtonClass}>
+              물어보기
+            </button>
+          </form>
+          {inputError && <p className="mt-2 text-sm text-subtle">{inputError}</p>}
+
+          <div className="mt-3 flex flex-wrap gap-2">
             {content.npc.questions.map((question) => (
               <button
                 key={question.questionId}
                 type="button"
-                onClick={() => handleAskQuestion(question.statementId)}
-                disabled={triggeredStatementIds.has(question.statementId)}
-                className={outlineButtonClass}
+                disabled={isClassifying}
+                onClick={() => void handleSubmitQuestion(question.prompt)}
+                className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-subtle transition-colors hover:border-accent hover:text-muted disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {question.prompt}
               </button>
             ))}
-          </div>
-          <div className="mt-3 space-y-2">
-            {content.npc.statements
-              .filter((statement) => triggeredStatementIds.has(statement.statementId))
-              .map((statement) => (
-                <p key={statement.statementId} className="text-sm leading-relaxed text-muted">
-                  {statement.text}
-                </p>
-              ))}
           </div>
         </div>
 

@@ -166,7 +166,11 @@ describe("computeCaseInvestigationScore", () => {
     npc: {
       npcId: "NPC_1",
       displayName: "중개사 테스트",
-      statements: [{ statementId: "STMT_1", text: "테스트 대사" }],
+      greeting: "테스트 인사말",
+      fallbackLine: "테스트 회피 대사",
+      statements: [
+        { statementId: "STMT_1", text: "테스트 대사", matchKeywords: ["테스트"] },
+      ],
       questions: [
         {
           questionId: "STMT_1-q",

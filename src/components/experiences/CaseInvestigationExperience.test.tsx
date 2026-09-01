@@ -1,8 +1,20 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { CaseInvestigationContent, ModuleResult } from "@/types/experience";
 import { CASE_INVESTIGATION_CASES } from "@/data/case-investigation";
+import { matchNpcStatement } from "@/lib/npc-chat";
+import { classifyQuestion } from "@/lib/npc-chat-client";
 import { CaseInvestigationExperience } from "./CaseInvestigationExperience";
+
+vi.mock("@/lib/npc-chat-client", () => ({
+  classifyQuestion: vi.fn(),
+}));
+
+beforeEach(() => {
+  vi.mocked(classifyQuestion).mockImplementation(async (npc, input) =>
+    matchNpcStatement(npc, input)
+  );
+});
 
 const jeonse001 = CASE_INVESTIGATION_CASES.find((c) => c.caseId === "JEONSE_001")!;
 const bunyang005 = CASE_INVESTIGATION_CASES.find((c) => c.caseId === "BUNYANG_005")!;
@@ -69,7 +81,11 @@ const gatingFixture: CaseInvestigationContent = {
   npc: {
     npcId: "NPC_TEST",
     displayName: "테스트 NPC",
-    statements: [{ statementId: "ST1", text: "NPC 대사 1입니다" }],
+    greeting: "테스트 인사말입니다",
+    fallbackLine: "테스트 회피 대사입니다",
+    statements: [
+      { statementId: "ST1", text: "NPC 대사 1입니다", matchKeywords: ["질문"] },
+    ],
     questions: [{ questionId: "ST1-q", prompt: "질문 1", statementId: "ST1" }],
   },
   contradictions: [],
@@ -154,19 +170,85 @@ describe("CaseInvestigationExperience", () => {
     expect(screen.getByText(/숨겨진 조사/)).toBeDefined();
   });
 
-  it("NPC 질문 버튼을 클릭하면 대사가 나타나고 같은 질문은 재클릭해도 상태가 변하지 않는다", () => {
+  it("추천 질문 칩을 클릭하면 대사가 나타나고, 같은 칩을 다시 클릭하면 다시 응답한다", async () => {
     render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
     startInvestigating();
 
     expect(screen.queryByText("NPC 대사 1입니다")).toBeNull();
 
-    const questionButton = screen.getByRole("button", { name: "질문 1" });
-    fireEvent.click(questionButton);
-    expect(screen.getByText("NPC 대사 1입니다")).toBeDefined();
-    expect(questionButton).toBeDisabled();
+    const chip = screen.getByRole("button", { name: "질문 1" });
+    fireEvent.click(chip);
+    expect(await screen.findByText("NPC 대사 1입니다")).toBeDefined();
+    expect(chip).not.toBeDisabled();
 
-    fireEvent.click(questionButton);
-    expect(screen.getAllByText("NPC 대사 1입니다")).toHaveLength(1);
+    fireEvent.click(chip);
+    await waitFor(() => {
+      expect(screen.getAllByText("NPC 대사 1입니다")).toHaveLength(2);
+    });
+  });
+
+  it("자유 입력창에 매칭 키워드를 포함한 질문을 입력하면 해당 대사로 응답한다", async () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+
+    const input = screen.getByPlaceholderText(/궁금한 점을 자유롭게/);
+    fireEvent.change(input, { target: { value: "질문 있어요 대답해주세요" } });
+    fireEvent.click(screen.getByRole("button", { name: "물어보기" }));
+
+    expect(await screen.findByText("질문 있어요 대답해주세요")).toBeDefined();
+    expect(await screen.findByText("NPC 대사 1입니다")).toBeDefined();
+    expect(input).toHaveValue("");
+  });
+
+  it("어떤 키워드와도 매칭되지 않는 질문을 입력하면 fallbackLine으로 응답한다", async () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+
+    const input = screen.getByPlaceholderText(/궁금한 점을 자유롭게/);
+    fireEvent.change(input, { target: { value: "오늘 날씨는 어떤가요" } });
+    fireEvent.click(screen.getByRole("button", { name: "물어보기" }));
+
+    expect(await screen.findByText("오늘 날씨는 어떤가요")).toBeDefined();
+    expect(await screen.findByText("테스트 회피 대사입니다")).toBeDefined();
+  });
+
+  it("너무 짧은 입력은 반려되고 대화 내역에 추가되지 않는다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+
+    const input = screen.getByPlaceholderText(/궁금한 점을 자유롭게/);
+    fireEvent.change(input, { target: { value: "네?" } });
+    fireEvent.click(screen.getByRole("button", { name: "물어보기" }));
+
+    expect(screen.queryByText("네?")).toBeNull();
+    expect(screen.getByText(/조금 더 구체적으로/)).toBeDefined();
+  });
+
+  it("조사 화면 진입 시 NPC의 인사말이 먼저 표시된다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+
+    expect(screen.getByText("테스트 인사말입니다")).toBeDefined();
+  });
+
+  it("질문을 물으면 내가 물은 질문과 NPC 대사가 클릭한 순서대로 대화 내역에 누적된다", async () => {
+    const { container } = render(
+      <CaseInvestigationExperience content={bunyang005} onComplete={vi.fn()} />
+    );
+    startInvestigating();
+
+    fireEvent.click(screen.getByRole("button", { name: "인허가랑 분양보증은 문제없나요?" }));
+    await screen.findByText("이 프로젝트는 인허가와 분양보증 모두 정상입니다.");
+    fireEvent.click(screen.getByRole("button", { name: "수익보장은 언제까지 되나요?" }));
+    await screen.findByText("수익보장은 평생 지속됩니다.");
+
+    const text = container.textContent ?? "";
+    const idxAskedSecondQuestion = text.indexOf("인허가랑 분양보증은 문제없나요?");
+    const idxAskedSecondAnswer = text.indexOf("이 프로젝트는 인허가와 분양보증 모두 정상입니다.");
+    const idxAskedFirstQuestion = text.indexOf("수익보장은 언제까지 되나요?");
+
+    expect(idxAskedSecondAnswer).toBeGreaterThan(idxAskedSecondQuestion);
+    expect(idxAskedFirstQuestion).toBeGreaterThan(idxAskedSecondAnswer);
   });
 
   it("최종 판단 버튼 클릭 시 onComplete가 정확히 1회 호출되고 연속 클릭해도 1회만 호출된다", () => {
