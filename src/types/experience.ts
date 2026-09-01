@@ -98,7 +98,7 @@ export interface JeonseHouse {
 
 export type FraudJudgmentAnswer = "fraud" | "safe";
 
-// 원본 레포(fraudtest)의 15개 사기 유형을 그대로 옮긴 것. UI에는 절대 노출하지 않는다 —
+// 원본 레포(fraudtest)의 19개 사기 유형을 그대로 옮긴 것. UI에는 절대 노출하지 않는다 —
 // 콘텐츠 커버리지 테스트용 내부 메타데이터일 뿐이다.
 export type FraudJudgmentCategory =
   | "중고거래_사기"
@@ -115,7 +115,11 @@ export type FraudJudgmentCategory =
   | "택배기사_사칭피싱"
   | "중고차_사기"
   | "반려동물_분양사기"
-  | "티켓_되팔이_사기";
+  | "티켓_되팔이_사기"
+  | "가상자산_사기"
+  | "파밍_사기"
+  | "보험사기"
+  | "명의도용_사기";
 
 export interface FraudJudgmentCard {
   id: string;
