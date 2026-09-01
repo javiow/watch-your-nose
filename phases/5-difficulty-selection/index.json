@@ -1,0 +1,12 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "5-difficulty-selection",
+  "steps": [
+    { "step": 0, "name": "docs-update", "status": "pending" },
+    { "step": 1, "name": "difficulty-type-and-data", "status": "pending" },
+    { "step": 2, "name": "session-difficulty-state", "status": "pending" },
+    { "step": 3, "name": "registry-difficulty-selection", "status": "pending" },
+    { "step": 4, "name": "difficulty-select-form", "status": "pending" },
+    { "step": 5, "name": "difficulty-page-wiring", "status": "pending" }
+  ]
+}
