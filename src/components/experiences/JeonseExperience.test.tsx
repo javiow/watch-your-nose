@@ -15,6 +15,7 @@ function makeHouse(id: string, risky: boolean): JeonseHouse {
     ratio: "66.7%",
     ratioBad: false,
     risky,
+    difficulty: "easy",
     fields: [
       ["등기부등본", "값", "정상"],
       ["선순위 보증금", "값", "정상"],

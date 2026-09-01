@@ -14,6 +14,7 @@ const house: JeonseHouse = {
   ratio: "66.7%",
   ratioBad: false,
   risky: false,
+  difficulty: "easy",
   fields: [
     ["등기부등본", "근저당 없음", "정상"],
     ["선순위 보증금", "선순위 없음", "정상"],
