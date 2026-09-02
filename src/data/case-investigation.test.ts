@@ -128,6 +128,35 @@ describe("CASE_INVESTIGATION_CASES", () => {
     }
   });
 
+  it("npc.greeting과 npc.fallbackLine이 모든 케이스에 비어있지 않게 설정되어 있다", () => {
+    for (const c of CASE_INVESTIGATION_CASES) {
+      expect(c.npc.greeting.trim().length).toBeGreaterThan(0);
+      expect(c.npc.fallbackLine.trim().length).toBeGreaterThan(0);
+    }
+  });
+
+  it("모든 statement의 matchKeywords가 비어있지 않다", () => {
+    for (const c of CASE_INVESTIGATION_CASES) {
+      for (const statement of c.npc.statements) {
+        expect(statement.matchKeywords.length).toBeGreaterThan(0);
+        for (const keyword of statement.matchKeywords) {
+          expect(keyword.trim().length).toBeGreaterThan(0);
+        }
+      }
+    }
+  });
+
+  it("추천 질문 칩의 prompt는 클릭 시 자기 자신의 statement로 실제 매칭된다(다른 statement로 새지 않는다)", () => {
+    for (const c of CASE_INVESTIGATION_CASES) {
+      for (const question of c.npc.questions) {
+        const matched = c.npc.statements.find((statement) =>
+          statement.matchKeywords.some((keyword) => question.prompt.includes(keyword))
+        );
+        expect(matched?.statementId).toBe(question.statementId);
+      }
+    }
+  });
+
   it("JEONSE_001 스모크 테스트: investigations 2개, evidenceDefinitions 2개", () => {
     const jeonse001 = CASE_INVESTIGATION_CASES.find((c) => c.caseId === "JEONSE_001");
     expect(jeonse001).toBeDefined();

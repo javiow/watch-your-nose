@@ -103,10 +103,13 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
     npc: {
       npcId: "NPC_01",
       displayName: "공인중개사 박중개",
+      greeting: "네~ 궁금하신 거 있으면 편하게 물어보세요! 저 이 근처 매물 진짜 많이 다뤄봤거든요.",
+      fallbackLine: "그건 저도 잘 모르겠는데요, 일단 계약부터 진행하시죠~",
       statements: [
         {
           statementId: "S01",
           text: "이 전세금은 주변 시세보다 저렴하게 나온 겁니다.",
+          matchKeywords: ["시세", "가격", "얼마"],
         },
       ],
       questions: [
@@ -273,14 +276,18 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
     npc: {
       npcId: "NPC_01",
       displayName: "공인중개사 이중개",
+      greeting: "이 동네서 15년 넘게 중개했습니다. 뭐가 궁금하신지 편하게 물어보세요.",
+      fallbackLine: "그런 세세한 것까지는... 제가 15년째 하고 있는데 걱정 안 하셔도 됩니다.",
       statements: [
         {
           statementId: "S01",
           text: "집주인이 여러 채를 갖고 있어도 자금 여력이 충분해서 안전합니다.",
+          matchKeywords: ["집주인", "임대인", "자금", "여력"],
         },
         {
           statementId: "S02",
           text: "전세금은 시세에 맞게 책정된 겁니다.",
+          matchKeywords: ["시세", "가격", "전세금"],
         },
       ],
       questions: [
@@ -477,14 +484,18 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
     npc: {
       npcId: "NPC_01",
       displayName: "공인중개사 김중개",
+      greeting: "저는 정식 등록된 공인중개사입니다. 궁금하신 점 있으시면 뭐든 물어보세요.",
+      fallbackLine: "그 부분은 제가 지금 확답드리기 어렵네요. 일단 계약부터 하시죠.",
       statements: [
         {
           statementId: "S01",
           text: "집주인이 직접 계약하면 아무 문제 없습니다.",
+          matchKeywords: ["집주인", "소유주", "명의", "신탁", "계약자"],
         },
         {
           statementId: "S02",
           text: "보증보험도 가입 가능한 안전한 매물입니다.",
+          matchKeywords: ["보증보험", "보증", "안전"],
         },
       ],
       questions: [
@@ -696,10 +707,13 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
     npc: {
       npcId: "NPC_01",
       displayName: "문자 속 안내 담당자",
+      greeting: "고객님, 문의사항 있으시면 답장 주세요. 다만 시간이 얼마 남지 않았습니다.",
+      fallbackLine: "고객님, 시간이 얼마 안 남았습니다. 서둘러 주세요.",
       statements: [
         {
           statementId: "S01",
           text: "네, 맞습니다. 오늘 오후 5시까지 계약금을 입금해주셔야 특별공급 자격이 유지됩니다.",
+          matchKeywords: ["당첨", "선정", "진짜", "맞나요", "정말"],
         },
       ],
       questions: [
@@ -893,14 +907,18 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
     npc: {
       npcId: "NPC_01",
       displayName: "분양상담사 최상담",
+      greeting: "고객님~ 뭐든 편하게 물어보세요! 제가 시원하게 답해드릴게요~",
+      fallbackLine: "그건 저도 잘... 아무튼 지금 계약하시는 게 제일 좋아요!",
       statements: [
         {
           statementId: "S01",
           text: "수익보장은 평생 지속됩니다.",
+          matchKeywords: ["수익보장", "언제까지", "기간", "몇 년"],
         },
         {
           statementId: "S02",
           text: "이 프로젝트는 인허가와 분양보증 모두 정상입니다.",
+          matchKeywords: ["인허가", "분양보증", "허가"],
         },
       ],
       questions: [
@@ -1085,10 +1103,13 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
     npc: {
       npcId: "NPC_01",
       displayName: "동생",
+      greeting: "왜 그렇게 걱정해~ 궁금한 거 있으면 물어봐.",
+      fallbackLine: "그건 나도 잘 모르겠는데?",
       statements: [
         {
           statementId: "S01",
           text: "중개사가 완전 안전한 매물이라고 했어.",
+          matchKeywords: ["중개사", "뭐래", "뭐라고"],
         },
       ],
       questions: [

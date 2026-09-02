@@ -20,7 +20,7 @@
 - [Next.js 16](https://nextjs.org) (App Router) + TypeScript strict mode
 - Tailwind CSS
 - Vitest + React Testing Library
-- **완전 정적 구성** — 별도 백엔드/DB 없이 모든 콘텐츠를 `src/data/`의 정적 TypeScript 파일로 관리하고, 세션 상태는 React Context에만 보관합니다(새로고침 시 처음부터 다시 시작).
+- **DB 없는 정적 콘텐츠 구성** — 모든 콘텐츠를 `src/data/`의 정적 TypeScript 파일로 관리하고, 세션 상태는 React Context에만 보관합니다(새로고침 시 처음부터 다시 시작). 케이스 조사 단계의 NPC 자유 입력 질문 분류만 선택적으로 Anthropic API를 호출하는 최소한의 API 라우트를 둡니다(아래 환경 변수 참고) — 키가 없어도 정적 키워드 매칭으로 자동 폴백해 완전히 동작합니다.
 
 ## 시작하기
 
@@ -30,11 +30,21 @@ Node.js가 설치되어 있어야 합니다.
 # 1. 의존성 설치
 npm install
 
-# 2. 개발 서버 실행
+# 2. (선택) 환경 변수 설정 — 없어도 정적 키워드 매칭으로 동작합니다
+cp .env.example .env.local
+# .env.local에 ANTHROPIC_API_KEY를 직접 입력하세요
+
+# 3. 개발 서버 실행
 npm run dev
 ```
 
 브라우저에서 [http://localhost:3000](http://localhost:3000) 을 열면 바로 체험할 수 있습니다. `src/app/page.tsx` 등 페이지 파일을 수정하면 자동으로 반영됩니다.
+
+### 환경 변수 (`.env.local`)
+
+| 변수 | 설명 | 기본값 |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | 케이스 조사 단계 NPC 자유 입력 질문 분류(`/api/npc-chat`)에 사용. 없으면 정적 키워드 매칭으로 자동 폴백 | (없음) |
 
 ### 그 외 명령어
 

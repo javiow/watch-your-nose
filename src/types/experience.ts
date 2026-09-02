@@ -183,17 +183,20 @@ export interface CaseInvestigation {
 export interface CaseNpcStatement {
   statementId: string;
   text: string;
+  matchKeywords: string[]; // 자유 입력 질문에 이 중 하나라도 부분 문자열로 포함되면 이 대사로 응답한다.
 }
 
 export interface CaseNpcQuestion {
   questionId: string; // `${statementId}-q` 형식
-  prompt: string; // 버튼 라벨 — 원본 suggested_questions 중 아래 매핑표로 선별한 것만
-  statementId: string; // 클릭 시 노출되는 고정 대사
+  prompt: string; // 추천 질문 칩 라벨. 클릭하면 이 문구 그대로 자유 입력 매칭 로직을 통과해 질문된다.
+  statementId: string; // 이 prompt가 매칭되어야 하는 대사 — 데이터 완결성 테스트에서 실제 매칭 여부를 검증한다.
 }
 
 export interface CaseNpcPersona {
   npcId: string;
   displayName: string; // "공인중개사 박중개", "동생" 등 원본 그대로. "중개사" 하드코딩 금지 — 케이스마다 다르다.
+  greeting: string; // 조사 화면 진입 시 NPC가 먼저 건네는 인사말. 정답/오답을 암시하는 문구 금지, 톤으로만 페르소나를 드러낸다.
+  fallbackLine: string; // 입력이 어떤 statement의 matchKeywords와도 매칭되지 않을 때 보여줄 회피 대사. 페르소나 톤 유지, 정답 암시 금지.
   statements: CaseNpcStatement[];
   questions: CaseNpcQuestion[];
 }
