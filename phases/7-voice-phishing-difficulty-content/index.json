@@ -16,7 +16,7 @@
       "status": "completed",
       "started_at": "2026-09-02T18:04:20+0900",
       "summary": "사례 뱅크 빈 카테고리 3종 + 정상 패턴 1건 조사 채움: kidnap-threat(자녀 납치/사고 빙자, 사고 합의금 협박) 2건, messenger-phishing(휴대폰 고장 빙자 대납, 상품권 핀번호 요구) 2건, delivery-impersonation(통관·관세 미납 링크 유도, 주소 불일치→기관사칭 연결) 2건, legit-002(카드사 부정사용 의심 통보·본인확인) 1건 — 총 7건, 전부 공개 출처(금감원 보이스피싱지킴이·정책브리핑·여신금융협회·생활법령·언론) + verbatim 금지 준수. src/ 변경 없음, build/lint/test 통과(226)",
-      "completed_at": "2026-09-02T18:12:00+0900"
+      "completed_at": "2026-09-02T18:12:13+0900"
     },
     {
       "step": 2,
