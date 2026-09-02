@@ -555,4 +555,289 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
       },
     ],
   },
+  {
+    id: "scam-family-emergency-transfer",
+    isNormalCase: false,
+    category: "납치협박형",
+    difficulty: "easy",
+    startNodeId: "s1",
+    nodes: [
+      {
+        id: "s1",
+        speaker: "전화 속 낯선 남성",
+        line: "지금 당신 자녀를 데리고 있다. 전화 끊지 말고, 경찰이나 가족한테 알리지 마라.",
+        choices: [
+          {
+            id: "hang-up-and-call-child",
+            text: "전화를 끊고 자녀에게 직접 연락한다",
+            spokenText: "말도 안 되는 소리네요. 끊고 애한테 직접 전화해볼게요.",
+            risk: "safe",
+          },
+          {
+            id: "demand-talk-to-child",
+            text: "자녀를 바꿔달라고 요구한다",
+            spokenText: "우리 애 목소리부터 들려주세요.",
+            next: "s2",
+            risk: "safe",
+          },
+        ],
+      },
+      {
+        id: "s2",
+        speaker: "전화 속 낯선 남성",
+        line: "지금은 통화 못 하게 해놨다. 치료비랑 합의금부터 보내야 풀어준다.",
+        choices: [
+          {
+            id: "refuse-and-hang-up",
+            text: "말 같지도 않다며 전화를 끊는다",
+            spokenText: "무슨 소리예요. 안 믿어요, 끊습니다.",
+            risk: "safe",
+          },
+          {
+            id: "ask-how-much",
+            text: "얼마를 어떻게 보내야 하냐고 되묻는다",
+            spokenText: "얼마를... 어디로 보내면 되는데요?",
+            next: "s3",
+            risk: "caution",
+          },
+          {
+            id: "try-verify-family",
+            text: "다른 가족에게 연락해 자녀가 무사한지 먼저 확인하겠다고 말한다",
+            spokenText: "잠깐만요, 다른 가족한테 먼저 연락해서 확인해볼게요.",
+            next: "s3",
+            risk: "safe",
+          },
+        ],
+      },
+      {
+        id: "s3",
+        speaker: "OO경찰서 강력팀이라는 남성",
+        line: "나 담당 수사관이다. 현금으로 준비해서 알려주는 사람한테 직접 전달해라.",
+        choices: [
+          {
+            id: "hang-up-verify-police",
+            text: "끊고 112나 자녀에게 직접 확인한다",
+            spokenText: "끊고 112랑 애한테 직접 확인하겠습니다.",
+            risk: "safe",
+          },
+          {
+            id: "stall-ask-again",
+            text: "정말 그런 절차가 맞는지 다시 따져 묻는다",
+            spokenText: "수사기관이 현금을 직접 받아간다고요? 그게 말이 돼요?",
+            next: "s4",
+            risk: "caution",
+          },
+        ],
+      },
+      {
+        id: "s4",
+        speaker: "OO경찰서 강력팀이라는 남성",
+        line: "더 못 기다린다. 지금 당장 현금을 준비해 전달해라.",
+        choices: [
+          {
+            id: "final-refuse",
+            text: "요구를 거부하고 전화를 끊은 뒤 자녀·경찰에 직접 확인한다",
+            spokenText: "안 합니다. 끊고 직접 확인할게요.",
+            risk: "safe",
+          },
+          {
+            id: "comply-hand-over-cash",
+            text: "겁에 질려 안내에 따라 현금을 마련해 전달한다",
+            spokenText: "알겠어요, 시키는 대로 현금 마련해서 전달할게요.",
+            risk: "danger",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "scam-customs-fee-delivery",
+    isNormalCase: false,
+    category: "택배배송사칭형",
+    difficulty: "medium",
+    startNodeId: "s1",
+    nodes: [
+      {
+        id: "s1",
+        speaker: "OO택배 고객센터",
+        line: "고객님 앞으로 온 해외배송 물품에 관세가 미납되어 통관이 보류됐습니다. 오늘 안 처리하면 반송됩니다.",
+        choices: [
+          {
+            id: "check-official-app",
+            text: "안내를 끊고 택배사 공식 앱·대표번호로 직접 조회한다",
+            spokenText: "그건 제가 공식 앱이랑 대표번호로 직접 확인할게요. 끊습니다.",
+            risk: "safe",
+          },
+          {
+            id: "ask-details",
+            text: "무슨 물품인지, 어떻게 처리하냐고 물어본다",
+            spokenText: "무슨 물품인데요? 처리는 어떻게 하나요?",
+            next: "s2",
+            risk: "safe",
+          },
+        ],
+      },
+      {
+        id: "s2",
+        speaker: "OO택배 고객센터",
+        line: "문자로 보내드린 링크에서 미납 관세를 결제하시면 바로 통관됩니다. 금액은 크지 않아요.",
+        choices: [
+          {
+            id: "refuse-link-payment",
+            text: "문자 링크로는 결제하지 않겠다며 끊는다",
+            spokenText: "문자 링크로 결제는 안 해요. 끊을게요.",
+            risk: "safe",
+          },
+          {
+            id: "open-link-hesitate",
+            text: "링크를 열어보긴 하되 결제 전에 좀 더 확인한다",
+            spokenText: "링크는 일단 열어볼게요. 결제는 좀 더 확인하고요.",
+            next: "s3",
+            risk: "caution",
+          },
+          {
+            id: "ask-why-link",
+            text: "왜 공식 홈페이지가 아니라 문자 링크로 결제하냐고 따진다",
+            spokenText: "왜 공식 홈페이지 놔두고 문자 링크로 결제하라는 거예요?",
+            next: "s3",
+            risk: "safe",
+          },
+        ],
+      },
+      {
+        id: "s3",
+        speaker: "OO세관 통관담당이라는 사람",
+        line: "통관 확인을 위해 성함, 주소, 주민등록번호가 필요합니다. 입력 안 하면 물품이 폐기됩니다.",
+        choices: [
+          {
+            id: "refuse-personal-info",
+            text: "세관은 전화로 주민등록번호를 요구하지 않는다며 끊는다",
+            spokenText: "세관이 전화로 주민번호를 왜 물어봐요. 끊습니다.",
+            risk: "safe",
+          },
+          {
+            id: "give-partial-info",
+            text: "폐기된다는 말에 이름과 주소 정도는 알려준다",
+            spokenText: "폐기된다니까... 이름이랑 주소 정도는 알려드릴게요.",
+            next: "s4",
+            risk: "caution",
+          },
+        ],
+      },
+      {
+        id: "s4",
+        speaker: "OO세관 통관담당이라는 사람",
+        line: "마지막으로 링크에서 카드정보를 입력해 결제만 완료하시면 됩니다. 지금 해주세요.",
+        choices: [
+          {
+            id: "final-refuse",
+            text: "끊고 세관·택배사 공식 대표번호로 직접 확인한다",
+            spokenText: "안 되겠어요. 끊고 공식 대표번호로 직접 확인할게요.",
+            risk: "safe",
+          },
+          {
+            id: "comply-enter-card",
+            text: "안내에 따라 링크에서 카드정보를 입력해 결제한다",
+            spokenText: "알겠어요, 링크에서 카드정보 입력해서 결제할게요.",
+            risk: "danger",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "scam-messenger-impersonation-giftcard",
+    isNormalCase: false,
+    category: "메신저피싱형",
+    difficulty: "hard",
+    startNodeId: "s1",
+    nodes: [
+      {
+        id: "s1",
+        speaker: "메신저 대화 상대 (지인 프로필)",
+        line: "나야, 폰이 고장 나서 PC로 연락해. 급하게 부탁 하나만 할게.",
+        choices: [
+          {
+            id: "call-to-verify",
+            text: "대화를 멈추고 원래 알던 번호로 전화해 본인인지 확인한다",
+            spokenText: "잠깐만, 원래 번호로 전화해서 확인 좀 할게.",
+            risk: "safe",
+          },
+          {
+            id: "ask-what-favor",
+            text: "무슨 일인지 물어본다",
+            spokenText: "무슨 일인데? 말해봐.",
+            next: "s2",
+            risk: "safe",
+          },
+        ],
+      },
+      {
+        id: "s2",
+        speaker: "메신저 대화 상대 (지인 프로필)",
+        line: "결제가 막혔는데 모바일 상품권을 대신 좀 사줄 수 있어? 이따 바로 갚을게.",
+        choices: [
+          {
+            id: "refuse-giftcard-request",
+            text: "상품권 대리구매 요청은 전형적인 사기라 거절하고 대화를 끊는다",
+            spokenText: "상품권 대신 사달라는 건 사기 수법이야. 이 대화 그만할게.",
+            risk: "safe",
+          },
+          {
+            id: "suggest-call",
+            text: "그럼 잠깐 전화로 통화하자고 한다",
+            spokenText: "그럼 잠깐 전화로 얘기하자.",
+            next: "s3",
+            risk: "caution",
+          },
+          {
+            id: "ask-why-me",
+            text: "왜 하필 나한테, 왜 상품권이냐고 되묻는다",
+            spokenText: "왜 하필 나한테 부탁해? 그리고 왜 상품권이야?",
+            next: "s3",
+            risk: "safe",
+          },
+        ],
+      },
+      {
+        id: "s3",
+        speaker: "메신저 대화 상대 (지인 프로필)",
+        line: "지금 통화는 곤란해. 상품권 사서 뒷번호만 사진 찍어 보내줘.",
+        choices: [
+          {
+            id: "refuse-pin",
+            text: "핀번호를 보내달라는 건 현금을 넘기라는 것과 같다며 거절하고 끊는다",
+            spokenText: "그 번호 보내는 건 현금 주는 거랑 똑같아. 안 해, 끊을게.",
+            risk: "safe",
+          },
+          {
+            id: "hesitate-buy-small",
+            text: "찜찜하지만 소액이라 일단 하나 사보기로 한다",
+            spokenText: "찜찜하긴 한데... 소액이니까 일단 하나만 사볼게.",
+            next: "s4",
+            risk: "caution",
+          },
+        ],
+      },
+      {
+        id: "s4",
+        speaker: "메신저 대화 상대 (지인 프로필)",
+        line: "그거로는 부족한데 몇 장 더 사서 번호 다 보내줘. 정말 이따 갚을게.",
+        choices: [
+          {
+            id: "final-refuse",
+            text: "이상함을 깨닫고 구매를 멈춘 뒤 지인의 원래 번호로 직접 확인한다",
+            spokenText: "이건 아무래도 이상해. 그만하고 원래 번호로 직접 확인할게.",
+            risk: "safe",
+          },
+          {
+            id: "comply-send-pins",
+            text: "재촉에 밀려 상품권을 더 사서 핀번호를 사진으로 보낸다",
+            spokenText: "알겠어, 몇 장 더 사서 번호 사진으로 보낼게.",
+            risk: "danger",
+          },
+        ],
+      },
+    ],
+  },
 ];
