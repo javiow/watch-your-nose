@@ -1,7 +1,7 @@
 # 프로젝트: Grill Me — 금융 사기 교육 서비스
 
 ## 기술 스택
-- Next.js 15 (App Router)
+- Next.js 16 (App Router)
 - TypeScript strict mode
 - Tailwind CSS
 
