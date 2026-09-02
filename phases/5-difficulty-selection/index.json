@@ -16,7 +16,7 @@
       "status": "completed",
       "started_at": "2026-09-02T10:01:33+0900",
       "summary": "experience.ts에 공용 Difficulty 유니온 추가·JeonseDifficulty를 별칭화, pickRandomContent(difficulty?) 시그니처 확장, VoicePhishingScenario/CaseInvestigationContent/FraudJudgmentCard에 선택적 difficulty 필드 추가. src/data/difficulty.ts(DIFFICULTY_OPTIONS 한글 라벨) + difficulty.test.ts TDD 신설, jeonse.test.ts에 난이도별 5채 이상 전제 테스트 추가. build/lint 통과, test 167 통과",
-      "completed_at": "2026-09-02T10:03:40+0900"
+      "completed_at": "2026-09-02T10:04:27+0900"
     },
     {
       "step": 2,
