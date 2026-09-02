@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Watch Your Nose",
-  description: "눈 뜨고 코 베인다 — 금융 사기 교육 서비스",
+  description: "코심코심 — 금융 사기 교육 서비스",
 };
 
 export default function RootLayout({
