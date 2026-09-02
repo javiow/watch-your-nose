@@ -37,8 +37,12 @@
     {
       "step": 4,
       "name": "new-normal-scenario",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T19:52:00+0900",
+      "summary": "정상 시나리오 normal-card-fraud-block(정상금융확인형/easy, legit-002 근거 — 카드사 부정사용 의심 통보·본인확인) 추가. 시작노드 danger-terminal(반사적 거부 함정)·caution은 next 보유 불변식 준수, 발신자는 비밀번호·OTP·주민번호·원격앱·이체 요구 없음, '추가로 요청드릴 정보 없다'류 마무리. voice-phishing.test.ts 개수 9→10(정상4/사기6) + '각 난이도에 정상·사기 모두' 단언 추가. 최종 분포 easy(정상1/사기2)·medium(정상1/사기3)·hard(정상2/사기1). build/lint 통과, test 230 통과",
+      "completed_at": "2026-09-02T19:53:30+0900"
     }
   ],
-  "created_at": "2026-09-02T18:01:11+0900"
+  "created_at": "2026-09-02T18:01:11+0900",
+  "completed_at": "2026-09-02T19:53:30+0900"
 }
