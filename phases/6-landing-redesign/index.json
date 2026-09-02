@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "mascot-assets",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T15:47:35+0900",
+      "summary": "팀 제공 코끼리 PNG 8장(고유 6종) → 임시 디렉토리 1회성 PIL 스크립트(모서리 flood-fill 투명화 thresh=40 + sad 프레임 하단 92% 그림자 컷 + 트림 + 1.06배 정사각 패딩 + 512px LANCZOS + WebP q82 method6)로 가공해 public/mascot/에 idle.webp(22.8KB)/blink.webp(22.2KB)/surprised.webp(23.5KB)/worried.webp(23.8KB)/sleepy.webp(21.7KB)/sad.webp(23.8KB) 6개 생성, 합계 137.8KB. 전부 512x512 WebP·알파 유지·네 모서리 alpha 0. 가공 스크립트는 미커밋(산출물만). src/·next.config.ts·package.json 무변경, build/lint/test 통과(182).",
+      "completed_at": "2026-09-02T15:50:00+0900"
     },
     {
       "step": 2,
