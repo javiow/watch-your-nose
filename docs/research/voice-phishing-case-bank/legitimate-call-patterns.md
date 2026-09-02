@@ -22,3 +22,12 @@
 - sources: [Bank of Hope "보이스 피싱 사기인지 구별하고 방지하는 법" (https://www.bankofhope.com/ko/hope-stories/how-to-spot-and-stop-voice-phishing-scams, 2026-08-26 조회), KB국민은행 "보이스피싱 피해 예방 10계명" (https://obank.kbstar.com/quics?page=C033710, 2026-08-26 조회)]
 - abstraction_note: 실제 대사·전화번호·계좌번호를 옮기지 않고 흐름/패턴만 요약함
 - suggested_scenario_seed: 은행 외의 다른 정상 기관(통신사 보안센터 등)이 "명의로 시도된 의심 행위를 자동 차단했다"고 통보하고, 확인 질문 후 "별도로 알려주실 정보는 없다"며 마무리하는 구조로 변형 가능 — 금융권 사례와 중복되지 않도록 통신사·공공서비스 영역으로 확장.
+
+## [legit-002] 카드사의 정당한 부정사용 의심 통보·본인확인 전화 패턴
+- category: 정상금융확인형
+- typical_flow: [카드사 이상거래탐지(FDS)가 평소와 다른 승인 시도(해외 결제, 고액, 연속 결제 등)를 감지, 카드사가 선제적으로 해당 카드를 일시 정지/보류 처리했다고 통보, 최근 특정 가맹점·지역에서 본인이 사용한 것이 맞는지 단순 확인 질문, 본인 사용이 아니면 이의제기·부정사용 보상 신청과 재발급 절차를 안내, 재발급·상담은 공식 앱이나 카드 뒷면 대표번호로 직접 하도록 안내하고 통화 종료]
+- psychological_pressure_patterns: [의도적 압박 없음 — 정상 업무 안내 톤. 다만 "이미 정지 처리했다", "오늘 중 확인" 같은 사실 통지가 다급하게 들릴 수 있음]
+- red_flags_for_victims: [발신번호는 조작 가능하므로 번호만으로 정상 여부를 판단하지 말 것, 정당한 카드사 확인전화는 카드 비밀번호·CVC·OTP 전체 값·인터넷뱅킹 로그인 정보·주민등록번호 전체를 묻지 않음, 원격제어 앱 설치나 즉시 계좌 이체를 요구하지 않음, "안전계좌로 옮기라"는 말은 카드사가 하지 않는 요구, 조금이라도 의심되면 통화를 끊고 카드 뒷면·공식 앱 대표번호로 직접 걸어 확인]
+- sources: [찾기쉬운 생활법령정보 "신용카드의 정지와 해지" (https://www.easylaw.go.kr/CSP/CnpClsMain.laf?csmSeq=585&ccfNo=4&cciNo=2&cnpClsNo=1, 2026-09-02 조회), 여신금융협회 신용카드 이용자 가이드 "분실 도난사고 피해예방법" (https://customer.crefia.or.kr/common/forward.xx?url=/customer/guard/guardCreditcardUseGuide6, 2026-09-02 조회), 금융감독원 보이스피싱지킴이 "예방요령" (http://fss.or.kr/fss/main/contents.do?menuNo=200364, 2026-09-02 조회)]
+- abstraction_note: 실제 대사·전화번호·계좌번호를 옮기지 않고 흐름/패턴만 요약함
+- suggested_scenario_seed: 카드사 상담원이 "해외 승인 시도가 감지돼 카드를 일시 정지했다"고 통보하고, 본인 사용 여부만 확인한 뒤 "추가로 알려주실 정보는 없고 재발급은 앱/고객센터로 하면 된다"며 마무리하는 정상 케이스. 긴장감은 있으나 비밀번호·OTP·이체 요구가 전혀 없음 → 거절하면 blind-refusal 오답. medium 난이도 후보(사기처럼 들리지만 요구가 없다는 점을 종합 판단).

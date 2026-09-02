@@ -49,3 +49,4 @@
 - 이 줄은 예시입니다. `voice-phishing-case-researcher`가 실행될 때마다 `YYYY-MM-DD — <무엇을 갱신했는지> (n건 추가)` 형식으로 아래에 append 합니다.
 - 2026-08-26 — institution-impersonation.md(기관사칭형) 시험 실행: 안전계좌 이체 패턴, 가짜 구속영장·셀프감금 신종수법, 허위 조직명 사칭 3건 추가 (3건 추가)
 - 2026-08-26 — legitimate-call-patterns.md 시험 실행: 은행/카드사 정당한 이상거래 확인전화 패턴 1건 추가 (1건 추가)
+- 2026-09-02 — kidnap-threat.md / messenger-phishing.md / delivery-impersonation.md / legitimate-call-patterns.md 갱신: 납치협박·메신저피싱·택배배송사칭 + 카드사 부정사용 통보 패턴 (7건 추가)
