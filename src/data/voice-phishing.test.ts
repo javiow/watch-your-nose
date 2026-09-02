@@ -74,11 +74,11 @@ describe("VOICE_PHISHING_SCENARIOS", () => {
     ).toBe(true);
   });
 
-  it("정확히 9개 시나리오(정상 3개 + 사기 6개)로 구성된다", () => {
-    expect(VOICE_PHISHING_SCENARIOS).toHaveLength(9);
+  it("정확히 10개 시나리오(정상 4개 + 사기 6개)로 구성된다", () => {
+    expect(VOICE_PHISHING_SCENARIOS).toHaveLength(10);
     expect(
       VOICE_PHISHING_SCENARIOS.filter((scenario) => scenario.isNormalCase)
-    ).toHaveLength(3);
+    ).toHaveLength(4);
     expect(
       VOICE_PHISHING_SCENARIOS.filter((scenario) => !scenario.isNormalCase)
     ).toHaveLength(6);
@@ -186,6 +186,16 @@ describe("VOICE_PHISHING_SCENARIOS 난이도 태깅", () => {
       expect(
         VOICE_PHISHING_SCENARIOS.some((scenario) => scenario.difficulty === level)
       ).toBe(true);
+    }
+  });
+
+  it("easy·medium·hard 각각에 정상·사기 시나리오가 모두 있다", () => {
+    for (const level of ["easy", "medium", "hard"] as const) {
+      const inLevel = VOICE_PHISHING_SCENARIOS.filter(
+        (scenario) => scenario.difficulty === level
+      );
+      expect(inLevel.some((scenario) => scenario.isNormalCase)).toBe(true);
+      expect(inLevel.some((scenario) => !scenario.isNormalCase)).toBe(true);
     }
   });
 });

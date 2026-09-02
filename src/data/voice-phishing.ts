@@ -840,4 +840,78 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
       },
     ],
   },
+  {
+    id: "normal-card-fraud-block",
+    isNormalCase: true,
+    category: "정상금융확인형",
+    difficulty: "easy",
+    startNodeId: "n1",
+    nodes: [
+      {
+        id: "n1",
+        speaker: "OO카드 이상거래 모니터링팀",
+        line: "고객님, 방금 해외 가맹점에서 평소와 다른 승인 시도가 감지되어 해당 카드를 일시 정지 처리했습니다. 본인이 시도하신 결제가 맞을까요?",
+        choices: [
+          {
+            id: "blind-hangup",
+            text: "듣지도 않고 보이스피싱 같아 바로 끊는다",
+            spokenText: "이거 보이스피싱이죠? 됐고요, 끊을게요.",
+            risk: "danger",
+          },
+          {
+            id: "confirm-not-me",
+            text: "아니요, 저는 해외에서 결제한 적 없어요",
+            next: "n2",
+            risk: "safe",
+          },
+        ],
+      },
+      {
+        id: "n2",
+        speaker: "OO카드 이상거래 모니터링팀",
+        line: "확인 감사합니다. 본인 사용 여부만 대조하면 되는데, 최근에 국내에서 이 카드로 결제하신 가맹점이 기억나시나요?",
+        choices: [
+          {
+            id: "refuse-info-request",
+            text: "사용 내역을 왜 묻냐며 그냥 끊어버린다",
+            spokenText: "그런 걸 왜 물어보세요? 그냥 끊을게요.",
+            risk: "danger",
+          },
+          {
+            id: "vague-answer",
+            text: "잘 기억 안 나는데 대충 맞다고만 얼버무려 넘어간다",
+            spokenText: "어... 잘 기억은 안 나는데 그냥 맞을 거예요.",
+            next: "n3",
+            risk: "caution",
+          },
+          {
+            id: "answer-carefully",
+            text: "최근 사용 내역을 차분히 떠올려 답한다",
+            spokenText: "잠시만요, 어제 집 근처 마트에서 장 본 게 마지막이에요.",
+            next: "n3",
+            risk: "safe",
+          },
+        ],
+      },
+      {
+        id: "n3",
+        speaker: "OO카드 이상거래 모니터링팀",
+        line: "확인됐습니다. 카드는 정지 상태로 두고, 재발급이 필요하시면 카드 뒷면 대표번호나 공식 앱에서 직접 신청해 주세요. 저희 쪽에서 추가로 요청드릴 정보는 없습니다.",
+        choices: [
+          {
+            id: "hangup-still-suspicious",
+            text: "말이 끝나기도 전에 의심된다며 끊는다",
+            spokenText: "아, 됐어요. 아무래도 의심스러우니까 끊을게요.",
+            risk: "danger",
+          },
+          {
+            id: "end-call-politely",
+            text: "알겠다고 답하고, 필요하면 카드 뒷면 대표번호로 직접 확인해보겠다고 말한 뒤 통화를 마친다",
+            spokenText: "네, 알겠습니다. 재발급은 카드 뒷면 번호로 직접 신청할게요. 감사합니다.",
+            risk: "safe",
+          },
+        ],
+      },
+    ],
+  },
 ];
