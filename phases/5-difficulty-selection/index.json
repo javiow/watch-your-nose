@@ -45,7 +45,10 @@
     {
       "step": 5,
       "name": "difficulty-page-wiring",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T10:10:45+0900",
+      "summary": "/difficulty 라우트 신설(setup/page.tsx 동형 + playerInfo 가드 → replace('/'), DifficultySelectForm onComplete → setDifficulty + push('/session')) + page.test.tsx 2건(TDD, next/navigation·session-context mock). setup/page.tsx는 push 대상 1줄만 /difficulty로 변경. session/page.tsx는 useSession에서 difficulty 구조분해, pickRandomContent(difficulty ?? undefined) + useMemo deps, 리다이렉트 useEffect·조기 return 가드에 difficulty===null 추가(deps 포함). StartButton 미수정. build 통과(/difficulty 라우트 생성), lint 통과, test 182 통과",
+      "completed_at": "2026-09-02T10:12:30+0900"
     }
   ],
   "created_at": "2026-09-02T09:58:12+0900"
