@@ -53,7 +53,10 @@
     {
       "step": 6,
       "name": "mascot-component",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T16:15:00+0900",
+      "summary": "src/components/ui/Mascot.tsx 재작성: aria-hidden <span> 래퍼(data-expression=active, float(기본=interactive)면 mascot-bob mascot-pop-in) 안에 MASCOT_FRAME_FILES 6장을 next/image fill로 겹쳐 렌더(활성 opacity-100/나머지 opacity-0, data-active). useMascotExpression({enabled: interactive && !expression, controlledExpression: expression}); enabled면 hook.bind 스프레드. proximityRef 지정 시 pointermove로 박스 중심 거리<proximityRadius(기본140)면 react() — typeof window/PointerEvent 가드, reduced-motion이면 미부착. priority(기본=interactive)면 idle 프레임만 priority, 나머지 loading=eager 프리로드. useSession/Context 미import, raw <img> 없음. legacy public/mascot.png 참조 0 확인 후 git rm. Mascot.test.tsx: zero-prop 계약 유지 + 프레임수/제어표정/interactive mouseEnter/reduced-motion 6케이스. build/lint 통과, test 215(+5) 통과. (harness 수동 실행)",
+      "completed_at": "2026-09-02T16:17:00+0900"
     },
     {
       "step": 7,

@@ -1,0 +1,7 @@
+{
+  "step": 6,
+  "name": "mascot-component",
+  "exitCode": 0,
+  "stdout": "manual execution — harness 백그라운드 프로세스 반복 종료로 step6.md 명세대로 수동 구현. Mascot.tsx 레이어드 next/image 재작성 + Mascot.test.tsx 6케이스, git rm public/mascot.png, npm run build / lint / test(215) AC 검증 후 feat/chore 2단 커밋.",
+  "stderr": ""
+}
