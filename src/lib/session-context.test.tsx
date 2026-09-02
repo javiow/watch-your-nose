@@ -22,8 +22,16 @@ const samplePlayerInfo: PlayerInfo = {
 };
 
 function TestConsumer() {
-  const { sessionPlan, results, addResult, resetSession, playerInfo, setPlayerInfo } =
-    useSession();
+  const {
+    sessionPlan,
+    results,
+    addResult,
+    resetSession,
+    playerInfo,
+    setPlayerInfo,
+    difficulty,
+    setDifficulty,
+  } = useSession();
   return (
     <div>
       <span data-testid="plan-length">{sessionPlan.length}</span>
@@ -31,11 +39,13 @@ function TestConsumer() {
       <span data-testid="player-info">
         {playerInfo ? JSON.stringify(playerInfo) : "null"}
       </span>
+      <span data-testid="difficulty">{difficulty ?? "null"}</span>
       <button onClick={() => addResult(sampleResult)}>add</button>
       <button onClick={() => resetSession()}>reset</button>
       <button onClick={() => setPlayerInfo(samplePlayerInfo)}>
         set-player-info
       </button>
+      <button onClick={() => setDifficulty("hard")}>set-difficulty</button>
     </div>
   );
 }
@@ -92,6 +102,29 @@ describe("SessionProvider", () => {
     expect(screen.getByTestId("player-info").textContent).toBe(
       JSON.stringify(samplePlayerInfo)
     );
+  });
+
+  it("setDifficulty를 호출하면 difficulty가 갱신된다", () => {
+    render(
+      <SessionProvider>
+        <TestConsumer />
+      </SessionProvider>
+    );
+    expect(screen.getByTestId("difficulty").textContent).toBe("null");
+    fireEvent.click(screen.getByText("set-difficulty"));
+    expect(screen.getByTestId("difficulty").textContent).toBe("hard");
+  });
+
+  it("setDifficulty 호출 후 resetSession()을 호출해도 difficulty는 유지된다", () => {
+    render(
+      <SessionProvider>
+        <TestConsumer />
+      </SessionProvider>
+    );
+    fireEvent.click(screen.getByText("set-difficulty"));
+    expect(screen.getByTestId("difficulty").textContent).toBe("hard");
+    fireEvent.click(screen.getByText("reset"));
+    expect(screen.getByTestId("difficulty").textContent).toBe("hard");
   });
 
   it("SessionProvider 밖에서 useSession을 사용하면 에러를 던진다", () => {
