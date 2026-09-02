@@ -1,0 +1,54 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "6-landing-redesign",
+  "steps": [
+    {
+      "step": 0,
+      "name": "docs-update",
+      "status": "completed",
+      "started_at": "2026-09-02T15:43:59+0900",
+      "summary": "PRD 「디자인」 섹션을 라이트 크림+번트오렌지 현실/히어로 모션 허용으로 개정하고 핵심기능 1번을 '코심코심' 히어로 문구로 교체; README 헤드라인 '눈 뜨고 코 베인다'→'코심코심'; ADR-013에 라이트/오렌지 팔레트 정본화 불릿 보완, ARCHITECTURE는 이미 반영돼 있어 검증만. src/ 무변경, build/lint/test 그대로 통과(182)."
+    },
+    {
+      "step": 1,
+      "name": "mascot-assets",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "motion-keyframes",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "mascot-frames",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "reduced-motion-hook",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "name": "mascot-expression-hook",
+      "status": "pending"
+    },
+    {
+      "step": 6,
+      "name": "mascot-component",
+      "status": "pending"
+    },
+    {
+      "step": 7,
+      "name": "landing-hero",
+      "status": "pending"
+    },
+    {
+      "step": 8,
+      "name": "result-mascot",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-09-02T15:43:59+0900"
+}
