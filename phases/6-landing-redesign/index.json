@@ -61,7 +61,10 @@
     {
       "step": 7,
       "name": "landing-hero",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T16:18:00+0900",
+      "summary": "src/components/ui/LandingHero.tsx('use client') 신설: hero-bg hero-grain min-h-screen 섹션, stageRef div 안에 HERO_CARDS(string[] export, 유형명 미노출) 4장을 absolute·aria-hidden·pointer-events-none·card-float-a|b|c·hidden sm:block 장식 카드로, <Mascot interactive priority proximityRef={stageRef} h-52 w-52 sm:h-64>, eyebrow 'Watch Your Nose' + H1 '코심코심' + 서브카피, <div class='cta-pulse rounded-xl'><StartButton/></div>, 하단 scroll-cue <a href='#how-it-works'>. src/app/page.tsx는 서버 컴포넌트 유지('use client' 없음): <main><LandingHero/> + #how-it-works 섹션('진행 방식' 3줄 원문 그대로)</main>. src/app/layout.tsx metadata.description '눈 뜨고 코 베인다'→'코심코심'. LandingHero.test.tsx 4케이스(SessionProvider+useRouter mock) + page.test.tsx에 '코심코심'/'진행 방식' 단언 추가·유형명 비노출 유지. StartButton 무수정. build(/ 여전히 Static)·lint 통과, test 220(+5) 통과. (harness 수동 실행)",
+      "completed_at": "2026-09-02T16:21:00+0900"
     },
     {
       "step": 8,
