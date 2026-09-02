@@ -45,7 +45,10 @@
     {
       "step": 5,
       "name": "mascot-expression-hook",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T16:05:00+0900",
+      "summary": "src/lib/useMascotExpression.ts 신설('use client'): idle 루프(랜덤 BLINK_MIN~MAX 간격 setTimeout 재귀, blink BLINK_HOLD_MS, 매 OCCASIONAL_LOOK_EVERY번째는 sleepy OCCASIONAL_LOOK_MS) + react()/bind(onMouseEnter/Leave/PointerDown/Focus/Blur) 트리거(surprised→REACTION_SURPRISE_MS→worried→REACTION_SETTLE_MS→base, 재트리거 시 리셋, mouseLeave/blur는 settle 앞당김). controlledExpression 지정 또는 useReducedMotion()/enabled:false면 active=false로 base 표정 고정·타이머 0·bind는 NOOP. 타이밍 상수는 @/lib/mascot-frames에서 import(하드코딩 없음), useSession/Context 미import, setInterval 미사용(setTimeout 재귀), 언마운트 시 전체 타이머 clear. 콜로케이션 테스트 먼저 작성(TDD, 10케이스, vi.useFakeTimers + Math.random 고정). build/lint 통과, test 210(+10) 통과. (harness 백그라운드 프로세스 반복 종료로 이 step은 수동 실행)",
+      "completed_at": "2026-09-02T16:14:00+0900"
     },
     {
       "step": 6,
