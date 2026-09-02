@@ -69,8 +69,12 @@
     {
       "step": 8,
       "name": "result-mascot",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T16:21:30+0900",
+      "summary": "src/app/result/page.tsx 종합 정답률 섹션을 flex items-center gap-4 행으로 바꾸고 앞에 <Mascot expression={GRADE_EXPRESSION[grade]} className='h-24 w-24 shrink-0'/> 추가 — 제어(정적)·비인터랙티브·aria-hidden. safe→relieved/caution→worried/danger→sad는 @/lib/mascot-frames의 GRADE_EXPRESSION 재사용(로컬 재정의 없음). 리다이렉트/isRetryingRef/isComplete 가드/handleRetry·GRADE_TEXT_COLOR·GRADE_LABELS 무수정. 신규 src/app/result/page.test.tsx 6케이스(next/navigation·session-context·scoring mock, 등급별 data-expression, mouseEnter 무반응, 스모크, 미완료 리다이렉트). build/lint 통과, test 226(+6) 통과. (harness 수동 실행)",
+      "completed_at": "2026-09-02T16:23:00+0900"
     }
   ],
-  "created_at": "2026-09-02T15:43:59+0900"
+  "created_at": "2026-09-02T15:43:59+0900",
+  "completed_at": "2026-09-02T16:23:30+0900"
 }
