@@ -8,6 +8,9 @@ export type ExperienceTypeId =
 
 export type Grade = "safe" | "caution" | "danger";
 
+// 난이도 선택 필터 전용 코드 값. 화면 표시용 한글 라벨은 src/data/difficulty.ts.
+export type Difficulty = "easy" | "medium" | "hard";
+
 export interface ModuleResult {
   typeId: ExperienceTypeId;
   contentId: string;
@@ -28,7 +31,7 @@ export interface ExperienceComponentProps<TContent> {
 export interface ExperienceModule<TContent = unknown> {
   typeId: ExperienceTypeId;
   contentPool: TContent[];
-  pickRandomContent(): TContent;
+  pickRandomContent(difficulty?: Difficulty): TContent;
   Component: ComponentType<ExperienceComponentProps<TContent>>;
 }
 
@@ -66,6 +69,8 @@ export interface VoicePhishingScenario {
   category: VoicePhishingCategory;
   startNodeId: string;
   nodes: DialogueNode[];
+  // 렌더링 금지 — 난이도 필터 전용 내부 메타데이터. 이번 범위에서는 미태깅(후속 작업).
+  difficulty?: Difficulty;
 }
 
 export type JeonseFieldStatus = "정상" | "주의" | "위험";
@@ -75,7 +80,7 @@ export type JeonseBuildingType = "다가구주택" | "아파트" | "오피스텔
 // 렌더링 금지 — 내부 메타데이터. FraudJudgmentCategory와 동일 패턴.
 // easy: risky/safe 판정을 뒷받침하는 위험 신호가 다수·명확. medium: 항목을 종합하거나 계산해야 판정 가능.
 // hard: 숫자·용어만 보면 반대로 오판하기 쉬운 반전형(예: 전세가율은 안전권인데 숨은 위험이 있는 경우, 또는 그 반대).
-export type JeonseDifficulty = "easy" | "medium" | "hard";
+export type JeonseDifficulty = Difficulty;
 
 export interface JeonseHouse {
   id: string;
@@ -129,6 +134,8 @@ export interface FraudJudgmentCard {
   answer: FraudJudgmentAnswer; // 정답: fraud=사기, safe=정상
   explanation: string; // /result에서만 노출 (체험 중 노출 금지, step2에서 강제)
   source: string; // 출처 — 사기 예방기관명이 정답을 암시하므로 /result에서만 노출 (step2에서 강제)
+  // 렌더링 금지 — 난이도 필터 전용 내부 메타데이터. 이번 범위에서는 미태깅(후속 작업).
+  difficulty?: Difficulty;
 }
 
 export type CaseDomain = "JEONSE" | "CHEONGYAK" | "BUNYANG";
@@ -237,4 +244,6 @@ export interface CaseInvestigationContent {
   npc: CaseNpcPersona; // 6개 케이스 전부 npc_personas 길이 1 → 배열이 아닌 단일 필드
   contradictions: CaseContradiction[];
   endingOptions: CaseEndingOption[]; // 정확히 3개, decision 3종 각 1개
+  // 렌더링 금지 — 난이도 필터 전용 내부 메타데이터. 이번 범위에서는 미태깅(후속 작업).
+  difficulty?: Difficulty;
 }
