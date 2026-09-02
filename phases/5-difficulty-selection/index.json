@@ -40,7 +40,7 @@
       "status": "completed",
       "started_at": "2026-09-02T10:08:50+0900",
       "summary": "DifficultySelectForm(순수 컨트롤드 컴포넌트) + TDD 테스트 신설 — PlayerSetupForm 패턴을 따르되 ChoiceGroup 대신 세로 스택 전체폭 카드 버튼(라벨+설명 각각 렌더), DIFFICULTY_OPTIONS 단일 출처, 선택 전 시작하기 disabled, 클릭 시 onComplete(id) 정확히 1회. 라우터/세션 Context 미의존(배선은 step5), globals.css 토큰만 사용. build/lint 통과, test 180 통과",
-      "completed_at": "2026-09-02T10:10:00+0900"
+      "completed_at": "2026-09-02T10:10:44+0900"
     },
     {
       "step": 5,
