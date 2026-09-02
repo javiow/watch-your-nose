@@ -29,7 +29,10 @@
     {
       "step": 3,
       "name": "new-scam-scenarios",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T19:46:13+0900",
+      "summary": "사기 시나리오 3종 추가 — scam-family-emergency-transfer(납치협박형/easy), scam-customs-fee-delivery(택배배송사칭형/medium), scam-messenger-impersonation-giftcard(메신저피싱형/hard). 시작노드 safe-terminal·danger는 마지막 노드 순응 선택지·caution은 next 보유 불변식 준수, speaker 익명형, verbatim 금지. voice-phishing.test.ts 개수 단언 6→9(정상3/사기6). build/lint 통과, test 229 통과",
+      "completed_at": "2026-09-02T19:50:40+0900"
     },
     {
       "step": 4,
