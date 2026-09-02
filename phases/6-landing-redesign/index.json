@@ -40,7 +40,7 @@
       "status": "completed",
       "started_at": "2026-09-02T15:54:59+0900",
       "summary": "tests/setup.ts에 jsdom matchMedia shim 추가(없을 때만 matches:false 기본값, 기존 cleanup 무변경). src/lib/useReducedMotion.ts 신설: 초기 state false 고정(SSR 결정적), useEffect 안에서만 window.matchMedia('(prefers-reduced-motion: reduce)') 접근, change 이벤트 구독(addEventListener 우선/레거시 addListener fallback), cleanup에서 대응 해제. 콜로케이션 테스트 먼저 작성(TDD, 6케이스). build/lint/test 통과(200, +6).",
-      "completed_at": "2026-09-02T15:56:30+0900"
+      "completed_at": "2026-09-02T15:57:07+0900"
     },
     {
       "step": 5,
