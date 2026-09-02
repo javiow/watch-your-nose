@@ -21,7 +21,10 @@
     {
       "step": 2,
       "name": "motion-keyframes",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T15:50:50+0900",
+      "summary": "globals.css 끝에 append만: no-preference 블록에 @keyframes mascot-bob/mascot-pop-in/cta-pulse/hero-bg-drift/hero-grain/card-float-a/card-float-b/card-float-c/scroll-cue(9종) + 바인딩 클래스 .mascot-bob/.mascot-pop-in/.cta-pulse/.hero-bg/.hero-grain(+::after)/.card-float-a|b|c(스태거 delay)/.scroll-cue. 미디어쿼리 밖 .mascot-frame{transition:opacity 220ms}. reduce 블록에서 위 애니메이션 전부 none!important + .mascot-frame transition none + .mascot-pop-in 정적화. 그레인은 repeating-radial-gradient만(인라인 SVG/외부이미지 없음). :root/@theme/body 무수정, package.json 무변경. build/lint/test 통과(182).",
+      "completed_at": "2026-09-02T15:52:00+0900"
     },
     {
       "step": 3,
