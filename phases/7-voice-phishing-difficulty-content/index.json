@@ -21,7 +21,10 @@
     {
       "step": 2,
       "name": "existing-difficulty-tags",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T18:12:14+0900",
+      "summary": "기존 6개 시나리오 difficulty 태깅(easy 1/medium 3/hard 2), voice-phishing.test.ts 난이도 커버리지 단언 2건 + registry.test.ts voice-phishing 난이도 매칭 단언 1건 추가. test 229 통과",
+      "completed_at": "2026-09-02T18:13:40+0900"
     },
     {
       "step": 3,

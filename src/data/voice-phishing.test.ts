@@ -173,3 +173,19 @@ describe("VOICE_PHISHING_SCENARIOS", () => {
     }
   });
 });
+
+describe("VOICE_PHISHING_SCENARIOS 난이도 태깅", () => {
+  it("모든 시나리오는 difficulty가 easy|medium|hard 중 하나로 태깅되어 있다", () => {
+    for (const scenario of VOICE_PHISHING_SCENARIOS) {
+      expect(["easy", "medium", "hard"]).toContain(scenario.difficulty);
+    }
+  });
+
+  it("easy·medium·hard 각각 최소 1개 시나리오가 있다", () => {
+    for (const level of ["easy", "medium", "hard"] as const) {
+      expect(
+        VOICE_PHISHING_SCENARIOS.some((scenario) => scenario.difficulty === level)
+      ).toBe(true);
+    }
+  });
+});

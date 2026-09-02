@@ -5,6 +5,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
     id: "normal-overseas-payment-alert",
     isNormalCase: true,
     category: "정상금융확인형",
+    difficulty: "medium",
     startNodeId: "n1",
     nodes: [
       {
@@ -78,6 +79,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
     id: "normal-delivery-address-confirm",
     isNormalCase: true,
     category: "정상생활안내형",
+    difficulty: "hard",
     startNodeId: "n1",
     nodes: [
       {
@@ -179,6 +181,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
     id: "scam-refund-remote-app",
     isNormalCase: false,
     category: "환불결제사칭형",
+    difficulty: "medium",
     startNodeId: "s1",
     nodes: [
       {
@@ -272,6 +275,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
     id: "scam-government-loan-program",
     isNormalCase: false,
     category: "대출빙자형",
+    difficulty: "medium",
     startNodeId: "s1",
     nodes: [
       {
@@ -386,6 +390,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
     id: "normal-sim-reissue-alert",
     isNormalCase: true,
     category: "정상생활안내형",
+    difficulty: "hard",
     startNodeId: "n1",
     nodes: [
       {
@@ -459,6 +464,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
     id: "scam-fake-prosecutor-safe-account",
     isNormalCase: false,
     category: "기관사칭형",
+    difficulty: "easy",
     startNodeId: "s1",
     nodes: [
       {
