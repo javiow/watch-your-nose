@@ -74,14 +74,14 @@ describe("VOICE_PHISHING_SCENARIOS", () => {
     ).toBe(true);
   });
 
-  it("정확히 6개 시나리오(정상 3개 + 사기 3개)로 구성된다", () => {
-    expect(VOICE_PHISHING_SCENARIOS).toHaveLength(6);
+  it("정확히 10개 시나리오(정상 4개 + 사기 6개)로 구성된다", () => {
+    expect(VOICE_PHISHING_SCENARIOS).toHaveLength(10);
     expect(
       VOICE_PHISHING_SCENARIOS.filter((scenario) => scenario.isNormalCase)
-    ).toHaveLength(3);
+    ).toHaveLength(4);
     expect(
       VOICE_PHISHING_SCENARIOS.filter((scenario) => !scenario.isNormalCase)
-    ).toHaveLength(3);
+    ).toHaveLength(6);
   });
 
   it("각 시나리오의 startNodeId는 nodes 안에 실제로 존재한다", () => {
@@ -170,6 +170,32 @@ describe("VOICE_PHISHING_SCENARIOS", () => {
         (choice) => choice.risk === "danger" && !choice.next
       );
       expect(hasDangerTerminal).toBe(true);
+    }
+  });
+});
+
+describe("VOICE_PHISHING_SCENARIOS 난이도 태깅", () => {
+  it("모든 시나리오는 difficulty가 easy|medium|hard 중 하나로 태깅되어 있다", () => {
+    for (const scenario of VOICE_PHISHING_SCENARIOS) {
+      expect(["easy", "medium", "hard"]).toContain(scenario.difficulty);
+    }
+  });
+
+  it("easy·medium·hard 각각 최소 1개 시나리오가 있다", () => {
+    for (const level of ["easy", "medium", "hard"] as const) {
+      expect(
+        VOICE_PHISHING_SCENARIOS.some((scenario) => scenario.difficulty === level)
+      ).toBe(true);
+    }
+  });
+
+  it("easy·medium·hard 각각에 정상·사기 시나리오가 모두 있다", () => {
+    for (const level of ["easy", "medium", "hard"] as const) {
+      const inLevel = VOICE_PHISHING_SCENARIOS.filter(
+        (scenario) => scenario.difficulty === level
+      );
+      expect(inLevel.some((scenario) => scenario.isNormalCase)).toBe(true);
+      expect(inLevel.some((scenario) => !scenario.isNormalCase)).toBe(true);
     }
   });
 });

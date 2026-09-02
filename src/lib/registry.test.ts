@@ -109,6 +109,21 @@ describe("EXPERIENCE_MODULES 난이도 선택", () => {
     }
   });
 
+  it("voice-phishing 모듈은 각 난이도에 대해 그 난이도의 시나리오를 반환한다", () => {
+    const voicePhishing = EXPERIENCE_MODULES.find(
+      (mod) => mod.typeId === "voice-phishing"
+    );
+    expect(voicePhishing).toBeDefined();
+    for (const d of ["easy", "medium", "hard"] as Difficulty[]) {
+      for (let i = 0; i < 20; i += 1) {
+        const scenario = voicePhishing!.pickRandomContent(d) as {
+          difficulty?: Difficulty;
+        };
+        expect(scenario.difficulty).toBe(d);
+      }
+    }
+  });
+
   it("jeonse 모듈을 인자 없이 호출하면 길이 5 배열을 반환한다", () => {
     const jeonse = EXPERIENCE_MODULES.find((mod) => mod.typeId === "jeonse");
     expect(jeonse).toBeDefined();
