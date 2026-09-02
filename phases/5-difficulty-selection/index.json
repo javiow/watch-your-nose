@@ -7,7 +7,8 @@
       "name": "docs-update",
       "status": "completed",
       "started_at": "2026-09-02T09:58:12+0900",
-      "summary": "ADR-012 추가, PRD 핵심 기능에 난이도 선택(3번) 삽입 및 번호 재정렬(1~9), ARCHITECTURE에 /difficulty 라우트·difficulty.ts·Difficulty 타입·데이터 흐름·엣지 케이스 반영 (src/ 미변경, build/lint/test 162 통과 그대로 유지)"
+      "summary": "ADR-012 추가, PRD 핵심 기능에 난이도 선택(3번) 삽입 및 번호 재정렬(1~9), ARCHITECTURE에 /difficulty 라우트·difficulty.ts·Difficulty 타입·데이터 흐름·엣지 케이스 반영 (src/ 미변경, build/lint/test 162 통과 그대로 유지)",
+      "completed_at": "2026-09-02T10:01:33+0900"
     },
     {
       "step": 1,
