@@ -29,7 +29,10 @@
     {
       "step": 3,
       "name": "registry-difficulty-selection",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-02T10:06:25+0900",
+      "summary": "registry.ts에 Fisher–Yates를 shuffle<T> 헬퍼로 추출(pickSessionPlan 동작 불변), pickByDifficulty<T>를 named export(요청 난이도 필터 → 매칭 0건이면 전체 풀 fallback), 전세매물 전용 pickJeonseSet(난이도별 JEONSE_HOUSES에서 즉석 shuffle().slice(0,5), 5채 미만이면 JEONSE_HOUSE_SETS fallback) 추가. 4개 모듈 pickRandomContent를 (difficulty?)로 재배선, contentPool은 4개 모두 유지. registry.test.ts에 pickByDifficulty 4건 + 난이도 선택 3건 추가. jeonse.ts 미수정. build/lint 통과, test 176 통과",
+      "completed_at": "2026-09-02T10:08:00+0900"
     },
     {
       "step": 4,
