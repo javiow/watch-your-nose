@@ -11,7 +11,7 @@ export default function SetupPage() {
 
   const handleComplete = (info: PlayerInfo) => {
     setPlayerInfo(info);
-    router.push("/session");
+    router.push("/difficulty");
   };
 
   return (

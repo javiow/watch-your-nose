@@ -8,7 +8,11 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { ExperienceTypeId, ModuleResult } from "@/types/experience";
+import type {
+  Difficulty,
+  ExperienceTypeId,
+  ModuleResult,
+} from "@/types/experience";
 import type { PlayerInfo } from "@/types/player";
 import { pickSessionPlan } from "@/lib/registry";
 
@@ -19,6 +23,8 @@ interface SessionContextValue {
   resetSession: () => void;
   playerInfo: PlayerInfo | null;
   setPlayerInfo: (info: PlayerInfo) => void;
+  difficulty: Difficulty | null;
+  setDifficulty: (difficulty: Difficulty) => void;
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null);
@@ -27,6 +33,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [sessionPlan, setSessionPlan] = useState(() => pickSessionPlan());
   const [results, setResults] = useState<ModuleResult[]>([]);
   const [playerInfo, setPlayerInfo] = useState<PlayerInfo | null>(null);
+  const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
 
   const addResult = useCallback((result: ModuleResult) => {
     setResults((prev) => [...prev, result]);
@@ -45,8 +52,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       resetSession,
       playerInfo,
       setPlayerInfo,
+      difficulty,
+      setDifficulty,
     }),
-    [sessionPlan, results, addResult, resetSession, playerInfo]
+    [sessionPlan, results, addResult, resetSession, playerInfo, difficulty]
   );
 
   return (

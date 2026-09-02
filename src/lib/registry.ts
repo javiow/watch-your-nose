@@ -1,42 +1,74 @@
-import type { ExperienceModule, ExperienceTypeId } from "@/types/experience";
+import type {
+  Difficulty,
+  ExperienceModule,
+  ExperienceTypeId,
+  JeonseHouse,
+} from "@/types/experience";
 import { VOICE_PHISHING_SCENARIOS } from "@/data/voice-phishing";
 import { CASE_INVESTIGATION_CASES } from "@/data/case-investigation";
-import { JEONSE_HOUSE_SETS } from "@/data/jeonse";
+import { JEONSE_HOUSES, JEONSE_HOUSE_SETS } from "@/data/jeonse";
 import { FRAUD_JUDGMENT_CARDS } from "@/data/fraud-judgment";
 import { VoicePhishingExperience } from "@/components/experiences/VoicePhishingExperience";
 import { CaseInvestigationExperience } from "@/components/experiences/CaseInvestigationExperience";
 import { JeonseExperience } from "@/components/experiences/JeonseExperience";
 import { FraudJudgmentExperience } from "@/components/experiences/FraudJudgmentExperience";
 
+function shuffle<T>(arr: readonly T[]): T[] {
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+export function pickByDifficulty<T extends { difficulty?: Difficulty }>(
+  pool: T[],
+  difficulty?: Difficulty,
+): T {
+  const matching = difficulty ? pool.filter((x) => x.difficulty === difficulty) : [];
+  const source = matching.length > 0 ? matching : pool;
+  return source[Math.floor(Math.random() * source.length)];
+}
+
+const JEONSE_SET_SIZE = 5;
+
+function pickJeonseSet(difficulty?: Difficulty): JeonseHouse[] {
+  if (difficulty) {
+    const pool = JEONSE_HOUSES.filter((h) => h.difficulty === difficulty);
+    if (pool.length >= JEONSE_SET_SIZE) {
+      return shuffle(pool).slice(0, JEONSE_SET_SIZE);
+    }
+  }
+  return JEONSE_HOUSE_SETS[Math.floor(Math.random() * JEONSE_HOUSE_SETS.length)];
+}
+
 export const EXPERIENCE_MODULES: ExperienceModule[] = [
   {
     typeId: "voice-phishing",
     contentPool: VOICE_PHISHING_SCENARIOS,
-    pickRandomContent: () =>
-      VOICE_PHISHING_SCENARIOS[
-        Math.floor(Math.random() * VOICE_PHISHING_SCENARIOS.length)
-      ],
+    pickRandomContent: (difficulty?: Difficulty) =>
+      pickByDifficulty(VOICE_PHISHING_SCENARIOS, difficulty),
     Component: VoicePhishingExperience,
   },
   {
     typeId: "case-investigation",
     contentPool: CASE_INVESTIGATION_CASES,
-    pickRandomContent: () =>
-      CASE_INVESTIGATION_CASES[Math.floor(Math.random() * CASE_INVESTIGATION_CASES.length)],
+    pickRandomContent: (difficulty?: Difficulty) =>
+      pickByDifficulty(CASE_INVESTIGATION_CASES, difficulty),
     Component: CaseInvestigationExperience,
   },
   {
     typeId: "jeonse",
     contentPool: JEONSE_HOUSE_SETS,
-    pickRandomContent: () =>
-      JEONSE_HOUSE_SETS[Math.floor(Math.random() * JEONSE_HOUSE_SETS.length)],
+    pickRandomContent: (difficulty?: Difficulty) => pickJeonseSet(difficulty),
     Component: JeonseExperience,
   },
   {
     typeId: "fraud-judgment",
     contentPool: FRAUD_JUDGMENT_CARDS,
-    pickRandomContent: () =>
-      FRAUD_JUDGMENT_CARDS[Math.floor(Math.random() * FRAUD_JUDGMENT_CARDS.length)],
+    pickRandomContent: (difficulty?: Difficulty) =>
+      pickByDifficulty(FRAUD_JUDGMENT_CARDS, difficulty),
     Component: FraudJudgmentExperience,
   },
 ] as ExperienceModule[];
@@ -56,11 +88,5 @@ export function pickSessionPlan(
 ): { typeId: ExperienceTypeId }[] {
   assertContentPools(modules);
 
-  const shuffled = [...modules];
-  for (let i = shuffled.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-
-  return shuffled.map((mod) => ({ typeId: mod.typeId }));
+  return shuffle(modules).map((mod) => ({ typeId: mod.typeId }));
 }

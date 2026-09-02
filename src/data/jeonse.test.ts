@@ -39,6 +39,14 @@ describe("JEONSE_HOUSES", () => {
     expect(difficulties.has("medium")).toBe(true);
     expect(difficulties.has("hard")).toBe(true);
   });
+
+  it("easy/medium/hard 난이도가 각각 5채 이상 존재한다", () => {
+    // step3의 전세매물 즉석 5채 세트 구성이 fallback 없이 동작하기 위한 전제.
+    for (const level of ["easy", "medium", "hard"] as const) {
+      const count = JEONSE_HOUSES.filter((h) => h.difficulty === level).length;
+      expect(count).toBeGreaterThanOrEqual(5);
+    }
+  });
 });
 
 describe("JEONSE_HOUSE_SETS", () => {

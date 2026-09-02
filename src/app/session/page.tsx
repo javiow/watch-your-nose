@@ -8,7 +8,7 @@ import type { ModuleResult } from "@/types/experience";
 
 export default function SessionPage() {
   const router = useRouter();
-  const { sessionPlan, addResult, playerInfo } = useSession();
+  const { sessionPlan, addResult, playerInfo, difficulty } = useSession();
   const [step, setStep] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -18,19 +18,24 @@ export default function SessionPage() {
     : undefined;
 
   const content = useMemo(
-    () => currentModule?.pickRandomContent(),
-    [currentModule]
+    () => currentModule?.pickRandomContent(difficulty ?? undefined),
+    [currentModule, difficulty]
   );
 
   useEffect(() => {
-    if (sessionPlan.length === 0 || playerInfo === null) {
+    if (
+      sessionPlan.length === 0 ||
+      playerInfo === null ||
+      difficulty === null
+    ) {
       router.replace("/");
     }
-  }, [sessionPlan, playerInfo, router]);
+  }, [sessionPlan, playerInfo, difficulty, router]);
 
   if (
     sessionPlan.length === 0 ||
     playerInfo === null ||
+    difficulty === null ||
     !currentModule ||
     content === undefined
   ) {
