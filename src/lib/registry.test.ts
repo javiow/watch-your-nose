@@ -74,7 +74,7 @@ describe("pickByDifficulty", () => {
   });
 
   it("난이도 태그가 전혀 없는 풀은 난이도를 무시하고 전체 풀에서 반환한다", () => {
-    const pool = [{ v: 1 }, { v: 2 }];
+    const pool: { v: number; difficulty?: Difficulty }[] = [{ v: 1 }, { v: 2 }];
     for (let i = 0; i < 30; i += 1) {
       expect(pool).toContain(pickByDifficulty(pool, "easy"));
     }
