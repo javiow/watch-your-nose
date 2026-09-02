@@ -32,7 +32,7 @@
       "status": "completed",
       "started_at": "2026-09-02T15:52:41+0900",
       "summary": "순수 데이터 모듈 src/lib/mascot-frames.ts 신설(React/next/image/window/타이머 미import): MascotExpression 7종 유니온, MASCOT_FRAME_SRC(relieved→/mascot/blink.webp 재사용, 나머지는 step1 파일명 매핑), MASCOT_FRAME_FILES(중복제거 6개), GRADE_EXPRESSION(safe→relieved/caution→worried/danger→sad, Grade는 @/types/experience에서 import type), 모션 타이밍 상수 7종(BLINK_MIN/MAX/HOLD_MS, OCCASIONAL_LOOK_EVERY/MS, REACTION_SURPRISE/SETTLE_MS). 콜로케이션 테스트 mascot-frames.test.ts 먼저 작성(TDD, 12케이스). build/lint/test 통과(194, +12).",
-      "completed_at": "2026-09-02T15:54:30+0900"
+      "completed_at": "2026-09-02T15:54:58+0900"
     },
     {
       "step": 4,
