@@ -1,0 +1,80 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "6-landing-redesign",
+  "steps": [
+    {
+      "step": 0,
+      "name": "docs-update",
+      "status": "completed",
+      "started_at": "2026-09-02T15:43:59+0900",
+      "summary": "PRD 「디자인」 섹션을 라이트 크림+번트오렌지 현실/히어로 모션 허용으로 개정하고 핵심기능 1번을 '코심코심' 히어로 문구로 교체; README 헤드라인 '눈 뜨고 코 베인다'→'코심코심'; ADR-013에 라이트/오렌지 팔레트 정본화 불릿 보완, ARCHITECTURE는 이미 반영돼 있어 검증만. src/ 무변경, build/lint/test 그대로 통과(182).",
+      "completed_at": "2026-09-02T15:47:34+0900"
+    },
+    {
+      "step": 1,
+      "name": "mascot-assets",
+      "status": "completed",
+      "started_at": "2026-09-02T15:47:35+0900",
+      "summary": "팀 제공 코끼리 PNG 8장(고유 6종) → 임시 디렉토리 1회성 PIL 스크립트(모서리 flood-fill 투명화 thresh=40 + sad 프레임 하단 92% 그림자 컷 + 트림 + 1.06배 정사각 패딩 + 512px LANCZOS + WebP q82 method6)로 가공해 public/mascot/에 idle.webp(22.8KB)/blink.webp(22.2KB)/surprised.webp(23.5KB)/worried.webp(23.8KB)/sleepy.webp(21.7KB)/sad.webp(23.8KB) 6개 생성, 합계 137.8KB. 전부 512x512 WebP·알파 유지·네 모서리 alpha 0. 가공 스크립트는 미커밋(산출물만). src/·next.config.ts·package.json 무변경, build/lint/test 통과(182).",
+      "completed_at": "2026-09-02T15:50:50+0900"
+    },
+    {
+      "step": 2,
+      "name": "motion-keyframes",
+      "status": "completed",
+      "started_at": "2026-09-02T15:50:50+0900",
+      "summary": "globals.css 끝에 append만: no-preference 블록에 @keyframes mascot-bob/mascot-pop-in/cta-pulse/hero-bg-drift/hero-grain/card-float-a/card-float-b/card-float-c/scroll-cue(9종) + 바인딩 클래스 .mascot-bob/.mascot-pop-in/.cta-pulse/.hero-bg/.hero-grain(+::after)/.card-float-a|b|c(스태거 delay)/.scroll-cue. 미디어쿼리 밖 .mascot-frame{transition:opacity 220ms}. reduce 블록에서 위 애니메이션 전부 none!important + .mascot-frame transition none + .mascot-pop-in 정적화. 그레인은 repeating-radial-gradient만(인라인 SVG/외부이미지 없음). :root/@theme/body 무수정, package.json 무변경. build/lint/test 통과(182).",
+      "completed_at": "2026-09-02T15:52:41+0900"
+    },
+    {
+      "step": 3,
+      "name": "mascot-frames",
+      "status": "completed",
+      "started_at": "2026-09-02T15:52:41+0900",
+      "summary": "순수 데이터 모듈 src/lib/mascot-frames.ts 신설(React/next/image/window/타이머 미import): MascotExpression 7종 유니온, MASCOT_FRAME_SRC(relieved→/mascot/blink.webp 재사용, 나머지는 step1 파일명 매핑), MASCOT_FRAME_FILES(중복제거 6개), GRADE_EXPRESSION(safe→relieved/caution→worried/danger→sad, Grade는 @/types/experience에서 import type), 모션 타이밍 상수 7종(BLINK_MIN/MAX/HOLD_MS, OCCASIONAL_LOOK_EVERY/MS, REACTION_SURPRISE/SETTLE_MS). 콜로케이션 테스트 mascot-frames.test.ts 먼저 작성(TDD, 12케이스). build/lint/test 통과(194, +12).",
+      "completed_at": "2026-09-02T15:54:58+0900"
+    },
+    {
+      "step": 4,
+      "name": "reduced-motion-hook",
+      "status": "completed",
+      "started_at": "2026-09-02T15:54:59+0900",
+      "summary": "tests/setup.ts에 jsdom matchMedia shim 추가(없을 때만 matches:false 기본값, 기존 cleanup 무변경). src/lib/useReducedMotion.ts 신설: 초기 state false 고정(SSR 결정적), useEffect 안에서만 window.matchMedia('(prefers-reduced-motion: reduce)') 접근, change 이벤트 구독(addEventListener 우선/레거시 addListener fallback), cleanup에서 대응 해제. 콜로케이션 테스트 먼저 작성(TDD, 6케이스). build/lint/test 통과(200, +6).",
+      "completed_at": "2026-09-02T15:57:07+0900"
+    },
+    {
+      "step": 5,
+      "name": "mascot-expression-hook",
+      "status": "completed",
+      "started_at": "2026-09-02T16:05:00+0900",
+      "summary": "src/lib/useMascotExpression.ts 신설('use client'): idle 루프(랜덤 BLINK_MIN~MAX 간격 setTimeout 재귀, blink BLINK_HOLD_MS, 매 OCCASIONAL_LOOK_EVERY번째는 sleepy OCCASIONAL_LOOK_MS) + react()/bind(onMouseEnter/Leave/PointerDown/Focus/Blur) 트리거(surprised→REACTION_SURPRISE_MS→worried→REACTION_SETTLE_MS→base, 재트리거 시 리셋, mouseLeave/blur는 settle 앞당김). controlledExpression 지정 또는 useReducedMotion()/enabled:false면 active=false로 base 표정 고정·타이머 0·bind는 NOOP. 타이밍 상수는 @/lib/mascot-frames에서 import(하드코딩 없음), useSession/Context 미import, setInterval 미사용(setTimeout 재귀), 언마운트 시 전체 타이머 clear. 콜로케이션 테스트 먼저 작성(TDD, 10케이스, vi.useFakeTimers + Math.random 고정). build/lint 통과, test 210(+10) 통과. (harness 백그라운드 프로세스 반복 종료로 이 step은 수동 실행)",
+      "completed_at": "2026-09-02T16:14:00+0900"
+    },
+    {
+      "step": 6,
+      "name": "mascot-component",
+      "status": "completed",
+      "started_at": "2026-09-02T16:15:00+0900",
+      "summary": "src/components/ui/Mascot.tsx 재작성: aria-hidden <span> 래퍼(data-expression=active, float(기본=interactive)면 mascot-bob mascot-pop-in) 안에 MASCOT_FRAME_FILES 6장을 next/image fill로 겹쳐 렌더(활성 opacity-100/나머지 opacity-0, data-active). useMascotExpression({enabled: interactive && !expression, controlledExpression: expression}); enabled면 hook.bind 스프레드. proximityRef 지정 시 pointermove로 박스 중심 거리<proximityRadius(기본140)면 react() — typeof window/PointerEvent 가드, reduced-motion이면 미부착. priority(기본=interactive)면 idle 프레임만 priority, 나머지 loading=eager 프리로드. useSession/Context 미import, raw <img> 없음. legacy public/mascot.png 참조 0 확인 후 git rm. Mascot.test.tsx: zero-prop 계약 유지 + 프레임수/제어표정/interactive mouseEnter/reduced-motion 6케이스. build/lint 통과, test 215(+5) 통과. (harness 수동 실행)",
+      "completed_at": "2026-09-02T16:17:00+0900"
+    },
+    {
+      "step": 7,
+      "name": "landing-hero",
+      "status": "completed",
+      "started_at": "2026-09-02T16:18:00+0900",
+      "summary": "src/components/ui/LandingHero.tsx('use client') 신설: hero-bg hero-grain min-h-screen 섹션, stageRef div 안에 HERO_CARDS(string[] export, 유형명 미노출) 4장을 absolute·aria-hidden·pointer-events-none·card-float-a|b|c·hidden sm:block 장식 카드로, <Mascot interactive priority proximityRef={stageRef} h-52 w-52 sm:h-64>, eyebrow 'Watch Your Nose' + H1 '코심코심' + 서브카피, <div class='cta-pulse rounded-xl'><StartButton/></div>, 하단 scroll-cue <a href='#how-it-works'>. src/app/page.tsx는 서버 컴포넌트 유지('use client' 없음): <main><LandingHero/> + #how-it-works 섹션('진행 방식' 3줄 원문 그대로)</main>. src/app/layout.tsx metadata.description '눈 뜨고 코 베인다'→'코심코심'. LandingHero.test.tsx 4케이스(SessionProvider+useRouter mock) + page.test.tsx에 '코심코심'/'진행 방식' 단언 추가·유형명 비노출 유지. StartButton 무수정. build(/ 여전히 Static)·lint 통과, test 220(+5) 통과. (harness 수동 실행)",
+      "completed_at": "2026-09-02T16:21:00+0900"
+    },
+    {
+      "step": 8,
+      "name": "result-mascot",
+      "status": "completed",
+      "started_at": "2026-09-02T16:21:30+0900",
+      "summary": "src/app/result/page.tsx 종합 정답률 섹션을 flex items-center gap-4 행으로 바꾸고 앞에 <Mascot expression={GRADE_EXPRESSION[grade]} className='h-24 w-24 shrink-0'/> 추가 — 제어(정적)·비인터랙티브·aria-hidden. safe→relieved/caution→worried/danger→sad는 @/lib/mascot-frames의 GRADE_EXPRESSION 재사용(로컬 재정의 없음). 리다이렉트/isRetryingRef/isComplete 가드/handleRetry·GRADE_TEXT_COLOR·GRADE_LABELS 무수정. 신규 src/app/result/page.test.tsx 6케이스(next/navigation·session-context·scoring mock, 등급별 data-expression, mouseEnter 무반응, 스모크, 미완료 리다이렉트). build/lint 통과, test 226(+6) 통과. (harness 수동 실행)",
+      "completed_at": "2026-09-02T16:23:00+0900"
+    }
+  ],
+  "created_at": "2026-09-02T15:43:59+0900",
+  "completed_at": "2026-09-02T16:23:30+0900"
+}

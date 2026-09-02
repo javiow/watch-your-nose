@@ -8,22 +8,28 @@ vi.mock("next/navigation", () => ({
 
 import Home from "./page";
 
+function renderHome() {
+  return render(
+    <SessionProvider>
+      <Home />
+    </SessionProvider>
+  );
+}
+
 describe("Home", () => {
   it("renders the service name", () => {
-    render(
-      <SessionProvider>
-        <Home />
-      </SessionProvider>
-    );
+    renderHome();
     expect(screen.getByText("Watch Your Nose")).toBeDefined();
   });
 
+  it("헤드라인과 진행 방식 안내를 보여준다", () => {
+    renderHome();
+    expect(screen.getByText("코심코심")).toBeDefined();
+    expect(screen.getByText("진행 방식")).toBeDefined();
+  });
+
   it("체험 유형명을 노출하지 않는다", () => {
-    render(
-      <SessionProvider>
-        <Home />
-      </SessionProvider>
-    );
+    renderHome();
     expect(screen.queryByText(/보이스피싱/)).toBeNull();
     expect(screen.queryByText(/사례선택/)).toBeNull();
     expect(screen.queryByText(/전세매물/)).toBeNull();

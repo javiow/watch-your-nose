@@ -4,19 +4,22 @@
 ```
 src/
 ├── app/
-│   ├── page.tsx                     # 랜딩: 헤드라인 + 규칙 안내 + "시작하기"
+│   ├── page.tsx                     # 랜딩(서버 셸): <LandingHero> + 스크롤 아래 "진행 방식"(#how-it-works)
 │   ├── setup/page.tsx               # 캐릭터 설정(나이대/직업/성별), 랜딩 이후 1회성 전역 단계
 │   ├── difficulty/page.tsx          # 난이도 선택(쉬움/중간/어려움), /setup 이후 1회성 전역 단계
 │   ├── session/page.tsx             # 체험 진행 (4단계, 수동 "다음" 전환, 즉시 피드백 없음)
-│   └── result/page.tsx              # 종합 평가 + 문항별 리뷰 + 대응방안 + "다시 체험하기"
+│   └── result/page.tsx              # 종합 평가(등급별 마스코트 표정) + 문항별 리뷰 + 대응방안 + "다시 체험하기"
 ├── components/
 │   ├── experiences/                 # VoicePhishingExperience(+ChatBubble/TypingIndicator/ChatChoiceButtons), CaseInvestigationExperience, JeonseExperience(+jeonse/ 하위: MapBoard/HouseDialogPanel/HouseSprite/PlayerSprite/sprites/boardConfig), FraudJudgmentExperience
-│   └── ui/                          # 공용 컴포넌트 — 처음부터 만들지 않고 2곳 이상 중복 시 추출. 페이지 전용 폼(PlayerSetupForm, DifficultySelectForm)은 여기 둔다.
+│   └── ui/                          # 공용 컴포넌트 — 처음부터 만들지 않고 2곳 이상 중복 시 추출. 페이지 전용 폼(PlayerSetupForm, DifficultySelectForm), 랜딩 히어로 아일랜드(LandingHero, "use client"), 마스코트(Mascot — 표정 프레임 레이어드 next/image), StartButton도 여기 둔다.
 ├── types/                           # ExperienceModule, ModuleResult, DialogueNode, CaseInvestigationContent, JeonseHouse, FraudJudgmentCard, Difficulty
 │   └── player.ts                    # PlayerInfo
 ├── lib/
 │   ├── registry.ts                  # 유형 등록 + 세션용 랜덤 순서 + 난이도별 콘텐츠 선택
 │   ├── scoring.ts                   # 등급 계산, 종합 평균 집계
+│   ├── mascot-frames.ts             # 마스코트 표정→이미지 경로, 등급→표정 매핑, 모션 타이밍 상수 (순수 데이터)
+│   ├── useReducedMotion.ts          # prefers-reduced-motion 구독 훅
+│   ├── useMascotExpression.ts       # 마스코트 idle 깜빡임 루프 + 포인터 근접/hover 반응 상태 머신
 │   └── session-context.tsx          # SessionProvider (React Context, localStorage 없음)
 └── data/
     ├── voice-phishing.ts
@@ -27,21 +30,24 @@ src/
     └── remediation.ts               # 오답 유형별 대응 방안 카피
 ```
 
+`public/mascot/`에 마스코트 표정 프레임 6종(`idle`/`blink`/`surprised`/`worried`/`sleepy`/`sad`, WebP)을 둔다. 원본(팀 제공 PNG 8장)을 투명화·트림·정사각 패딩·512px 변환하는 1회성 스크립트는 앱 코드로 커밋하지 않고 산출물만 커밋한다(`docs/ADR.md` ADR-013).
+
 ## 패턴
 - 백엔드/DB 없음. 모든 콘텐츠는 `src/data/`의 정적 TS 파일.
 - 4개 체험 유형은 공통 인터페이스(`ExperienceModule`)를 구현해 `lib/registry.ts`에 등록하는 플러그인 패턴 — 홈/세션 오케스트레이션은 레지스트리만 순회, 유형을 직접 import하지 않는다.
-- 인터랙션이 있는 화면(session, result)은 Client Component. 랜딩은 정적 콘텐츠라 Server Component로 유지 가능.
+- 인터랙션이 있는 화면(session, result)은 Client Component. 랜딩은 서버 컴포넌트 셸로 두되, 애니메이션·포인터 반응이 필요한 히어로만 `LandingHero`(`"use client"`) 아일랜드로 분리한다.
+- 마스코트는 장식 요소다 — 항상 `aria-hidden`, `alt=""`. 표정 프레임(`public/mascot/*.webp`)을 `next/image`로 전부 겹쳐 렌더하고 opacity로 크로스페이드하며, 모션은 `globals.css`의 `@keyframes`로만 구현한다(모션 라이브러리 미사용). 마스코트 상태 로직은 `src/lib/`의 훅(`useMascotExpression`, `useReducedMotion`)에 두고 `Mascot` 컴포넌트는 렌더만 맡는다.
 
 ## 데이터 흐름
 ```
-"/" 랜딩에서 "시작하기" 클릭
+"/" 랜딩(히어로: 인터랙티브 마스코트 + 스크롤 아래 "진행 방식" 안내)에서 "시작하기" 클릭
 → "/setup": 나이대/직업/성별 선택 (1회, 화면 미노출 저장 — SessionProvider.playerInfo)
 → "/difficulty": 쉬움/중간/어려움 중 1개 선택 (SessionProvider.difficulty, 유형명 비노출)
 → 세션 초기화: 4개 유형 순서 셔플 + 유형별 콘텐츠 풀을 선택 난이도로 좁혀 1개씩 랜덤 선택 (registry.ts)
 → "/session": 단계별로 해당 유형 Experience 컴포넌트 렌더, 진행률(N/4) 표시
    → 사용자가 선택 → 케이스 조사/전세매물은 "다음" 버튼 클릭 시, 보이스피싱은 채팅형 UI로 선택 즉시 다음 대사/단계로 진행 (자동 전환/즉시 피드백 없음은 공통)
    → 각 단계 완료 시 ModuleResult를 SessionProvider Context에 누적
-→ 4단계 완료 → "/result": 평균 점수/등급 + 문항별 리뷰 + mistakeTag→대응방안(remediation.ts) 렌더
+→ 4단계 완료 → "/result": 평균 점수/등급(등급별 마스코트 표정 — safe→relieved / caution→worried / danger→sad) + 문항별 리뷰 + mistakeTag→대응방안(remediation.ts) 렌더
 → "다시 체험하기" → 세션 재초기화 → 랜딩·설정·난이도 화면 모두 건너뛰고 바로 "/session" (playerInfo·difficulty 유지)
 ```
 
@@ -75,10 +81,15 @@ src/
 - 난이도 선택 화면의 라벨·설명 문구는 체험 유형명이나 다음 단계를 드러내지 않는다 — 일반적 표현만 쓴다(ADR-004의 연장, `page.test.tsx`의 유형명 비노출 테스트와 같은 원칙).
 - `pickRandomContent(difficulty)`는 해당 난이도로 태깅된 콘텐츠가 없는 풀(태깅이 아예 없는 유형 포함)에서는 전체 풀 랜덤으로 fallback한다 — 이번 범위에서 난이도가 실제 반영되는 유형은 전세매물뿐이고, 나머지 3개 유형의 동작은 난이도 도입 전과 동일하다.
 - 전세매물은 난이도 선택 시 `JEONSE_HOUSES`에서 해당 난이도 매물만 골라 랜덤 5채로 세트를 즉석 구성한다 — 해당 난이도 매물이 5채 미만이면 기존 `JEONSE_HOUSE_SETS` 세트로 fallback한다. 세트 내 위험/안전 매물 균형은 보장하지 않는다(기존 정적 세트도 동일).
+- `Mascot`은 `SessionProvider` 없이·props 없이도 장식용 `img`(`aria-hidden`)로 렌더된다 — 기존 `Mascot.test.tsx` 계약을 깨지 않는다. 정오답·등급은 마스코트가 텍스트로 대신 말하지 않고 기존 등급 라벨/색이 담당한다.
+- 마스코트 표정 프레임은 마운트 시 전부 프리로드해 첫 표정 전환 시 깜빡임이 없도록 한다. 프레임 파일이 없거나 로드 실패해도 레이아웃은 빈 박스로 유지되고 앱은 크래시하지 않는다.
+- `prefers-reduced-motion: reduce` 환경에서는 마스코트 idle 루프·bob·크로스페이드와 히어로 배경/떠다니는 카드/CTA 애니메이션을 모두 끄고 정적으로 렌더한다. `useMascotExpression`은 이때 타이머를 걸지 않고 `baseExpression`을 고정 반환한다.
+- 마스코트 포인터 근접 반응은 `proximityRef` 요소의 `pointermove`로만 동작하며 `typeof window`/`PointerEvent` 가드 뒤에 둔다 — 미지원 환경(SSR·jsdom)에서는 hover/focus 반응만 남고 근접 감지는 조용히 비활성화된다.
+- 랜딩 히어로의 떠다니는 "가짜 스캠 알림" 카드는 장식이다(`aria-hidden`, `pointer-events-none`) — CTA 클릭을 가로막지 않고, 문구는 체험 유형명이나 다음 단계를 드러내지 않는다(ADR-004, `page.test.tsx` 유형명 비노출과 같은 원칙).
 
 ## 보안
 - 모든 체험 콘텐츠는 피해자 관점(방어)만 다룬다 — 가해자 관점 콘텐츠 금지 (`docs/ADR.md` ADR-005).
-- 팀원이 채워 넣는 정적 콘텐츠(사례·매물·대화 본문)를 렌더링할 때 `dangerouslySetInnerHTML`을 쓰지 않는다 — React 기본 이스케이프 경로로만 렌더링해 XSS를 원천 차단.
+- 팀원이 채워 넣는 정적 콘텐츠(사례·매물·대화 본문)를 렌더링할 때 `dangerouslySetInnerHTML`을 쓰지 않는다 — React 기본 이스케이프 경로로만 렌더링해 XSS를 원천 차단. 랜딩 히어로 배경 그레인도 인라인 SVG/`dangerouslySetInnerHTML` 없이 CSS `radial-gradient`로만 만든다.
 - `next.config`에 기본 보안 헤더를 추가한다: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`(또는 `frame-ancestors 'none'`), `Referrer-Policy: strict-origin-when-cross-origin`.
 - `package-lock.json`을 커밋해 의존성 버전을 고정한다. `npm audit`은 참고용으로만 사용하고 빌드를 막는 하드 게이트로 두지 않는다.
 - API 키·시크릿은 이번 MVP에서 필요 없다(완전 정적, LLM 미사용). 나중에 추가되면 `.env*`로만 다루고 코드에 하드코딩하지 않는다.

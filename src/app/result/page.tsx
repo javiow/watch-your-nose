@@ -6,6 +6,8 @@ import { useSession } from "@/lib/session-context";
 import { EXPERIENCE_MODULES } from "@/lib/registry";
 import { GRADE_LABELS, aggregateResults } from "@/lib/scoring";
 import { getRemediation } from "@/data/remediation";
+import { Mascot } from "@/components/ui/Mascot";
+import { GRADE_EXPRESSION } from "@/lib/mascot-frames";
 import type { Grade } from "@/types/experience";
 
 const GRADE_TEXT_COLOR: Record<Grade, string> = {
@@ -49,12 +51,22 @@ export default function ResultPage() {
     <main className="mx-auto max-w-5xl space-y-8 px-4 py-10 md:px-8">
       <h1 className="text-4xl font-semibold text-foreground">결과</h1>
 
-      <section className="space-y-1 rounded-xl border border-border bg-surface p-6 shadow-sm">
-        <p className="text-sm font-medium text-muted">종합 정답률</p>
-        <p className="text-4xl font-semibold text-foreground">
-          {roundedAverage}%{" "}
-          <span className={GRADE_TEXT_COLOR[grade]}>{GRADE_LABELS[grade]}</span>
-        </p>
+      <section className="rounded-xl border border-border bg-surface p-6 shadow-sm">
+        <div className="flex items-center gap-4">
+          <Mascot
+            expression={GRADE_EXPRESSION[grade]}
+            className="h-24 w-24 shrink-0"
+          />
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted">종합 정답률</p>
+            <p className="text-4xl font-semibold text-foreground">
+              {roundedAverage}%{" "}
+              <span className={GRADE_TEXT_COLOR[grade]}>
+                {GRADE_LABELS[grade]}
+              </span>
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="space-y-3">

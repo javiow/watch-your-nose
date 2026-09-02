@@ -1,0 +1,7 @@
+{
+  "step": 8,
+  "name": "result-mascot",
+  "exitCode": 0,
+  "stdout": "manual execution — harness 백그라운드 프로세스 반복 종료로 step8.md 명세대로 수동 구현. result/page.tsx 종합 정답률에 등급별 정적 Mascot 추가 + result/page.test.tsx 6케이스. npm run build / lint / test(226) AC 검증 후 feat/chore 2단 커밋.",
+  "stderr": ""
+}
