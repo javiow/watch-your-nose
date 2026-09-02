@@ -22,7 +22,7 @@ src/
 │   ├── useMascotExpression.ts       # 마스코트 idle 깜빡임 루프 + 포인터 근접/hover 반응 상태 머신
 │   └── session-context.tsx          # SessionProvider (React Context, localStorage 없음)
 └── data/
-    ├── voice-phishing.ts
+    ├── voice-phishing.ts             # 채팅형 분기 시나리오 10종(정상 4 + 사기 6), easy/medium/hard 태깅
     ├── case-investigation.ts          # red-flag(팀원 레포) 부동산 사기 조사 케이스 6종
     ├── jeonse.ts                    # 매물 42종 + 5채씩 정적 분할한 세트
     ├── fraud-judgment.ts             # 팀원 레포(fraudtest) 사기 판별 카드 90종
@@ -37,6 +37,7 @@ src/
 - 4개 체험 유형은 공통 인터페이스(`ExperienceModule`)를 구현해 `lib/registry.ts`에 등록하는 플러그인 패턴 — 홈/세션 오케스트레이션은 레지스트리만 순회, 유형을 직접 import하지 않는다.
 - 인터랙션이 있는 화면(session, result)은 Client Component. 랜딩은 서버 컴포넌트 셸로 두되, 애니메이션·포인터 반응이 필요한 히어로만 `LandingHero`(`"use client"`) 아일랜드로 분리한다.
 - 마스코트는 장식 요소다 — 항상 `aria-hidden`, `alt=""`. 표정 프레임(`public/mascot/*.webp`)을 `next/image`로 전부 겹쳐 렌더하고 opacity로 크로스페이드하며, 모션은 `globals.css`의 `@keyframes`로만 구현한다(모션 라이브러리 미사용). 마스코트 상태 로직은 `src/lib/`의 훅(`useMascotExpression`, `useReducedMotion`)에 두고 `Mascot` 컴포넌트는 렌더만 맡는다.
+- 보이스피싱 시나리오는 `docs/research/voice-phishing-case-bank/`의 실제 사례 요약(공개 출처 기반, 유형·흐름·심리압박 패턴 수준으로 추상화)을 근거로 작성한다 — 실제 대사·계좌번호·악성 앱 이름·피싱 URL은 옮기지 않는다(ADR-005, ADR-014).
 
 ## 데이터 흐름
 ```
@@ -79,13 +80,15 @@ src/
 - `/difficulty`는 `playerInfo`가 없으면(직접 URL 진입 등) `/`로 리다이렉트한다 — `/session`의 기존 가드와 동일 패턴.
 - `/session`은 `difficulty`가 없으면(직접 URL 진입 등) `/`로 리다이렉트한다 — `playerInfo` 가드와 함께 확인한다.
 - 난이도 선택 화면의 라벨·설명 문구는 체험 유형명이나 다음 단계를 드러내지 않는다 — 일반적 표현만 쓴다(ADR-004의 연장, `page.test.tsx`의 유형명 비노출 테스트와 같은 원칙).
-- `pickRandomContent(difficulty)`는 해당 난이도로 태깅된 콘텐츠가 없는 풀(태깅이 아예 없는 유형 포함)에서는 전체 풀 랜덤으로 fallback한다 — 이번 범위에서 난이도가 실제 반영되는 유형은 전세매물뿐이고, 나머지 3개 유형의 동작은 난이도 도입 전과 동일하다.
+- `pickRandomContent(difficulty)`는 해당 난이도로 태깅된 콘텐츠가 없는 풀(태깅이 아예 없는 유형 포함)에서는 전체 풀 랜덤으로 fallback한다 — 난이도가 실제 반영되는 유형은 전세매물·보이스피싱이고, 나머지 2개 유형(케이스 조사·사기 판별 카드)의 동작은 난이도 도입 전과 동일하다.
 - 전세매물은 난이도 선택 시 `JEONSE_HOUSES`에서 해당 난이도 매물만 골라 랜덤 5채로 세트를 즉석 구성한다 — 해당 난이도 매물이 5채 미만이면 기존 `JEONSE_HOUSE_SETS` 세트로 fallback한다. 세트 내 위험/안전 매물 균형은 보장하지 않는다(기존 정적 세트도 동일).
 - `Mascot`은 `SessionProvider` 없이·props 없이도 장식용 `img`(`aria-hidden`)로 렌더된다 — 기존 `Mascot.test.tsx` 계약을 깨지 않는다. 정오답·등급은 마스코트가 텍스트로 대신 말하지 않고 기존 등급 라벨/색이 담당한다.
 - 마스코트 표정 프레임은 마운트 시 전부 프리로드해 첫 표정 전환 시 깜빡임이 없도록 한다. 프레임 파일이 없거나 로드 실패해도 레이아웃은 빈 박스로 유지되고 앱은 크래시하지 않는다.
 - `prefers-reduced-motion: reduce` 환경에서는 마스코트 idle 루프·bob·크로스페이드와 히어로 배경/떠다니는 카드/CTA 애니메이션을 모두 끄고 정적으로 렌더한다. `useMascotExpression`은 이때 타이머를 걸지 않고 `baseExpression`을 고정 반환한다.
 - 마스코트 포인터 근접 반응은 `proximityRef` 요소의 `pointermove`로만 동작하며 `typeof window`/`PointerEvent` 가드 뒤에 둔다 — 미지원 환경(SSR·jsdom)에서는 hover/focus 반응만 남고 근접 감지는 조용히 비활성화된다.
 - 랜딩 히어로의 떠다니는 "가짜 스캠 알림" 카드는 장식이다(`aria-hidden`, `pointer-events-none`) — CTA 클릭을 가로막지 않고, 문구는 체험 유형명이나 다음 단계를 드러내지 않는다(ADR-004, `page.test.tsx` 유형명 비노출과 같은 원칙).
+- 보이스피싱 시나리오 10개는 전부 `difficulty`(`easy`/`medium`/`hard`)가 태깅돼 있고, 각 난이도에 정상·사기 시나리오가 최소 1개씩 존재한다 — `pickByDifficulty`가 난이도별 부분집합에서 랜덤 선택하며 fallback을 타지 않는다(`voice-phishing.test.ts`·`registry.test.ts`로 강제).
+- `voice-phishing.ts` 시나리오 개수·정상/사기 비율은 `voice-phishing.test.ts`가 하드코딩 단언(현재 10개 = 정상 4 + 사기 6)으로 강제한다 — 시나리오를 추가/삭제하면 이 단언을 함께 갱신해야 한다.
 
 ## 보안
 - 모든 체험 콘텐츠는 피해자 관점(방어)만 다룬다 — 가해자 관점 콘텐츠 금지 (`docs/ADR.md` ADR-005).

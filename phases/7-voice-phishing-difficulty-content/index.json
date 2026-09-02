@@ -1,0 +1,34 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "7-voice-phishing-difficulty-content",
+  "steps": [
+    {
+      "step": 0,
+      "name": "docs-update",
+      "status": "completed",
+      "started_at": "2026-09-02T18:01:11+0900",
+      "summary": "ADR-014 추가(보이스피싱 난이도 태깅 완료 + 실제 사례 기반 시나리오 4종 확장), PRD 핵심기능5·MVP제외항목 갱신, ARCHITECTURE 디렉토리/패턴/엣지케이스에 정상4+사기6=10종·난이도 태깅 규칙 반영"
+    },
+    {
+      "step": 1,
+      "name": "case-bank-research",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "existing-difficulty-tags",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "new-scam-scenarios",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "new-normal-scenario",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-09-02T18:01:11+0900"
+}
