@@ -6,22 +6,24 @@ src/
 ├── app/
 │   ├── page.tsx                     # 랜딩: 헤드라인 + 규칙 안내 + "시작하기"
 │   ├── setup/page.tsx               # 캐릭터 설정(나이대/직업/성별), 랜딩 이후 1회성 전역 단계
+│   ├── difficulty/page.tsx          # 난이도 선택(쉬움/중간/어려움), /setup 이후 1회성 전역 단계
 │   ├── session/page.tsx             # 체험 진행 (4단계, 수동 "다음" 전환, 즉시 피드백 없음)
 │   └── result/page.tsx              # 종합 평가 + 문항별 리뷰 + 대응방안 + "다시 체험하기"
 ├── components/
 │   ├── experiences/                 # VoicePhishingExperience(+ChatBubble/TypingIndicator/ChatChoiceButtons), CaseInvestigationExperience, JeonseExperience(+jeonse/ 하위: MapBoard/HouseDialogPanel/HouseSprite/PlayerSprite/sprites/boardConfig), FraudJudgmentExperience
-│   └── ui/                          # 공용 컴포넌트 — 처음부터 만들지 않고, 2곳 이상에서 중복되면 그때 추출
-├── types/                           # ExperienceModule, ModuleResult, DialogueNode, CaseInvestigationContent, JeonseHouse, FraudJudgmentCard
+│   └── ui/                          # 공용 컴포넌트 — 처음부터 만들지 않고 2곳 이상 중복 시 추출. 페이지 전용 폼(PlayerSetupForm, DifficultySelectForm)은 여기 둔다.
+├── types/                           # ExperienceModule, ModuleResult, DialogueNode, CaseInvestigationContent, JeonseHouse, FraudJudgmentCard, Difficulty
 │   └── player.ts                    # PlayerInfo
 ├── lib/
-│   ├── registry.ts                  # 유형 등록 + 세션용 랜덤 순서/콘텐츠 선택
+│   ├── registry.ts                  # 유형 등록 + 세션용 랜덤 순서 + 난이도별 콘텐츠 선택
 │   ├── scoring.ts                   # 등급 계산, 종합 평균 집계
 │   └── session-context.tsx          # SessionProvider (React Context, localStorage 없음)
 └── data/
     ├── voice-phishing.ts
     ├── case-investigation.ts          # red-flag(팀원 레포) 부동산 사기 조사 케이스 6종
     ├── jeonse.ts                    # 매물 42종 + 5채씩 정적 분할한 세트
-    ├── fraud-judgment.ts             # 팀원 레포(fraudtest) 사기 판별 카드 74종
+    ├── fraud-judgment.ts             # 팀원 레포(fraudtest) 사기 판별 카드 90종
+    ├── difficulty.ts               # 난이도 옵션(id/라벨/한 줄 설명) 3종
     └── remediation.ts               # 오답 유형별 대응 방안 카피
 ```
 
@@ -34,16 +36,17 @@ src/
 ```
 "/" 랜딩에서 "시작하기" 클릭
 → "/setup": 나이대/직업/성별 선택 (1회, 화면 미노출 저장 — SessionProvider.playerInfo)
-→ 세션 초기화: 4개 유형 순서 셔플 + 유형별 콘텐츠 풀에서 1개씩 랜덤 선택 (registry.ts)
+→ "/difficulty": 쉬움/중간/어려움 중 1개 선택 (SessionProvider.difficulty, 유형명 비노출)
+→ 세션 초기화: 4개 유형 순서 셔플 + 유형별 콘텐츠 풀을 선택 난이도로 좁혀 1개씩 랜덤 선택 (registry.ts)
 → "/session": 단계별로 해당 유형 Experience 컴포넌트 렌더, 진행률(N/4) 표시
    → 사용자가 선택 → 케이스 조사/전세매물은 "다음" 버튼 클릭 시, 보이스피싱은 채팅형 UI로 선택 즉시 다음 대사/단계로 진행 (자동 전환/즉시 피드백 없음은 공통)
    → 각 단계 완료 시 ModuleResult를 SessionProvider Context에 누적
 → 4단계 완료 → "/result": 평균 점수/등급 + 문항별 리뷰 + mistakeTag→대응방안(remediation.ts) 렌더
-→ "다시 체험하기" → 세션 재초기화 → 랜딩·설정 화면 모두 건너뛰고 바로 "/session"
+→ "다시 체험하기" → 세션 재초기화 → 랜딩·설정·난이도 화면 모두 건너뛰고 바로 "/session" (playerInfo·difficulty 유지)
 ```
 
 ## 상태 관리
-- 세션 상태는 root layout에 마운트된 `SessionProvider`(React Context)에만 존재. localStorage 등 영속화 계층 없음 — 새로고침 시 처음부터 재시작되는 것이 의도된 동작. 세션 도중 브라우저 뒤로가기로 이탈해도 경고 없이 그대로 허용한다(동일한 이유). 세션에는 `playerInfo: PlayerInfo | null` 필드도 함께 보관한다 — 캐릭터 설정 화면에서 한 번 저장되면 `resetSession()`으로도 초기화되지 않는다.
+- 세션 상태는 root layout에 마운트된 `SessionProvider`(React Context)에만 존재. localStorage 등 영속화 계층 없음 — 새로고침 시 처음부터 재시작되는 것이 의도된 동작. 세션 도중 브라우저 뒤로가기로 이탈해도 경고 없이 그대로 허용한다(동일한 이유). 세션에는 `playerInfo: PlayerInfo | null` 필드도 함께 보관한다 — 캐릭터 설정 화면에서 한 번 저장되면 `resetSession()`으로도 초기화되지 않는다. 세션에는 `difficulty: Difficulty | null` 필드도 함께 보관하며, `/difficulty`에서 한 번 저장되면 `playerInfo`와 마찬가지로 `resetSession()`으로 초기화되지 않는다.
 - 서버 상태 없음(백엔드 미사용).
 
 ## 엣지 케이스 / 방어 로직
@@ -67,6 +70,11 @@ src/
 - 케이스 조사 오답은 두 가지 mistakeTag로 구분한다 — 최고점이 "진행 가능"인 케이스를 과도하게 의심해 오답 처리된 경우: `false-alarmed-safe-case`(기존 재사용), 그 외 위험 신호를 놓친 경우: `missed-realestate-investigation-signal`(신규).
 - 케이스 조사 진행 중에는 케이스 제목(스포일러성 문구)·최종판단 코멘트·정답 해설을 화면에 렌더링하지 않는다 — 헤딩은 매물/상황 위치 설명을 대신 쓴다.
 - 케이스 조사는 원작의 시간제한(`time_limit_seconds`) 카운트다운을 구현하지 않는다 — 시나리오 텍스트로만 서사적으로 유지한다.
+- `/difficulty`는 `playerInfo`가 없으면(직접 URL 진입 등) `/`로 리다이렉트한다 — `/session`의 기존 가드와 동일 패턴.
+- `/session`은 `difficulty`가 없으면(직접 URL 진입 등) `/`로 리다이렉트한다 — `playerInfo` 가드와 함께 확인한다.
+- 난이도 선택 화면의 라벨·설명 문구는 체험 유형명이나 다음 단계를 드러내지 않는다 — 일반적 표현만 쓴다(ADR-004의 연장, `page.test.tsx`의 유형명 비노출 테스트와 같은 원칙).
+- `pickRandomContent(difficulty)`는 해당 난이도로 태깅된 콘텐츠가 없는 풀(태깅이 아예 없는 유형 포함)에서는 전체 풀 랜덤으로 fallback한다 — 이번 범위에서 난이도가 실제 반영되는 유형은 전세매물뿐이고, 나머지 3개 유형의 동작은 난이도 도입 전과 동일하다.
+- 전세매물은 난이도 선택 시 `JEONSE_HOUSES`에서 해당 난이도 매물만 골라 랜덤 5채로 세트를 즉석 구성한다 — 해당 난이도 매물이 5채 미만이면 기존 `JEONSE_HOUSE_SETS` 세트로 fallback한다. 세트 내 위험/안전 매물 균형은 보장하지 않는다(기존 정적 세트도 동일).
 
 ## 보안
 - 모든 체험 콘텐츠는 피해자 관점(방어)만 다룬다 — 가해자 관점 콘텐츠 금지 (`docs/ADR.md` ADR-005).

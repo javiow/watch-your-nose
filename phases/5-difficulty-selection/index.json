@@ -1,0 +1,56 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "5-difficulty-selection",
+  "steps": [
+    {
+      "step": 0,
+      "name": "docs-update",
+      "status": "completed",
+      "started_at": "2026-09-02T09:58:12+0900",
+      "summary": "ADR-012 추가, PRD 핵심 기능에 난이도 선택(3번) 삽입 및 번호 재정렬(1~9), ARCHITECTURE에 /difficulty 라우트·difficulty.ts·Difficulty 타입·데이터 흐름·엣지 케이스 반영 (src/ 미변경, build/lint/test 162 통과 그대로 유지)",
+      "completed_at": "2026-09-02T10:01:33+0900"
+    },
+    {
+      "step": 1,
+      "name": "difficulty-type-and-data",
+      "status": "completed",
+      "started_at": "2026-09-02T10:01:33+0900",
+      "summary": "experience.ts에 공용 Difficulty 유니온 추가·JeonseDifficulty를 별칭화, pickRandomContent(difficulty?) 시그니처 확장, VoicePhishingScenario/CaseInvestigationContent/FraudJudgmentCard에 선택적 difficulty 필드 추가. src/data/difficulty.ts(DIFFICULTY_OPTIONS 한글 라벨) + difficulty.test.ts TDD 신설, jeonse.test.ts에 난이도별 5채 이상 전제 테스트 추가. build/lint 통과, test 167 통과",
+      "completed_at": "2026-09-02T10:04:27+0900"
+    },
+    {
+      "step": 2,
+      "name": "session-difficulty-state",
+      "status": "completed",
+      "started_at": "2026-09-02T10:04:27+0900",
+      "summary": "SessionProvider에 playerInfo와 대칭인 difficulty(Difficulty|null)/setDifficulty 상태 추가 — 초기 null, memo deps에 difficulty 포함(세터는 제외), resetSession 미수정(재체험 시 난이도 유지), localStorage 없음. session-context.test.tsx에 대칭 테스트 2개 추가. build/lint 통과, test 169 통과",
+      "completed_at": "2026-09-02T10:06:25+0900"
+    },
+    {
+      "step": 3,
+      "name": "registry-difficulty-selection",
+      "status": "completed",
+      "started_at": "2026-09-02T10:06:25+0900",
+      "summary": "registry.ts에 Fisher–Yates를 shuffle<T> 헬퍼로 추출(pickSessionPlan 동작 불변), pickByDifficulty<T>를 named export(요청 난이도 필터 → 매칭 0건이면 전체 풀 fallback), 전세매물 전용 pickJeonseSet(난이도별 JEONSE_HOUSES에서 즉석 shuffle().slice(0,5), 5채 미만이면 JEONSE_HOUSE_SETS fallback) 추가. 4개 모듈 pickRandomContent를 (difficulty?)로 재배선, contentPool은 4개 모두 유지. registry.test.ts에 pickByDifficulty 4건 + 난이도 선택 3건 추가. jeonse.ts 미수정. build/lint 통과, test 176 통과",
+      "completed_at": "2026-09-02T10:08:50+0900"
+    },
+    {
+      "step": 4,
+      "name": "difficulty-select-form",
+      "status": "completed",
+      "started_at": "2026-09-02T10:08:50+0900",
+      "summary": "DifficultySelectForm(순수 컨트롤드 컴포넌트) + TDD 테스트 신설 — PlayerSetupForm 패턴을 따르되 ChoiceGroup 대신 세로 스택 전체폭 카드 버튼(라벨+설명 각각 렌더), DIFFICULTY_OPTIONS 단일 출처, 선택 전 시작하기 disabled, 클릭 시 onComplete(id) 정확히 1회. 라우터/세션 Context 미의존(배선은 step5), globals.css 토큰만 사용. build/lint 통과, test 180 통과",
+      "completed_at": "2026-09-02T10:10:44+0900"
+    },
+    {
+      "step": 5,
+      "name": "difficulty-page-wiring",
+      "status": "completed",
+      "started_at": "2026-09-02T10:10:45+0900",
+      "summary": "/difficulty 라우트 신설(setup/page.tsx 동형 + playerInfo 가드 → replace('/'), DifficultySelectForm onComplete → setDifficulty + push('/session')) + page.test.tsx 2건(TDD, next/navigation·session-context mock). setup/page.tsx는 push 대상 1줄만 /difficulty로 변경. session/page.tsx는 useSession에서 difficulty 구조분해, pickRandomContent(difficulty ?? undefined) + useMemo deps, 리다이렉트 useEffect·조기 return 가드에 difficulty===null 추가(deps 포함). StartButton 미수정. build 통과(/difficulty 라우트 생성), lint 통과, test 182 통과",
+      "completed_at": "2026-09-02T10:13:04+0900"
+    }
+  ],
+  "created_at": "2026-09-02T09:58:12+0900",
+  "completed_at": "2026-09-02T10:13:05+0900"
+}
