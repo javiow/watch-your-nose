@@ -2,6 +2,7 @@ import type {
   Difficulty,
   ExperienceModule,
   ExperienceTypeId,
+  FraudJudgmentCard,
   JeonseHouse,
 } from "@/types/experience";
 import { VOICE_PHISHING_SCENARIOS } from "@/data/voice-phishing";
@@ -43,6 +44,16 @@ function pickJeonseSet(difficulty?: Difficulty): JeonseHouse[] {
   return JEONSE_HOUSE_SETS[Math.floor(Math.random() * JEONSE_HOUSE_SETS.length)];
 }
 
+const FRAUD_JUDGMENT_SET_SIZE = 4;
+
+function pickFraudJudgmentSet(difficulty?: Difficulty): FraudJudgmentCard[] {
+  const matching = difficulty
+    ? FRAUD_JUDGMENT_CARDS.filter((c) => c.difficulty === difficulty)
+    : [];
+  const source = matching.length >= FRAUD_JUDGMENT_SET_SIZE ? matching : FRAUD_JUDGMENT_CARDS;
+  return shuffle(source).slice(0, FRAUD_JUDGMENT_SET_SIZE);
+}
+
 export const EXPERIENCE_MODULES: ExperienceModule[] = [
   {
     typeId: "voice-phishing",
@@ -67,8 +78,7 @@ export const EXPERIENCE_MODULES: ExperienceModule[] = [
   {
     typeId: "fraud-judgment",
     contentPool: FRAUD_JUDGMENT_CARDS,
-    pickRandomContent: (difficulty?: Difficulty) =>
-      pickByDifficulty(FRAUD_JUDGMENT_CARDS, difficulty),
+    pickRandomContent: (difficulty?: Difficulty) => pickFraudJudgmentSet(difficulty),
     Component: FraudJudgmentExperience,
   },
 ] as ExperienceModule[];

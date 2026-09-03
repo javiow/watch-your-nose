@@ -131,6 +131,18 @@ describe("EXPERIENCE_MODULES 난이도 선택", () => {
       expect(jeonse!.pickRandomContent() as unknown[]).toHaveLength(5);
     }
   });
+
+  it("fraud-judgment 모듈을 인자 없이 호출하면 길이 4의 중복 없는 배열을 반환한다", () => {
+    const fraudJudgment = EXPERIENCE_MODULES.find(
+      (mod) => mod.typeId === "fraud-judgment"
+    );
+    expect(fraudJudgment).toBeDefined();
+    for (let i = 0; i < 10; i += 1) {
+      const cards = fraudJudgment!.pickRandomContent() as { id: string }[];
+      expect(cards).toHaveLength(4);
+      expect(new Set(cards.map((c) => c.id)).size).toBe(4);
+    }
+  });
 });
 
 describe("pickSessionPlan", () => {
