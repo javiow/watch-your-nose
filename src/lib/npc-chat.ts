@@ -1,6 +1,7 @@
 import type { CaseNpcPersona, CaseNpcStatement } from "@/types/experience";
 
 export const MIN_QUESTION_LENGTH = 4;
+export const MAX_NPC_QUESTIONS = 3;
 
 export function isMeaningfulQuestion(input: string): boolean {
   return input.trim().length >= MIN_QUESTION_LENGTH;

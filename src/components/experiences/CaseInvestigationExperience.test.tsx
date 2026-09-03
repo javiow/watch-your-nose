@@ -224,6 +224,37 @@ describe("CaseInvestigationExperience", () => {
     expect(screen.getByText(/조금 더 구체적으로/)).toBeDefined();
   });
 
+  it("질문은 최대 3회까지만 가능하고, 초과 시도는 대화 내역에 추가되지 않는다", async () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+
+    const chip = screen.getByRole("button", { name: "질문 1" });
+
+    fireEvent.click(chip);
+    await waitFor(() => expect(screen.getAllByText("NPC 대사 1입니다")).toHaveLength(1));
+
+    fireEvent.click(chip);
+    await waitFor(() => expect(screen.getAllByText("NPC 대사 1입니다")).toHaveLength(2));
+
+    fireEvent.click(chip);
+    await waitFor(() => expect(screen.getAllByText("NPC 대사 1입니다")).toHaveLength(3));
+
+    expect(chip).toBeDisabled();
+    expect(screen.getByPlaceholderText(/궁금한 점을 자유롭게/)).toBeDisabled();
+    expect(screen.getByRole("button", { name: "물어보기" })).toBeDisabled();
+    expect(screen.getByText(/질문 횟수를 모두 사용/)).toBeDefined();
+  });
+
+  it("질문 가능 횟수가 화면에 표시되고 질문할 때마다 갱신된다", async () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+
+    expect(screen.getByText("질문 0/3")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "질문 1" }));
+    await waitFor(() => expect(screen.getByText("질문 1/3")).toBeDefined());
+  });
+
   it("조사 화면 진입 시 NPC의 인사말이 먼저 표시된다", () => {
     render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
     startInvestigating();

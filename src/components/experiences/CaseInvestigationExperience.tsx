@@ -13,7 +13,7 @@ import {
   getBestEndingOption,
   type CaseInvestigationScoreBreakdown,
 } from "@/lib/scoring";
-import { isMeaningfulQuestion } from "@/lib/npc-chat";
+import { MAX_NPC_QUESTIONS, isMeaningfulQuestion } from "@/lib/npc-chat";
 import { classifyQuestion } from "@/lib/npc-chat-client";
 
 interface ChatEntry {
@@ -108,6 +108,10 @@ export function CaseInvestigationExperience({
   };
 
   const handleSubmitQuestion = async (rawInput: string) => {
+    if (chatLog.length >= MAX_NPC_QUESTIONS) {
+      setInputError("질문 횟수를 모두 사용했어요.");
+      return;
+    }
     const trimmed = rawInput.trim();
     if (!isMeaningfulQuestion(trimmed)) {
       setInputError("조금 더 구체적으로 물어봐 주세요.");
@@ -204,6 +208,7 @@ export function CaseInvestigationExperience({
         !inv.hiddenUntilUnlocked || isUnlocked(inv, registeredEvidence, completedInvestigationIds)
     );
     const openDocument = content.documents.find((doc) => doc.documentId === openDocumentId);
+    const questionLimitReached = chatLog.length >= MAX_NPC_QUESTIONS;
 
     return (
       <div className="space-y-6">
@@ -292,6 +297,9 @@ export function CaseInvestigationExperience({
               {content.npc.displayName.slice(-1)}
             </span>
             <p className="text-sm font-medium text-muted">{content.npc.displayName}</p>
+            <span className="ml-auto text-xs text-subtle">
+              질문 {chatLog.length}/{MAX_NPC_QUESTIONS}
+            </span>
           </div>
 
           <div className="mt-3 space-y-2">
@@ -335,21 +343,29 @@ export function CaseInvestigationExperience({
               value={questionInput}
               onChange={(e) => setQuestionInput(e.target.value)}
               placeholder="궁금한 점을 자유롭게 물어보세요"
-              disabled={isClassifying}
+              disabled={isClassifying || questionLimitReached}
               className="min-h-11 flex-1 rounded-xl border border-border bg-surface px-3 text-sm text-muted placeholder:text-subtle disabled:cursor-not-allowed disabled:opacity-60"
             />
-            <button type="submit" disabled={isClassifying} className={outlineButtonClass}>
+            <button
+              type="submit"
+              disabled={isClassifying || questionLimitReached}
+              className={outlineButtonClass}
+            >
               물어보기
             </button>
           </form>
-          {inputError && <p className="mt-2 text-sm text-subtle">{inputError}</p>}
+          {questionLimitReached ? (
+            <p className="mt-2 text-sm text-subtle">질문 횟수를 모두 사용했어요.</p>
+          ) : (
+            inputError && <p className="mt-2 text-sm text-subtle">{inputError}</p>
+          )}
 
           <div className="mt-3 flex flex-wrap gap-2">
             {content.npc.questions.map((question) => (
               <button
                 key={question.questionId}
                 type="button"
-                disabled={isClassifying}
+                disabled={isClassifying || questionLimitReached}
                 onClick={() => void handleSubmitQuestion(question.prompt)}
                 className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-subtle transition-colors hover:border-accent hover:text-muted disabled:cursor-not-allowed disabled:opacity-60"
               >
