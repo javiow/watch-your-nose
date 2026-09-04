@@ -12,7 +12,9 @@
     {
       "step": 1,
       "name": "experience-type-labels",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-09-04T23:27:21+0900",
+      "summary": "src/data/experience-types.ts에 EXPERIENCE_TYPE_LABELS: Record<ExperienceTypeId, string> 추가(보이스피싱/케이스 조사/전세매물/사기 판별 카드), difficulty.ts 패턴 준수, 결과 페이지 전용 주석 명시. build/lint/test(269) 통과"
     },
     {
       "step": 2,
