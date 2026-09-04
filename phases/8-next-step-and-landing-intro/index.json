@@ -25,7 +25,8 @@
     {
       "step": 3,
       "name": "case-investigation-defer-complete",
-      "status": "pending"
+      "status": "completed",
+      "summary": "CaseInvestigationExperience에 pendingResult state + NextStepButton 추가, 최종 판단 시 onComplete 호출을 버튼 클릭까지 지연. 관련 테스트 5개 갱신 + 2개 신규(미호출 확인, 이중 가드 확장). build/lint/test(22/22) 통과"
     },
     {
       "step": 4,
