@@ -15,11 +15,11 @@ vi.mock("@/lib/session-context", () => ({
 import { StartButton } from "./StartButton";
 
 describe("StartButton", () => {
-  it("클릭 시 세션을 초기화하고 /setup으로 이동한다", () => {
+  it("클릭 시 세션을 초기화하고 /how-it-works로 이동한다", () => {
     render(<StartButton />);
     fireEvent.click(screen.getByText("시작하기"));
 
     expect(resetSessionMock).toHaveBeenCalledTimes(1);
-    expect(pushMock).toHaveBeenCalledWith("/setup");
+    expect(pushMock).toHaveBeenCalledWith("/how-it-works");
   });
 });
