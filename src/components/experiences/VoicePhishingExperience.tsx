@@ -185,7 +185,9 @@ export function VoicePhishingExperience({
         />
       )}
 
-      {pendingResult && <NextStepButton onClick={handleNextStep} />}
+      {pendingResult && (
+        <NextStepButton onClick={handleNextStep} message="통화를 마쳤습니다." />
+      )}
     </div>
   );
 }

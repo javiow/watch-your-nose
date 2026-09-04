@@ -108,7 +108,9 @@ export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentEx
         </button>
       </div>
 
-      {pendingResult && <NextStepButton onClick={handleNextStep} />}
+      {pendingResult && (
+        <NextStepButton onClick={handleNextStep} message="모든 카드 판정을 완료했습니다." />
+      )}
     </div>
   );
 }

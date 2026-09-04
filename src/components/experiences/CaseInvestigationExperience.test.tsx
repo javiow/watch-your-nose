@@ -282,6 +282,23 @@ describe("CaseInvestigationExperience", () => {
     expect(idxAskedFirstQuestion).toBeGreaterThan(idxAskedSecondAnswer);
   });
 
+  it("결정 버튼을 클릭하면 선택한 버튼만 시각적으로 구분되고 나머지는 그대로다", () => {
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={vi.fn()} />);
+    startInvestigating();
+    goToDecision();
+
+    const chosen = screen.getByText("추가로 확인한 뒤 결정한다").closest("button")!;
+    const others = [
+      screen.getByText("계약을 진행한다").closest("button")!,
+      screen.getByText("계약을 중단한다").closest("button")!,
+    ];
+
+    fireEvent.click(chosen);
+
+    expect(chosen.className).toContain("bg-accent");
+    others.forEach((btn) => expect(btn.className).not.toContain("bg-accent"));
+  });
+
   it("결정 버튼 클릭 직후에는 onComplete가 호출되지 않고 다음으로 넘어가기 버튼이 나타난다", () => {
     const onComplete = vi.fn();
     render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);

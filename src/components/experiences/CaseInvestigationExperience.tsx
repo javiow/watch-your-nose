@@ -93,6 +93,7 @@ export function CaseInvestigationExperience({
   const [inputError, setInputError] = useState<string | null>(null);
   const [isClassifying, setIsClassifying] = useState(false);
   const [decisionLocked, setDecisionLocked] = useState(false);
+  const [selectedDecision, setSelectedDecision] = useState<CaseFinalDecision | null>(null);
   const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
   const lockedRef = useRef(false);
   const nextStepSubmittedRef = useRef(false);
@@ -140,6 +141,7 @@ export function CaseInvestigationExperience({
     if (lockedRef.current) return;
     lockedRef.current = true;
     setDecisionLocked(true);
+    setSelectedDecision(decision);
 
     const triggeredStatementIds = new Set(
       chatLog.flatMap((entry) => (entry.statementId ? [entry.statementId] : []))
@@ -404,37 +406,36 @@ export function CaseInvestigationExperience({
       </div>
 
       <div className="flex flex-col gap-3 md:flex-row">
-        <button
-          type="button"
-          onClick={() => handleDecision("SAFE_TO_PROCEED")}
-          disabled={decisionLocked}
-          className={outlineButtonClass}
-        >
-          계약을 진행한다
-        </button>
-        <button
-          type="button"
-          onClick={() => handleDecision("NEED_MORE_VERIFICATION")}
-          disabled={decisionLocked}
-          className={outlineButtonClass}
-        >
-          추가로 확인한 뒤 결정한다
-        </button>
-        <button
-          type="button"
-          onClick={() => handleDecision("STOP_CONTRACT")}
-          disabled={decisionLocked}
-          className={outlineButtonClass}
-        >
-          계약을 중단한다
-        </button>
+        {(
+          [
+            ["SAFE_TO_PROCEED", "계약을 진행한다"],
+            ["NEED_MORE_VERIFICATION", "추가로 확인한 뒤 결정한다"],
+            ["STOP_CONTRACT", "계약을 중단한다"],
+          ] as const
+        ).map(([decision, label]) => (
+          <button
+            key={decision}
+            type="button"
+            onClick={() => handleDecision(decision)}
+            disabled={decisionLocked}
+            className={
+              selectedDecision === decision
+                ? primaryButtonClass
+                : outlineButtonClass
+            }
+          >
+            {label}
+            {selectedDecision === decision && (
+              <span className="ml-1" aria-hidden="true">
+                ✓
+              </span>
+            )}
+          </button>
+        ))}
       </div>
 
       {pendingResult && (
-        <div className="space-y-3 rounded-xl border border-border bg-surface p-4 shadow-sm">
-          <p className="text-sm font-medium text-muted">판단을 등록했습니다.</p>
-          <NextStepButton onClick={handleNextStep} />
-        </div>
+        <NextStepButton onClick={handleNextStep} message="판단을 등록했습니다." />
       )}
     </div>
   );

@@ -31,4 +31,20 @@ describe("NextStepButton", () => {
     fireEvent.click(button);
     expect(onClick).not.toHaveBeenCalled();
   });
+
+  it("message prop이 있으면 완료 안내 문구와 버튼을 카드로 함께 렌더한다", () => {
+    const { container } = render(
+      <NextStepButton onClick={vi.fn()} message="모든 판정을 완료했습니다." />
+    );
+
+    expect(screen.getByText("모든 판정을 완료했습니다.")).toBeInTheDocument();
+    expect(screen.getByText("다음으로 넘어가기")).toBeInTheDocument();
+    expect(container.querySelector(".rounded-xl.border")).toBeInTheDocument();
+  });
+
+  it("message prop이 없으면 카드 래퍼 없이 버튼만 렌더한다", () => {
+    const { container } = render(<NextStepButton onClick={vi.fn()} />);
+    const button = screen.getByText("다음으로 넘어가기");
+    expect(container.firstChild).toBe(button);
+  });
 });

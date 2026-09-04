@@ -84,10 +84,7 @@ export function JeonseExperience({ content, onComplete }: JeonseExperienceProps)
       />
 
       {pendingResult && (
-        <div className="flex flex-col items-center gap-3">
-          <p className="text-sm font-medium text-muted">모든 매물 판정을 완료했습니다.</p>
-          <NextStepButton onClick={handleNextStep} />
-        </div>
+        <NextStepButton onClick={handleNextStep} message="모든 매물 판정을 완료했습니다." />
       )}
     </div>
   );
