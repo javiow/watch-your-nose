@@ -110,6 +110,41 @@ describe("ResultPage 마스코트", () => {
     ).toHaveLength(2);
   });
 
+  it("오답 문항은 강조 표시되고 정답 문항과 시각적으로 구분된다", () => {
+    const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
+    const overrides = EXPERIENCE_MODULES.map((_, i) =>
+      i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
+    );
+    mockResults = completeResults(overrides);
+    aggregate.mockReturnValue({ average: 75, grade: "caution" });
+
+    const { container } = render(<ResultPage />);
+    const items = container.querySelectorAll("ul")[0]?.querySelectorAll("li") ?? [];
+
+    items.forEach((item, i) => {
+      if (i === incorrectIndex) {
+        expect(item.className).toContain("border-danger");
+      } else {
+        expect(item.className).not.toContain("border-danger");
+      }
+    });
+  });
+
+  it("대응 방안 카드는 강조된 배경으로 표시된다", () => {
+    const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
+    const overrides = EXPERIENCE_MODULES.map((_, i) =>
+      i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
+    );
+    mockResults = completeResults(overrides);
+    aggregate.mockReturnValue({ average: 75, grade: "caution" });
+
+    render(<ResultPage />);
+    const remediationItem = screen
+      .getByText(/전세사기의 대표적인 징후입니다/)
+      .closest("li");
+    expect(remediationItem?.className).toContain("bg-accent-soft");
+  });
+
   it("미완료 세션이면 홈으로 리다이렉트하고 마스코트를 렌더하지 않는다", () => {
     mockResults = [];
     const { container } = render(<ResultPage />);

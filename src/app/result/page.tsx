@@ -76,24 +76,30 @@ export default function ResultPage() {
           {results.map((result, index) => (
             <li
               key={`${result.typeId}-${result.contentId}`}
-              className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
+              className={`space-y-2 rounded-xl border p-4 shadow-sm ${
+                result.isCorrect
+                  ? "border-border bg-surface"
+                  : "border-danger/30 bg-danger/5"
+              }`}
             >
               <div className="flex items-center gap-2">
                 <p className="text-sm text-subtle">
                   {index + 1}번 · {EXPERIENCE_TYPE_LABELS[result.typeId]}
                 </p>
-                <p
-                  className={`text-sm font-medium ${
-                    result.isCorrect ? "text-safe" : "text-danger"
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                    result.isCorrect
+                      ? "bg-safe/10 text-safe"
+                      : "bg-danger/10 text-danger"
                   }`}
                 >
                   {result.isCorrect ? "정답" : "오답"}
-                </p>
+                </span>
               </div>
               <p className="text-sm text-muted">
                 내 선택: {result.userChoice}
               </p>
-              <p className="text-sm text-muted">
+              <p className="text-sm font-semibold text-foreground">
                 정답: {result.correctChoice}
               </p>
               <p className="text-sm leading-relaxed text-muted">
@@ -106,17 +112,17 @@ export default function ResultPage() {
 
       {incorrectResults.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-sm font-medium text-muted">대응 방안</h2>
+          <h2 className="text-sm font-semibold text-foreground">대응 방안</h2>
           <ul className="flex flex-col gap-3">
             {incorrectResults.map((result, index) => (
               <li
                 key={`${result.typeId}-remediation-${index}`}
-                className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
+                className="space-y-2 rounded-xl border border-accent/30 bg-accent-soft p-4 shadow-sm"
               >
-                <p className="text-xs font-medium text-accent">
+                <p className="text-xs font-semibold text-accent">
                   {EXPERIENCE_TYPE_LABELS[result.typeId]}
                 </p>
-                <p className="text-sm leading-relaxed text-muted">
+                <p className="text-sm font-medium leading-relaxed text-foreground">
                   {getRemediation(result.mistakeTag)}
                 </p>
               </li>
