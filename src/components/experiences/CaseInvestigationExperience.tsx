@@ -15,6 +15,7 @@ import {
 } from "@/lib/scoring";
 import { MAX_NPC_QUESTIONS, isMeaningfulQuestion } from "@/lib/npc-chat";
 import { classifyQuestion } from "@/lib/npc-chat-client";
+import { NextStepButton } from "@/components/ui/NextStepButton";
 
 interface ChatEntry {
   key: string;
@@ -69,7 +70,7 @@ function buildExplanation(
       .filter((description): description is string => Boolean(description));
 
     if (missedDescriptions.length > 0) {
-      explanation += ` 놓친 위험 신호: ${missedDescriptions.join(", ")}.`;
+      explanation += ` **놓친 위험 신호: ${missedDescriptions.join(", ")}.**`;
     }
   }
 
@@ -91,8 +92,12 @@ export function CaseInvestigationExperience({
   const [questionInput, setQuestionInput] = useState("");
   const [inputError, setInputError] = useState<string | null>(null);
   const [isClassifying, setIsClassifying] = useState(false);
-  const [decisionLocked, setDecisionLocked] = useState(false);
-  const lockedRef = useRef(false);
+  const [selectedDecision, setSelectedDecision] = useState<CaseFinalDecision | null>(null);
+  const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
+  // "다음으로 넘어가기"를 누르기 전까지는 잘못 누른 판단을 다시 골라 바꿀 수 있다.
+  // 확정(다음으로 넘어가기 클릭) 이후에만 판단 버튼을 잠근다.
+  const [confirmed, setConfirmed] = useState(false);
+  const nextStepSubmittedRef = useRef(false);
 
   const handleStartInvestigation = (inv: CaseInvestigation) => {
     setPoints((prev) => prev - inv.cost);
@@ -134,9 +139,8 @@ export function CaseInvestigationExperience({
   };
 
   const handleDecision = (decision: CaseFinalDecision) => {
-    if (lockedRef.current) return;
-    lockedRef.current = true;
-    setDecisionLocked(true);
+    if (confirmed) return;
+    setSelectedDecision(decision);
 
     const triggeredStatementIds = new Set(
       chatLog.flatMap((entry) => (entry.statementId ? [entry.statementId] : []))
@@ -155,7 +159,7 @@ export function CaseInvestigationExperience({
         ? "false-alarmed-safe-case"
         : "missed-realestate-investigation-signal";
 
-    onComplete({
+    setPendingResult({
       typeId: "case-investigation",
       contentId: content.caseId,
       score: breakdown.total,
@@ -166,6 +170,13 @@ export function CaseInvestigationExperience({
       explanation: buildExplanation(content, breakdown, bestOption.comment),
       mistakeTag,
     });
+  };
+
+  const handleNextStep = () => {
+    if (!pendingResult || nextStepSubmittedRef.current) return;
+    nextStepSubmittedRef.current = true;
+    setConfirmed(true);
+    onComplete(pendingResult);
   };
 
   if (phase === "briefing") {
@@ -395,31 +406,37 @@ export function CaseInvestigationExperience({
       </div>
 
       <div className="flex flex-col gap-3 md:flex-row">
-        <button
-          type="button"
-          onClick={() => handleDecision("SAFE_TO_PROCEED")}
-          disabled={decisionLocked}
-          className={outlineButtonClass}
-        >
-          계약을 진행한다
-        </button>
-        <button
-          type="button"
-          onClick={() => handleDecision("NEED_MORE_VERIFICATION")}
-          disabled={decisionLocked}
-          className={outlineButtonClass}
-        >
-          추가로 확인한 뒤 결정한다
-        </button>
-        <button
-          type="button"
-          onClick={() => handleDecision("STOP_CONTRACT")}
-          disabled={decisionLocked}
-          className={outlineButtonClass}
-        >
-          계약을 중단한다
-        </button>
+        {(
+          [
+            ["SAFE_TO_PROCEED", "계약을 진행한다"],
+            ["NEED_MORE_VERIFICATION", "추가로 확인한 뒤 결정한다"],
+            ["STOP_CONTRACT", "계약을 중단한다"],
+          ] as const
+        ).map(([decision, label]) => (
+          <button
+            key={decision}
+            type="button"
+            onClick={() => handleDecision(decision)}
+            disabled={confirmed}
+            className={
+              selectedDecision === decision
+                ? primaryButtonClass
+                : outlineButtonClass
+            }
+          >
+            {label}
+            {selectedDecision === decision && (
+              <span className="ml-1" aria-hidden="true">
+                ✓
+              </span>
+            )}
+          </button>
+        ))}
       </div>
+
+      {pendingResult && (
+        <NextStepButton onClick={handleNextStep} message="판단을 등록했습니다." />
+      )}
     </div>
   );
 }

@@ -1,0 +1,63 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "8-next-step-and-landing-intro",
+  "steps": [
+    {
+      "step": 0,
+      "name": "next-step-button",
+      "status": "completed",
+      "started_at": "2026-09-04T23:22:32+0900",
+      "summary": "src/components/ui/NextStepButton.tsx 공용 버튼 컴포넌트를 TDD로 신규 추가 (기본 라벨, label override, disabled 처리, accent 톤 재사용)"
+    },
+    {
+      "step": 1,
+      "name": "experience-type-labels",
+      "status": "completed",
+      "started_at": "2026-09-04T23:27:21+0900",
+      "summary": "src/data/experience-types.ts에 EXPERIENCE_TYPE_LABELS: Record<ExperienceTypeId, string> 추가(보이스피싱/케이스 조사/전세매물/사기 판별 카드), difficulty.ts 패턴 준수, 결과 페이지 전용 주석 명시. build/lint/test(269) 통과"
+    },
+    {
+      "step": 2,
+      "name": "voice-phishing-defer-complete",
+      "status": "completed",
+      "summary": "VoicePhishingExperience에 pendingResult state + NextStepButton 추가, 시나리오 종료 시 onComplete 호출을 버튼 클릭까지 지연. 관련 테스트 8개 갱신 + 1개 신규. build/lint/test(13/13) 통과"
+    },
+    {
+      "step": 3,
+      "name": "case-investigation-defer-complete",
+      "status": "completed",
+      "summary": "CaseInvestigationExperience에 pendingResult state + NextStepButton 추가, 최종 판단 시 onComplete 호출을 버튼 클릭까지 지연. 관련 테스트 5개 갱신 + 2개 신규(미호출 확인, 이중 가드 확장). build/lint/test(22/22) 통과"
+    },
+    {
+      "step": 4,
+      "name": "jeonse-defer-complete",
+      "status": "completed",
+      "summary": "JeonseExperience에 pendingResult state + NextStepButton 추가, 5채 판정 완료 시 onComplete 호출을 버튼 클릭까지 지연. 관련 테스트 2개 갱신 + 1개 신규. build/lint/test(7/7) 통과"
+    },
+    {
+      "step": 5,
+      "name": "fraud-judgment-defer-complete",
+      "status": "completed",
+      "summary": "FraudJudgmentExperience에 pendingResult state + NextStepButton 추가, 4번째 카드 판정 시 onComplete 호출을 버튼 클릭까지 지연. 관련 테스트 6개 갱신 + 가드 테스트 확장. build/lint/test(12/12) 통과"
+    },
+    {
+      "step": 6,
+      "name": "result-page-content-labels",
+      "status": "completed",
+      "summary": "/result 문항별 리뷰(N번 · 유형)와 대응 방안에 EXPERIENCE_TYPE_LABELS 라벨 추가. completeResults() 픽스처를 EXPERIENCE_MODULES 기반 혼합 typeId로 갱신, 라벨 노출 테스트 2개 추가. build/lint/test(8/8, 전체 274) 통과"
+    },
+    {
+      "step": 7,
+      "name": "landing-mobile-hero-cards",
+      "status": "completed",
+      "summary": "LandingHero HERO_CARDS의 hidden sm:block 게이팅 제거, 모바일 전용 크기(max-w-[9.5rem])·위치(스테이지 위/아래 음수 오프셋)로 재구성. sm: 미디어쿼리를 런타임에 무력화하는 방식으로 실제 렌더링 확인(겹침 없음, 데스크톱 불변). 회귀 테스트 1개 추가. build/lint/test(5/5) 통과"
+    },
+    {
+      "step": 8,
+      "name": "how-it-works-page",
+      "status": "completed",
+      "summary": "/how-it-works 신규 페이지 도입, StartButton 목적지 /setup→/how-it-works 변경, page.tsx 인라인 진행 방식 섹션 제거, LandingHero 스크롤 큐를 링크로 전환. 신규 테스트 3개 + 갱신 2개. 브라우저로 전체 흐름 실제 확인. build/lint/test(12/12, 전체 278) 통과"
+    }
+  ],
+  "created_at": "2026-09-04T23:22:32+0900"
+}

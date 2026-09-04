@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import type { FraudJudgmentAnswer, FraudJudgmentCard, ModuleResult } from "@/types/experience";
 import { computeGrade } from "@/lib/scoring";
+import { NextStepButton } from "@/components/ui/NextStepButton";
 
 interface FraudJudgmentExperienceProps {
   content: FraudJudgmentCard[];
@@ -17,7 +18,7 @@ function buildExplanation(content: FraudJudgmentCard[], answers: Record<number, 
     .filter((card, i) => answers[i] !== card.answer)
     .slice(0, 3)
     .map((card) => `${card.title}: ${card.explanation} (출처: ${card.source})`);
-  return `놓친 위험 신호가 있습니다 — ${missed.join("; ")}`;
+  return `놓친 위험 신호가 있습니다 — **${missed.join("; ")}**`;
 }
 
 function buildMistakeTag(content: FraudJudgmentCard[], answers: Record<number, FraudJudgmentAnswer>): string {
@@ -30,6 +31,8 @@ export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentEx
   const [answers, setAnswers] = useState<Record<number, FraudJudgmentAnswer>>({});
   const lockedRef = useRef(false);
   const [locked, setLocked] = useState(false);
+  const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
+  const nextStepSubmittedRef = useRef(false);
 
   const currentCard = content[currentIndex];
 
@@ -53,7 +56,7 @@ export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentEx
     const grade = computeGrade(score);
     const isCorrect = grade === "safe";
 
-    onComplete({
+    setPendingResult({
       typeId: "fraud-judgment",
       contentId: content
         .map((card) => card.id)
@@ -67,6 +70,12 @@ export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentEx
       explanation: buildExplanation(content, next, isCorrect),
       mistakeTag: isCorrect ? undefined : buildMistakeTag(content, next),
     });
+  };
+
+  const handleNextStep = () => {
+    if (!pendingResult || nextStepSubmittedRef.current) return;
+    nextStepSubmittedRef.current = true;
+    onComplete(pendingResult);
   };
 
   return (
@@ -98,6 +107,10 @@ export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentEx
           정상이에요
         </button>
       </div>
+
+      {pendingResult && (
+        <NextStepButton onClick={handleNextStep} message="모든 카드 판정을 완료했습니다." />
+      )}
     </div>
   );
 }

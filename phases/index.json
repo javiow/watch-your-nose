@@ -39,6 +39,11 @@
       "dir": "7-voice-phishing-difficulty-content",
       "status": "completed",
       "completed_at": "2026-09-02T19:53:30+0900"
+    },
+    {
+      "dir": "8-next-step-and-landing-intro",
+      "status": "completed",
+      "completed_at": "2026-09-04T23:54:47+0900"
     }
   ]
 }

@@ -22,10 +22,9 @@ describe("Home", () => {
     expect(screen.getByText("Watch Your Nose")).toBeDefined();
   });
 
-  it("헤드라인과 진행 방식 안내를 보여준다", () => {
+  it("헤드라인을 보여준다", () => {
     renderHome();
     expect(screen.getByText("코심코심")).toBeDefined();
-    expect(screen.getByText("진행 방식")).toBeDefined();
   });
 
   it("체험 유형명을 노출하지 않는다", () => {

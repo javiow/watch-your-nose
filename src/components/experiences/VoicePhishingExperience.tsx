@@ -9,6 +9,7 @@ import type {
   VoicePhishingScenario,
 } from "@/types/experience";
 import { computeGrade, computeVoicePhishingScore } from "@/lib/scoring";
+import { NextStepButton } from "@/components/ui/NextStepButton";
 import { ChatBubble } from "./ChatBubble";
 import { ChatChoiceButtons } from "./ChatChoiceButtons";
 import { TypingIndicator } from "./TypingIndicator";
@@ -37,14 +38,14 @@ function buildExplanation(
 ): string {
   if (isNormalCase) {
     if (!isCorrect) {
-      return "정상적인 절차였음에도 근거 없이 전화를 끊거나 무시했습니다. 낯선 연락이라고 무조건 의심하기보다, 요청 내용을 확인하고 필요하면 공식 채널로 재확인하는 습관이 중요합니다.";
+      return "정상적인 절차였음에도 근거 없이 전화를 끊거나 무시했습니다. 낯선 연락이라고 무조건 의심하기보다, **요청 내용을 확인하고 필요하면 공식 채널로 재확인하는 습관**이 중요합니다.";
     }
     return cautionCount > 0
       ? "일부 과도하게 경계한 순간이 있었지만, 결국 개인정보를 요구하지 않는 정상 절차임을 알아채고 적절히 협조했습니다."
       : "개인정보를 요구하지 않는 정상적인 확인 전화였고, 처음부터 끝까지 적절하게 응대했습니다.";
   }
   if (!isCorrect) {
-    return "실제로는 사기 정황이 있는 전화였는데 요청에 응했습니다. 낯선 연락처의 개인정보·금전 요청에는 응하지 않아야 합니다.";
+    return "실제로는 사기 정황이 있는 전화였는데 요청에 응했습니다. **낯선 연락처의 개인정보·금전 요청에는 응하지 않아야 합니다.**";
   }
   return cautionCount > 0
     ? `대화 중 ${cautionCount}번 정도 위험 신호를 가볍게 넘길 뻔했지만, 끝까지 개인정보·금전 요청에 응하지 않고 전화를 끊은 것은 올바른 대응입니다.`
@@ -64,8 +65,10 @@ export function VoicePhishingExperience({
   const [currentNodeId, setCurrentNodeId] = useState(content.startNodeId);
   const [typing, setTyping] = useState(false);
   const [choicesReady, setChoicesReady] = useState(false);
+  const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
   const timers = useRef<number[]>([]);
   const pathRisks = useRef<ChoiceRisk[]>([]);
+  const nextStepSubmittedRef = useRef(false);
 
   const addTimer = (fn: () => void, delay: number) => {
     const timerId = window.setTimeout(fn, delay);
@@ -110,7 +113,7 @@ export function VoicePhishingExperience({
         : "fell-for-scam";
 
     addTimer(() => {
-      onComplete({
+      setPendingResult({
         typeId: "voice-phishing",
         contentId: content.id,
         score,
@@ -128,6 +131,12 @@ export function VoicePhishingExperience({
         mistakeTag,
       });
     }, 600);
+  };
+
+  const handleNextStep = () => {
+    if (!pendingResult || nextStepSubmittedRef.current) return;
+    nextStepSubmittedRef.current = true;
+    onComplete(pendingResult);
   };
 
   const handleSelectChoice = (choiceId: string) => {
@@ -174,6 +183,10 @@ export function VoicePhishingExperience({
           choices={currentNode.choices}
           onSelect={handleSelectChoice}
         />
+      )}
+
+      {pendingResult && (
+        <NextStepButton onClick={handleNextStep} message="통화를 마쳤습니다." />
       )}
     </div>
   );

@@ -50,4 +50,12 @@ describe("LandingHero", () => {
       expect(card.className).toContain("pointer-events-none");
     });
   });
+
+  it("떠다니는 카드는 모바일에서도 보인다(hidden 클래스 없음)", () => {
+    const { container } = renderHero();
+    const cards = container.querySelectorAll("[data-hero-card]");
+    cards.forEach((card) => {
+      expect(card.className.split(/\s+/)).not.toContain("hidden");
+    });
+  });
 });

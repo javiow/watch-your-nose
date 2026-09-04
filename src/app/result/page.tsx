@@ -6,7 +6,9 @@ import { useSession } from "@/lib/session-context";
 import { EXPERIENCE_MODULES } from "@/lib/registry";
 import { GRADE_LABELS, aggregateResults } from "@/lib/scoring";
 import { getRemediation } from "@/data/remediation";
+import { EXPERIENCE_TYPE_LABELS } from "@/data/experience-types";
 import { Mascot } from "@/components/ui/Mascot";
+import { HighlightedText } from "@/components/ui/HighlightedText";
 import { GRADE_EXPRESSION } from "@/lib/mascot-frames";
 import type { Grade } from "@/types/experience";
 
@@ -78,7 +80,9 @@ export default function ResultPage() {
               className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
             >
               <div className="flex items-center gap-2">
-                <p className="text-sm text-subtle">{index + 1}번</p>
+                <p className="text-sm text-subtle">
+                  {index + 1}번 · {EXPERIENCE_TYPE_LABELS[result.typeId]}
+                </p>
                 <p
                   className={`text-sm font-medium ${
                     result.isCorrect ? "text-safe" : "text-danger"
@@ -94,7 +98,7 @@ export default function ResultPage() {
                 정답: {result.correctChoice}
               </p>
               <p className="text-sm leading-relaxed text-muted">
-                {result.explanation}
+                <HighlightedText text={result.explanation} />
               </p>
             </li>
           ))}
@@ -108,10 +112,13 @@ export default function ResultPage() {
             {incorrectResults.map((result, index) => (
               <li
                 key={`${result.typeId}-remediation-${index}`}
-                className="rounded-xl border border-border bg-surface p-4 shadow-sm"
+                className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
               >
+                <p className="text-xs font-medium text-accent">
+                  {EXPERIENCE_TYPE_LABELS[result.typeId]}
+                </p>
                 <p className="text-sm leading-relaxed text-muted">
-                  {getRemediation(result.mistakeTag)}
+                  <HighlightedText text={getRemediation(result.mistakeTag)} />
                 </p>
               </li>
             ))}

@@ -87,7 +87,7 @@ describe("FraudJudgmentExperience", () => {
     expect(screen.getByText(fraudCard2.title)).toBeDefined();
   });
 
-  it("카드 4장을 모두 답해야 onComplete가 호출된다", () => {
+  it("카드 4장을 모두 답한 뒤 다음으로 넘어가기를 눌러야 onComplete가 호출된다", () => {
     const onComplete = vi.fn();
     render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
 
@@ -98,6 +98,9 @@ describe("FraudJudgmentExperience", () => {
     fireEvent.click(screen.getByText("사기예요"));
     expect(onComplete).not.toHaveBeenCalled();
     fireEvent.click(screen.getByText("정상이에요"));
+    expect(onComplete).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
 
@@ -105,6 +108,7 @@ describe("FraudJudgmentExperience", () => {
     const onComplete = vi.fn();
     render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
     answerAll(["fraud", "safe", "fraud", "safe"]);
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.isCorrect).toBe(true);
@@ -117,6 +121,7 @@ describe("FraudJudgmentExperience", () => {
     render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
     // fraudCard를 safe로, safeCard2를 fraud로 오답 처리 (양방향 오답 혼합)
     answerAll(["safe", "safe", "fraud", "fraud"]);
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.isCorrect).toBe(false);
@@ -128,6 +133,7 @@ describe("FraudJudgmentExperience", () => {
     render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
     // safeCard, safeCard2만 fraud로 오답, fraud 카드들은 모두 정답
     answerAll(["fraud", "fraud", "fraud", "fraud"]);
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.isCorrect).toBe(false);
@@ -138,6 +144,7 @@ describe("FraudJudgmentExperience", () => {
     const onComplete = vi.fn();
     render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
     answerAll(["fraud", "safe", "fraud", "safe"]);
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     const expectedId = fourCards
@@ -148,15 +155,20 @@ describe("FraudJudgmentExperience", () => {
     expect(result.typeId).toBe("fraud-judgment");
   });
 
-  it("마지막 카드 답변 이후 버튼을 다시 클릭해도 onComplete는 1회만 호출된다", () => {
+  it("마지막 카드 답변 이후 사기예요/정상이에요 버튼을 다시 클릭해도 onComplete는 호출되지 않고, 다음으로 넘어가기 버튼을 연속 클릭해도 1회만 호출된다", () => {
     const onComplete = vi.fn();
     render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
 
     answerAll(["fraud", "safe", "fraud", "safe"]);
-    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onComplete).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByText("사기예요"));
     fireEvent.click(screen.getByText("정상이에요"));
+    expect(onComplete).not.toHaveBeenCalled();
+
+    const nextButton = screen.getByText("다음으로 넘어가기");
+    fireEvent.click(nextButton);
+    fireEvent.click(nextButton);
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
 
@@ -164,6 +176,7 @@ describe("FraudJudgmentExperience", () => {
     const onComplete = vi.fn();
     render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
     answerAll(["safe", "safe", "fraud", "fraud"]);
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.explanation).toContain(fraudCard.title);
