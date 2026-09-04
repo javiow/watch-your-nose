@@ -130,6 +130,36 @@ describe("ResultPage 마스코트", () => {
     });
   });
 
+  it("오답 문항의 정답 값만 강조되고, 정답 문항의 정답 값은 강조되지 않는다", () => {
+    const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
+    const overrides = EXPERIENCE_MODULES.map((_, i) =>
+      i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
+    );
+    mockResults = completeResults(overrides);
+    aggregate.mockReturnValue({ average: 75, grade: "caution" });
+
+    render(<ResultPage />);
+    const correctChoiceLines = screen.getAllByText(/^정답: /);
+
+    correctChoiceLines.forEach((line, i) => {
+      if (i === incorrectIndex) {
+        expect(line.className).toContain("font-semibold");
+      } else {
+        expect(line.className).not.toContain("font-semibold");
+      }
+    });
+  });
+
+  it("정답 문항의 배지는 오답 배지와 달리 눈에 띄는 배경이 없다", () => {
+    mockResults = completeResults();
+    aggregate.mockReturnValue({ average: 100, grade: "safe" });
+
+    const { container } = render(<ResultPage />);
+    const badges = container.querySelectorAll("ul")[0]?.querySelectorAll("li span, li p") ?? [];
+    const correctBadge = Array.from(badges).find((el) => el.textContent === "정답");
+    expect(correctBadge?.className).not.toContain("bg-safe");
+  });
+
   it("대응 방안 카드는 강조된 배경으로 표시된다", () => {
     const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
     const overrides = EXPERIENCE_MODULES.map((_, i) =>

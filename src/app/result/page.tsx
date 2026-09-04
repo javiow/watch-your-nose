@@ -86,20 +86,24 @@ export default function ResultPage() {
                 <p className="text-sm text-subtle">
                   {index + 1}번 · {EXPERIENCE_TYPE_LABELS[result.typeId]}
                 </p>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                    result.isCorrect
-                      ? "bg-safe/10 text-safe"
-                      : "bg-danger/10 text-danger"
-                  }`}
-                >
-                  {result.isCorrect ? "정답" : "오답"}
-                </span>
+                {result.isCorrect ? (
+                  <p className="text-sm font-medium text-safe">정답</p>
+                ) : (
+                  <span className="rounded-full bg-danger/10 px-2 py-0.5 text-xs font-semibold text-danger">
+                    오답
+                  </span>
+                )}
               </div>
               <p className="text-sm text-muted">
                 내 선택: {result.userChoice}
               </p>
-              <p className="text-sm font-semibold text-foreground">
+              <p
+                className={`text-sm ${
+                  result.isCorrect
+                    ? "text-muted"
+                    : "font-semibold text-foreground"
+                }`}
+              >
                 정답: {result.correctChoice}
               </p>
               <p className="text-sm leading-relaxed text-muted">
