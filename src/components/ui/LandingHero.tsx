@@ -17,11 +17,13 @@ export const HERO_CARDS: readonly string[] = [
 ];
 
 const CARD_FLOAT = ["card-float-a", "card-float-b", "card-float-c"];
+// 모바일(<640px)에서는 스테이지(마스코트+헤드라인+버튼) 내부와 겹치지 않도록
+// 스테이지 바깥 위/아래 여백에 배치하고, sm: 이상에서는 기존 데스크톱 위치를 그대로 되돌린다.
 const CARD_POSITION = [
-  "left-1 top-4 sm:-left-10",
-  "right-1 top-0 sm:-right-12",
-  "bottom-16 left-0 sm:-left-14",
-  "bottom-6 right-0 sm:-right-10",
+  "-top-16 left-2 sm:top-4 sm:left-1 sm:-left-10",
+  "-top-20 right-2 sm:top-0 sm:right-1 sm:-right-12",
+  "-bottom-16 left-2 sm:bottom-16 sm:left-0 sm:-left-14",
+  "-bottom-20 right-2 sm:bottom-6 sm:right-0 sm:-right-10",
 ];
 
 export function LandingHero() {
@@ -35,7 +37,7 @@ export function LandingHero() {
             key={text}
             data-hero-card=""
             aria-hidden="true"
-            className={`pointer-events-none absolute hidden max-w-[15rem] select-none rounded-xl border border-border bg-surface/95 px-3 py-2 text-left text-xs leading-snug text-muted shadow-sm sm:block ${
+            className={`pointer-events-none absolute max-w-[9.5rem] select-none rounded-xl border border-border bg-surface/95 px-3 py-2 text-left text-xs leading-snug text-muted shadow-sm sm:max-w-[15rem] ${
               CARD_FLOAT[i % CARD_FLOAT.length]
             } ${CARD_POSITION[i]}`}
           >
