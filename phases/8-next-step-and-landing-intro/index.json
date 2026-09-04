@@ -49,7 +49,8 @@
     {
       "step": 7,
       "name": "landing-mobile-hero-cards",
-      "status": "pending"
+      "status": "completed",
+      "summary": "LandingHero HERO_CARDS의 hidden sm:block 게이팅 제거, 모바일 전용 크기(max-w-[9.5rem])·위치(스테이지 위/아래 음수 오프셋)로 재구성. sm: 미디어쿼리를 런타임에 무력화하는 방식으로 실제 렌더링 확인(겹침 없음, 데스크톱 불변). 회귀 테스트 1개 추가. build/lint/test(5/5) 통과"
     },
     {
       "step": 8,
