@@ -186,6 +186,9 @@ describe("VoicePhishingExperience", () => {
     fireEvent.click(screen.getByText("전화를 끊는다"));
     advanceAllTimers();
 
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
     expect(result.typeId).toBe("voice-phishing");
@@ -209,6 +212,9 @@ describe("VoicePhishingExperience", () => {
     fireEvent.click(screen.getByText("통화를 마친다"));
     advanceAllTimers();
 
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
     expect(result.isCorrect).toBe(true);
@@ -228,6 +234,9 @@ describe("VoicePhishingExperience", () => {
     fireEvent.click(screen.getByText("전화를 끊는다"));
     advanceAllTimers();
 
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
     expect(result.isCorrect).toBe(true);
@@ -246,6 +255,9 @@ describe("VoicePhishingExperience", () => {
 
     fireEvent.click(screen.getByText("정보를 알려준다"));
     advanceAllTimers();
+
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
@@ -272,6 +284,9 @@ describe("VoicePhishingExperience", () => {
     fireEvent.click(screen.getByText("전화를 끊는다"));
     advanceAllTimers();
 
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
     expect(result.isCorrect).toBe(true);
@@ -292,6 +307,9 @@ describe("VoicePhishingExperience", () => {
     fireEvent.click(screen.getByText("전화를 끊는다"));
     advanceAllTimers();
 
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
     expect(result.isCorrect).toBe(true);
@@ -310,6 +328,8 @@ describe("VoicePhishingExperience", () => {
       advanceAllTimers();
     }).not.toThrow();
 
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
 
@@ -370,6 +390,31 @@ describe("VoicePhishingExperience", () => {
 
     advanceAllTimers();
 
+    expect(onComplete).not.toHaveBeenCalled();
+
+    const nextButton = screen.getByText("다음으로 넘어가기");
+    act(() => {
+      fireEvent.click(nextButton);
+      fireEvent.click(nextButton);
+    });
+
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it("마지막 대사 이후에는 곧바로 onComplete가 호출되지 않고, 다음으로 넘어가기 버튼을 눌러야 호출된다", () => {
+    const onComplete = vi.fn();
+    render(
+      <VoicePhishingExperience content={normalScenario} onComplete={onComplete} />
+    );
+    advanceAllTimers();
+
+    fireEvent.click(screen.getByText("전화를 끊는다"));
+    advanceAllTimers();
+
+    expect(onComplete).not.toHaveBeenCalled();
+    expect(screen.getByText("다음으로 넘어가기")).toBeDefined();
+
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
 });

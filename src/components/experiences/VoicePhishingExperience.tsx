@@ -9,6 +9,7 @@ import type {
   VoicePhishingScenario,
 } from "@/types/experience";
 import { computeGrade, computeVoicePhishingScore } from "@/lib/scoring";
+import { NextStepButton } from "@/components/ui/NextStepButton";
 import { ChatBubble } from "./ChatBubble";
 import { ChatChoiceButtons } from "./ChatChoiceButtons";
 import { TypingIndicator } from "./TypingIndicator";
@@ -64,8 +65,10 @@ export function VoicePhishingExperience({
   const [currentNodeId, setCurrentNodeId] = useState(content.startNodeId);
   const [typing, setTyping] = useState(false);
   const [choicesReady, setChoicesReady] = useState(false);
+  const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
   const timers = useRef<number[]>([]);
   const pathRisks = useRef<ChoiceRisk[]>([]);
+  const nextStepSubmittedRef = useRef(false);
 
   const addTimer = (fn: () => void, delay: number) => {
     const timerId = window.setTimeout(fn, delay);
@@ -110,7 +113,7 @@ export function VoicePhishingExperience({
         : "fell-for-scam";
 
     addTimer(() => {
-      onComplete({
+      setPendingResult({
         typeId: "voice-phishing",
         contentId: content.id,
         score,
@@ -128,6 +131,12 @@ export function VoicePhishingExperience({
         mistakeTag,
       });
     }, 600);
+  };
+
+  const handleNextStep = () => {
+    if (!pendingResult || nextStepSubmittedRef.current) return;
+    nextStepSubmittedRef.current = true;
+    onComplete(pendingResult);
   };
 
   const handleSelectChoice = (choiceId: string) => {
@@ -175,6 +184,8 @@ export function VoicePhishingExperience({
           onSelect={handleSelectChoice}
         />
       )}
+
+      {pendingResult && <NextStepButton onClick={handleNextStep} />}
     </div>
   );
 }
