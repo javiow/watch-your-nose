@@ -55,7 +55,8 @@
     {
       "step": 8,
       "name": "how-it-works-page",
-      "status": "pending"
+      "status": "completed",
+      "summary": "/how-it-works 신규 페이지 도입, StartButton 목적지 /setup→/how-it-works 변경, page.tsx 인라인 진행 방식 섹션 제거, LandingHero 스크롤 큐를 링크로 전환. 신규 테스트 3개 + 갱신 2개. 브라우저로 전체 흐름 실제 확인. build/lint/test(12/12, 전체 278) 통과"
     }
   ],
   "created_at": "2026-09-04T23:22:32+0900"
