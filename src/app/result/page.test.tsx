@@ -22,10 +22,13 @@ vi.mock("@/lib/scoring", () => ({
 import ResultPage from "./page";
 import { EXPERIENCE_MODULES } from "@/lib/registry";
 import { GRADE_EXPRESSION } from "@/lib/mascot-frames";
+import { EXPERIENCE_TYPE_LABELS } from "@/data/experience-types";
 
-function completeResults() {
-  return Array.from({ length: EXPERIENCE_MODULES.length }, (_, i) => ({
-    typeId: "voice-phishing",
+function completeResults(
+  overrides?: Partial<{ isCorrect: boolean; mistakeTag: string }>[]
+) {
+  return EXPERIENCE_MODULES.map((mod, i) => ({
+    typeId: mod.typeId,
     contentId: `c${i}`,
     score: 100,
     grade: "safe" as Grade,
@@ -33,6 +36,7 @@ function completeResults() {
     correctChoice: "a",
     isCorrect: true,
     explanation: "설명",
+    ...(overrides?.[i] ?? {}),
   }));
 }
 
@@ -78,6 +82,32 @@ describe("ResultPage 마스코트", () => {
     render(<ResultPage />);
     expect(screen.getByText("종합 정답률")).toBeDefined();
     expect(screen.getByText("문항별 리뷰")).toBeDefined();
+  });
+
+  it("문항별 리뷰의 각 항목에 체험 유형 라벨이 노출된다", () => {
+    mockResults = completeResults();
+    aggregate.mockReturnValue({ average: 100, grade: "safe" });
+
+    render(<ResultPage />);
+    for (const mod of EXPERIENCE_MODULES) {
+      expect(screen.getByText(new RegExp(EXPERIENCE_TYPE_LABELS[mod.typeId]))).toBeDefined();
+    }
+  });
+
+  it("오답 결과의 대응 방안에도 해당 결과의 체험 유형 라벨이 함께 노출된다", () => {
+    const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
+    const overrides = EXPERIENCE_MODULES.map((_, i) =>
+      i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
+    );
+    mockResults = completeResults(overrides);
+    aggregate.mockReturnValue({ average: 75, grade: "caution" });
+
+    render(<ResultPage />);
+    expect(screen.getByText("대응 방안")).toBeDefined();
+    // 문항별 리뷰 1곳(번호와 함께) + 대응 방안 1곳(단독), 총 2곳에 전세매물 라벨이 노출된다.
+    expect(
+      screen.getAllByText(new RegExp(EXPERIENCE_TYPE_LABELS.jeonse))
+    ).toHaveLength(2);
   });
 
   it("미완료 세션이면 홈으로 리다이렉트하고 마스코트를 렌더하지 않는다", () => {
