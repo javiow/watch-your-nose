@@ -282,7 +282,19 @@ describe("CaseInvestigationExperience", () => {
     expect(idxAskedFirstQuestion).toBeGreaterThan(idxAskedSecondAnswer);
   });
 
-  it("최종 판단 버튼 클릭 시 onComplete가 정확히 1회 호출되고 연속 클릭해도 1회만 호출된다", () => {
+  it("결정 버튼 클릭 직후에는 onComplete가 호출되지 않고 다음으로 넘어가기 버튼이 나타난다", () => {
+    const onComplete = vi.fn();
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
+    startInvestigating();
+    goToDecision();
+
+    fireEvent.click(screen.getByText("계약을 진행한다"));
+
+    expect(onComplete).not.toHaveBeenCalled();
+    expect(screen.getByText("다음으로 넘어가기")).toBeDefined();
+  });
+
+  it("결정 버튼과 다음으로 넘어가기 버튼을 각각 연속 클릭해도 onComplete는 1회만 호출된다", () => {
     const onComplete = vi.fn();
     render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
     startInvestigating();
@@ -291,6 +303,10 @@ describe("CaseInvestigationExperience", () => {
     const decideButton = screen.getByText("계약을 진행한다");
     fireEvent.click(decideButton);
     fireEvent.click(decideButton);
+
+    const nextButton = screen.getByText("다음으로 넘어가기");
+    fireEvent.click(nextButton);
+    fireEvent.click(nextButton);
 
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
@@ -301,6 +317,7 @@ describe("CaseInvestigationExperience", () => {
     startInvestigating();
     goToDecision();
     fireEvent.click(screen.getByText("계약을 진행한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.isCorrect).toBe(false);
@@ -313,6 +330,7 @@ describe("CaseInvestigationExperience", () => {
     startInvestigating();
     goToDecision();
     fireEvent.click(screen.getByText("추가로 확인한 뒤 결정한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.isCorrect).toBe(true);
@@ -325,6 +343,7 @@ describe("CaseInvestigationExperience", () => {
     startInvestigating();
     goToDecision();
     fireEvent.click(screen.getByText("계약을 중단한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.isCorrect).toBe(false);
@@ -337,6 +356,7 @@ describe("CaseInvestigationExperience", () => {
     startInvestigating();
     goToDecision();
     fireEvent.click(screen.getByText("계약을 중단한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.explanation).toContain(jeonse001.hiddenTruth.explanation.slice(0, 20));
@@ -348,6 +368,7 @@ describe("CaseInvestigationExperience", () => {
     startInvestigating();
     goToDecision();
     fireEvent.click(screen.getByText("계약을 중단한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.typeId).toBe("case-investigation");

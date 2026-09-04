@@ -15,6 +15,7 @@ import {
 } from "@/lib/scoring";
 import { MAX_NPC_QUESTIONS, isMeaningfulQuestion } from "@/lib/npc-chat";
 import { classifyQuestion } from "@/lib/npc-chat-client";
+import { NextStepButton } from "@/components/ui/NextStepButton";
 
 interface ChatEntry {
   key: string;
@@ -92,7 +93,9 @@ export function CaseInvestigationExperience({
   const [inputError, setInputError] = useState<string | null>(null);
   const [isClassifying, setIsClassifying] = useState(false);
   const [decisionLocked, setDecisionLocked] = useState(false);
+  const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
   const lockedRef = useRef(false);
+  const nextStepSubmittedRef = useRef(false);
 
   const handleStartInvestigation = (inv: CaseInvestigation) => {
     setPoints((prev) => prev - inv.cost);
@@ -155,7 +158,7 @@ export function CaseInvestigationExperience({
         ? "false-alarmed-safe-case"
         : "missed-realestate-investigation-signal";
 
-    onComplete({
+    setPendingResult({
       typeId: "case-investigation",
       contentId: content.caseId,
       score: breakdown.total,
@@ -166,6 +169,12 @@ export function CaseInvestigationExperience({
       explanation: buildExplanation(content, breakdown, bestOption.comment),
       mistakeTag,
     });
+  };
+
+  const handleNextStep = () => {
+    if (!pendingResult || nextStepSubmittedRef.current) return;
+    nextStepSubmittedRef.current = true;
+    onComplete(pendingResult);
   };
 
   if (phase === "briefing") {
@@ -420,6 +429,13 @@ export function CaseInvestigationExperience({
           계약을 중단한다
         </button>
       </div>
+
+      {pendingResult && (
+        <div className="space-y-3 rounded-xl border border-border bg-surface p-4 shadow-sm">
+          <p className="text-sm font-medium text-muted">판단을 등록했습니다.</p>
+          <NextStepButton onClick={handleNextStep} />
+        </div>
+      )}
     </div>
   );
 }
