@@ -5,50 +5,79 @@ import type { FraudJudgmentAnswer, FraudJudgmentCard, ModuleResult } from "@/typ
 import { computeGrade } from "@/lib/scoring";
 
 interface FraudJudgmentExperienceProps {
-  content: FraudJudgmentCard;
+  content: FraudJudgmentCard[];
   onComplete: (result: ModuleResult) => void;
 }
 
-export function FraudJudgmentExperience({
-  content,
-  onComplete,
-}: FraudJudgmentExperienceProps) {
-  const [locked, setLocked] = useState(false);
+function buildExplanation(content: FraudJudgmentCard[], answers: Record<number, FraudJudgmentAnswer>, isCorrect: boolean): string {
+  if (isCorrect) {
+    return `제시된 사기 판별 카드 ${content.length}장 모두 정확히 판정했습니다.`;
+  }
+  const missed = content
+    .filter((card, i) => answers[i] !== card.answer)
+    .slice(0, 3)
+    .map((card) => `${card.title}: ${card.explanation} (출처: ${card.source})`);
+  return `놓친 위험 신호가 있습니다 — ${missed.join("; ")}`;
+}
+
+function buildMistakeTag(content: FraudJudgmentCard[], answers: Record<number, FraudJudgmentAnswer>): string {
+  const missedScam = content.some((card, i) => card.answer === "fraud" && answers[i] !== card.answer);
+  return missedScam ? "missed-scam-signal" : "false-alarmed-safe-case";
+}
+
+export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentExperienceProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, FraudJudgmentAnswer>>({});
   const lockedRef = useRef(false);
+  const [locked, setLocked] = useState(false);
+
+  const currentCard = content[currentIndex];
 
   const handleAnswer = (userAnswer: FraudJudgmentAnswer) => {
     if (lockedRef.current) return;
     lockedRef.current = true;
     setLocked(true);
 
-    const isCorrect = userAnswer === content.answer;
-    const score = isCorrect ? 100 : 0;
-    const mistakeTag = isCorrect
-      ? undefined
-      : content.answer === "fraud"
-        ? "missed-scam-signal"
-        : "false-alarmed-safe-case";
+    const next = { ...answers, [currentIndex]: userAnswer };
+    setAnswers(next);
+
+    if (currentIndex + 1 < content.length) {
+      setCurrentIndex(currentIndex + 1);
+      lockedRef.current = false;
+      setLocked(false);
+      return;
+    }
+
+    const correctCount = content.filter((card, i) => next[i] === card.answer).length;
+    const score = (correctCount / content.length) * 100;
+    const grade = computeGrade(score);
+    const isCorrect = grade === "safe";
 
     onComplete({
       typeId: "fraud-judgment",
-      contentId: content.id,
+      contentId: content
+        .map((card) => card.id)
+        .sort()
+        .join("-"),
       score,
-      grade: computeGrade(score),
-      userChoice: userAnswer === "fraud" ? "사기라고 판단" : "정상이라고 판단",
-      correctChoice: content.answer === "fraud" ? "실제로는 사기" : "실제로는 정상",
+      grade,
+      userChoice: `${content.length}장 중 ${correctCount}장 정답 판정`,
+      correctChoice: `${content.length}장 모두 정확히 판정`,
       isCorrect,
-      explanation: `${content.explanation} (출처: ${content.source})`,
-      mistakeTag,
+      explanation: buildExplanation(content, next, isCorrect),
+      mistakeTag: isCorrect ? undefined : buildMistakeTag(content, next),
     });
   };
 
   return (
     <div className="space-y-6">
+      <p className="text-xs font-medium text-subtle">
+        {currentIndex + 1} / {content.length}
+      </p>
+
       <div className="rounded-xl border border-border bg-surface p-4">
-        <p className="text-sm font-medium text-muted">{content.title}</p>
-        <p className="mt-2 text-sm leading-relaxed text-muted">
-          {content.content}
-        </p>
+        <p className="text-sm font-medium text-muted">{currentCard.title}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{currentCard.content}</p>
       </div>
 
       <div className="flex flex-col gap-3 md:flex-row">

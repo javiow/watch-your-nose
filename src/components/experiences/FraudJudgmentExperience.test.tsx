@@ -23,93 +23,157 @@ const safeCard: FraudJudgmentCard = {
   source: "금융투자협회 등록 자문업 안내",
 };
 
+const fraudCard2: FraudJudgmentCard = {
+  id: "fraud-fixture-02",
+  category: "스미싱",
+  title: "링크 주소가 미묘하게 다른 택배 안내 문자",
+  content: "낯선 번호로 배송 보류 문자가 오고 링크 철자가 미묘하게 다릅니다.",
+  answer: "fraud",
+  explanation: "공식 도메인과 비슷하지만 다른 링크로 유도하는 스미싱입니다.",
+  source: "KISA 스미싱 주의보",
+};
+
+const safeCard2: FraudJudgmentCard = {
+  id: "safe-fixture-02",
+  category: "택배기사_사칭피싱",
+  title: "택배사 공식 앱 알림",
+  content: "이미 설치된 택배사 공식 앱에서 배송 조회 알림이 옵니다.",
+  answer: "safe",
+  explanation: "공식 앱 안에서 확인되는 정보는 상대적으로 신뢰할 수 있습니다.",
+  source: "일반 전자상거래 배송 안내 관행",
+};
+
+const fourCards = [fraudCard, safeCard, fraudCard2, safeCard2];
+
+function answerAll(userAnswers: ("fraud" | "safe")[]) {
+  for (const answer of userAnswers) {
+    const label = answer === "fraud" ? "사기예요" : "정상이에요";
+    fireEvent.click(screen.getByText(label));
+  }
+}
+
 describe("FraudJudgmentExperience", () => {
-  it("카드의 title과 content를 렌더링한다", () => {
-    render(<FraudJudgmentExperience content={fraudCard} onComplete={vi.fn()} />);
+  it("첫 번째 카드의 title과 content를 렌더링한다", () => {
+    render(<FraudJudgmentExperience content={fourCards} onComplete={vi.fn()} />);
     expect(screen.getByText(fraudCard.title)).toBeDefined();
     expect(screen.getByText(fraudCard.content)).toBeDefined();
   });
 
   it("사기예요 / 정상이에요 버튼을 렌더링한다", () => {
-    render(<FraudJudgmentExperience content={fraudCard} onComplete={vi.fn()} />);
+    render(<FraudJudgmentExperience content={fourCards} onComplete={vi.fn()} />);
     expect(screen.getByText("사기예요")).toBeDefined();
     expect(screen.getByText("정상이에요")).toBeDefined();
   });
 
-  it("체험 중에는 source와 explanation을 노출하지 않는다 (렌더 직후)", () => {
-    render(<FraudJudgmentExperience content={fraudCard} onComplete={vi.fn()} />);
-    expect(screen.queryByText(fraudCard.source)).toBeNull();
-    expect(screen.queryByText(fraudCard.explanation)).toBeNull();
-  });
-
-  it("체험 중에는 source와 explanation을 노출하지 않는다 (버튼 클릭 직후)", () => {
-    render(<FraudJudgmentExperience content={fraudCard} onComplete={vi.fn()} />);
-    fireEvent.click(screen.getByText("사기예요"));
-    expect(screen.queryByText(fraudCard.source)).toBeNull();
-    expect(screen.queryByText(fraudCard.explanation)).toBeNull();
-  });
-
-  it("fraud 카드에서 사기예요를 선택하면 정답으로 채점된다", () => {
+  it("체험 중에는 어떤 카드의 source와 explanation도 노출하지 않는다", () => {
     const onComplete = vi.fn();
-    render(<FraudJudgmentExperience content={fraudCard} onComplete={onComplete} />);
-    fireEvent.click(screen.getByText("사기예요"));
+    render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
+    answerAll(["fraud", "safe", "fraud"]);
+    for (const card of fourCards) {
+      expect(screen.queryByText(card.source)).toBeNull();
+      expect(screen.queryByText(card.explanation)).toBeNull();
+    }
+  });
 
+  it("답변할 때마다 다음 카드로 넘어간다", () => {
+    render(<FraudJudgmentExperience content={fourCards} onComplete={vi.fn()} />);
+    expect(screen.getByText(fraudCard.title)).toBeDefined();
+
+    fireEvent.click(screen.getByText("사기예요"));
+    expect(screen.getByText(safeCard.title)).toBeDefined();
+    expect(screen.queryByText(fraudCard.title)).toBeNull();
+
+    fireEvent.click(screen.getByText("정상이에요"));
+    expect(screen.getByText(fraudCard2.title)).toBeDefined();
+  });
+
+  it("카드 4장을 모두 답해야 onComplete가 호출된다", () => {
+    const onComplete = vi.fn();
+    render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
+
+    fireEvent.click(screen.getByText("사기예요"));
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("정상이에요"));
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("사기예요"));
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("정상이에요"));
     expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it("4장 전부 정답이면 isCorrect: true, mistakeTag는 undefined다", () => {
+    const onComplete = vi.fn();
+    render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
+    answerAll(["fraud", "safe", "fraud", "safe"]);
+
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.isCorrect).toBe(true);
+    expect(result.score).toBe(100);
     expect(result.mistakeTag).toBeUndefined();
   });
 
-  it("fraud 카드에서 정상이에요를 선택하면 missed-scam-signal로 오답 채점된다", () => {
+  it("사기 카드를 정상으로 오판하면 missed-scam-signal이 우선된다 (혼합 오답)", () => {
     const onComplete = vi.fn();
-    render(<FraudJudgmentExperience content={fraudCard} onComplete={onComplete} />);
-    fireEvent.click(screen.getByText("정상이에요"));
+    render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
+    // fraudCard를 safe로, safeCard2를 fraud로 오답 처리 (양방향 오답 혼합)
+    answerAll(["safe", "safe", "fraud", "fraud"]);
 
-    expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.isCorrect).toBe(false);
     expect(result.mistakeTag).toBe("missed-scam-signal");
   });
 
-  it("safe 카드에서 정상이에요를 선택하면 정답으로 채점된다", () => {
+  it("정상 카드만 사기로 오판하면 false-alarmed-safe-case다", () => {
     const onComplete = vi.fn();
-    render(<FraudJudgmentExperience content={safeCard} onComplete={onComplete} />);
-    fireEvent.click(screen.getByText("정상이에요"));
+    render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
+    // safeCard, safeCard2만 fraud로 오답, fraud 카드들은 모두 정답
+    answerAll(["fraud", "fraud", "fraud", "fraud"]);
 
-    expect(onComplete).toHaveBeenCalledTimes(1);
-    const result = onComplete.mock.calls[0][0] as ModuleResult;
-    expect(result.isCorrect).toBe(true);
-    expect(result.mistakeTag).toBeUndefined();
-  });
-
-  it("safe 카드에서 사기예요를 선택하면 false-alarmed-safe-case로 오답 채점된다", () => {
-    const onComplete = vi.fn();
-    render(<FraudJudgmentExperience content={safeCard} onComplete={onComplete} />);
-    fireEvent.click(screen.getByText("사기예요"));
-
-    expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.isCorrect).toBe(false);
     expect(result.mistakeTag).toBe("false-alarmed-safe-case");
   });
 
-  it("onComplete에 전달된 explanation은 explanation과 source를 둘 다 포함한다", () => {
+  it("onComplete에 전달된 결과의 contentId는 4장의 id를 정렬해 이어붙인 값이다", () => {
     const onComplete = vi.fn();
-    render(<FraudJudgmentExperience content={fraudCard} onComplete={onComplete} />);
-    fireEvent.click(screen.getByText("사기예요"));
+    render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
+    answerAll(["fraud", "safe", "fraud", "safe"]);
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
-    expect(result.explanation).toContain(fraudCard.explanation);
+    const expectedId = fourCards
+      .map((c) => c.id)
+      .sort()
+      .join("-");
+    expect(result.contentId).toBe(expectedId);
+    expect(result.typeId).toBe("fraud-judgment");
+  });
+
+  it("마지막 카드 답변 이후 버튼을 다시 클릭해도 onComplete는 1회만 호출된다", () => {
+    const onComplete = vi.fn();
+    render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
+
+    answerAll(["fraud", "safe", "fraud", "safe"]);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByText("사기예요"));
+    fireEvent.click(screen.getByText("정상이에요"));
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it("오답이 있으면 explanation에 해당 카드의 title과 출처가 포함된다", () => {
+    const onComplete = vi.fn();
+    render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
+    answerAll(["safe", "safe", "fraud", "fraud"]);
+
+    const result = onComplete.mock.calls[0][0] as ModuleResult;
+    expect(result.explanation).toContain(fraudCard.title);
     expect(result.explanation).toContain(fraudCard.source);
   });
 
-  it("연속 클릭해도 onComplete는 정확히 1회만 호출된다", () => {
-    const onComplete = vi.fn();
-    render(<FraudJudgmentExperience content={fraudCard} onComplete={onComplete} />);
-    const fraudButton = screen.getByText("사기예요");
-    fireEvent.click(fraudButton);
-    fireEvent.click(fraudButton);
-
-    expect(onComplete).toHaveBeenCalledTimes(1);
+  it("진행 표시(N/4)를 렌더링한다", () => {
+    render(<FraudJudgmentExperience content={fourCards} onComplete={vi.fn()} />);
+    expect(screen.getByText("1 / 4")).toBeDefined();
+    fireEvent.click(screen.getByText("사기예요"));
+    expect(screen.getByText("2 / 4")).toBeDefined();
   });
 });
