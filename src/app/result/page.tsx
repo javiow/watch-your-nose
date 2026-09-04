@@ -8,6 +8,7 @@ import { GRADE_LABELS, aggregateResults } from "@/lib/scoring";
 import { getRemediation } from "@/data/remediation";
 import { EXPERIENCE_TYPE_LABELS } from "@/data/experience-types";
 import { Mascot } from "@/components/ui/Mascot";
+import { HighlightedText } from "@/components/ui/HighlightedText";
 import { GRADE_EXPRESSION } from "@/lib/mascot-frames";
 import type { Grade } from "@/types/experience";
 
@@ -76,38 +77,28 @@ export default function ResultPage() {
           {results.map((result, index) => (
             <li
               key={`${result.typeId}-${result.contentId}`}
-              className={`space-y-2 rounded-xl border p-4 shadow-sm ${
-                result.isCorrect
-                  ? "border-border bg-surface"
-                  : "border-danger/30 bg-danger/5"
-              }`}
+              className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
             >
               <div className="flex items-center gap-2">
                 <p className="text-sm text-subtle">
                   {index + 1}번 · {EXPERIENCE_TYPE_LABELS[result.typeId]}
                 </p>
-                {result.isCorrect ? (
-                  <p className="text-sm font-medium text-safe">정답</p>
-                ) : (
-                  <span className="rounded-full bg-danger/10 px-2 py-0.5 text-xs font-semibold text-danger">
-                    오답
-                  </span>
-                )}
+                <p
+                  className={`text-sm font-medium ${
+                    result.isCorrect ? "text-safe" : "text-danger"
+                  }`}
+                >
+                  {result.isCorrect ? "정답" : "오답"}
+                </p>
               </div>
               <p className="text-sm text-muted">
                 내 선택: {result.userChoice}
               </p>
-              <p
-                className={`text-sm ${
-                  result.isCorrect
-                    ? "text-muted"
-                    : "font-semibold text-foreground"
-                }`}
-              >
+              <p className="text-sm text-muted">
                 정답: {result.correctChoice}
               </p>
               <p className="text-sm leading-relaxed text-muted">
-                {result.explanation}
+                <HighlightedText text={result.explanation} />
               </p>
             </li>
           ))}
@@ -116,18 +107,18 @@ export default function ResultPage() {
 
       {incorrectResults.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold text-foreground">대응 방안</h2>
+          <h2 className="text-sm font-medium text-muted">대응 방안</h2>
           <ul className="flex flex-col gap-3">
             {incorrectResults.map((result, index) => (
               <li
                 key={`${result.typeId}-remediation-${index}`}
-                className="space-y-2 rounded-xl border border-accent/30 bg-accent-soft p-4 shadow-sm"
+                className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
               >
-                <p className="text-xs font-semibold text-accent">
+                <p className="text-xs font-medium text-accent">
                   {EXPERIENCE_TYPE_LABELS[result.typeId]}
                 </p>
-                <p className="text-sm font-medium leading-relaxed text-foreground">
-                  {getRemediation(result.mistakeTag)}
+                <p className="text-sm leading-relaxed text-muted">
+                  <HighlightedText text={getRemediation(result.mistakeTag)} />
                 </p>
               </li>
             ))}

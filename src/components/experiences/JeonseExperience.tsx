@@ -23,7 +23,7 @@ function buildExplanation(
     .filter((house, i) => answers[i] !== house.risky)
     .slice(0, 3)
     .map((house) => `${house.short}: ${house.reason}`);
-  return `놓친 위험 신호가 있습니다 — ${missed.join("; ")}`;
+  return `놓친 위험 신호가 있습니다 — **${missed.join("; ")}**`;
 }
 
 export function JeonseExperience({ content, onComplete }: JeonseExperienceProps) {

@@ -70,7 +70,7 @@ function buildExplanation(
       .filter((description): description is string => Boolean(description));
 
     if (missedDescriptions.length > 0) {
-      explanation += ` 놓친 위험 신호: ${missedDescriptions.join(", ")}.`;
+      explanation += ` **놓친 위험 신호: ${missedDescriptions.join(", ")}.**`;
     }
   }
 

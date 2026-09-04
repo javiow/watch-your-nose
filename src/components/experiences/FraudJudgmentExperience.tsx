@@ -18,7 +18,7 @@ function buildExplanation(content: FraudJudgmentCard[], answers: Record<number, 
     .filter((card, i) => answers[i] !== card.answer)
     .slice(0, 3)
     .map((card) => `${card.title}: ${card.explanation} (출처: ${card.source})`);
-  return `놓친 위험 신호가 있습니다 — ${missed.join("; ")}`;
+  return `놓친 위험 신호가 있습니다 — **${missed.join("; ")}**`;
 }
 
 function buildMistakeTag(content: FraudJudgmentCard[], answers: Record<number, FraudJudgmentAnswer>): string {

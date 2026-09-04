@@ -25,7 +25,7 @@ import { GRADE_EXPRESSION } from "@/lib/mascot-frames";
 import { EXPERIENCE_TYPE_LABELS } from "@/data/experience-types";
 
 function completeResults(
-  overrides?: Partial<{ isCorrect: boolean; mistakeTag: string }>[]
+  overrides?: Partial<{ isCorrect: boolean; mistakeTag: string; explanation: string }>[]
 ) {
   return EXPERIENCE_MODULES.map((mod, i) => ({
     typeId: mod.typeId,
@@ -110,27 +110,24 @@ describe("ResultPage 마스코트", () => {
     ).toHaveLength(2);
   });
 
-  it("오답 문항은 강조 표시되고 정답 문항과 시각적으로 구분된다", () => {
-    const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
+  it("문항별 리뷰 설명에서 **로 감싼 핵심 문구만 강조되고 나머지는 일반 텍스트다", () => {
     const overrides = EXPERIENCE_MODULES.map((_, i) =>
-      i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
+      i === 0
+        ? { explanation: "이건 평범한 설명인데 **이 부분만 꼭 기억하세요** 나머지는 그냥 서술." }
+        : {}
     );
     mockResults = completeResults(overrides);
     aggregate.mockReturnValue({ average: 75, grade: "caution" });
 
     const { container } = render(<ResultPage />);
-    const items = container.querySelectorAll("ul")[0]?.querySelectorAll("li") ?? [];
-
-    items.forEach((item, i) => {
-      if (i === incorrectIndex) {
-        expect(item.className).toContain("border-danger");
-      } else {
-        expect(item.className).not.toContain("border-danger");
-      }
-    });
+    const strong = container.querySelector("li strong");
+    expect(strong?.textContent).toBe("이 부분만 꼭 기억하세요");
+    expect(container.querySelector("li")?.textContent).toContain(
+      "이건 평범한 설명인데 이 부분만 꼭 기억하세요 나머지는 그냥 서술."
+    );
   });
 
-  it("오답 문항의 정답 값만 강조되고, 정답 문항의 정답 값은 강조되지 않는다", () => {
+  it("대응 방안 텍스트에서도 실제 콘텐츠에 표시된 핵심 문구만 강조된다", () => {
     const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
     const overrides = EXPERIENCE_MODULES.map((_, i) =>
       i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
@@ -139,40 +136,10 @@ describe("ResultPage 마스코트", () => {
     aggregate.mockReturnValue({ average: 75, grade: "caution" });
 
     render(<ResultPage />);
-    const correctChoiceLines = screen.getAllByText(/^정답: /);
-
-    correctChoiceLines.forEach((line, i) => {
-      if (i === incorrectIndex) {
-        expect(line.className).toContain("font-semibold");
-      } else {
-        expect(line.className).not.toContain("font-semibold");
-      }
-    });
-  });
-
-  it("정답 문항의 배지는 오답 배지와 달리 눈에 띄는 배경이 없다", () => {
-    mockResults = completeResults();
-    aggregate.mockReturnValue({ average: 100, grade: "safe" });
-
-    const { container } = render(<ResultPage />);
-    const badges = container.querySelectorAll("ul")[0]?.querySelectorAll("li span, li p") ?? [];
-    const correctBadge = Array.from(badges).find((el) => el.textContent === "정답");
-    expect(correctBadge?.className).not.toContain("bg-safe");
-  });
-
-  it("대응 방안 카드는 강조된 배경으로 표시된다", () => {
-    const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
-    const overrides = EXPERIENCE_MODULES.map((_, i) =>
-      i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
+    const highlighted = screen.getByText(
+      "소유자와 계약 상대방 명의 불일치, 과도한 근저당, 대리인 명의 계좌로의 잔금 입금 요구"
     );
-    mockResults = completeResults(overrides);
-    aggregate.mockReturnValue({ average: 75, grade: "caution" });
-
-    render(<ResultPage />);
-    const remediationItem = screen
-      .getByText(/전세사기의 대표적인 징후입니다/)
-      .closest("li");
-    expect(remediationItem?.className).toContain("bg-accent-soft");
+    expect(highlighted.tagName).toBe("STRONG");
   });
 
   it("미완료 세션이면 홈으로 리다이렉트하고 마스코트를 렌더하지 않는다", () => {
