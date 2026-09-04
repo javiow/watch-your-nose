@@ -37,7 +37,8 @@
     {
       "step": 5,
       "name": "fraud-judgment-defer-complete",
-      "status": "pending"
+      "status": "completed",
+      "summary": "FraudJudgmentExperience에 pendingResult state + NextStepButton 추가, 4번째 카드 판정 시 onComplete 호출을 버튼 클릭까지 지연. 관련 테스트 6개 갱신 + 가드 테스트 확장. build/lint/test(12/12) 통과"
     },
     {
       "step": 6,
