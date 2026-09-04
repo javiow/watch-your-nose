@@ -92,10 +92,11 @@ export function CaseInvestigationExperience({
   const [questionInput, setQuestionInput] = useState("");
   const [inputError, setInputError] = useState<string | null>(null);
   const [isClassifying, setIsClassifying] = useState(false);
-  const [decisionLocked, setDecisionLocked] = useState(false);
   const [selectedDecision, setSelectedDecision] = useState<CaseFinalDecision | null>(null);
   const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
-  const lockedRef = useRef(false);
+  // "다음으로 넘어가기"를 누르기 전까지는 잘못 누른 판단을 다시 골라 바꿀 수 있다.
+  // 확정(다음으로 넘어가기 클릭) 이후에만 판단 버튼을 잠근다.
+  const [confirmed, setConfirmed] = useState(false);
   const nextStepSubmittedRef = useRef(false);
 
   const handleStartInvestigation = (inv: CaseInvestigation) => {
@@ -138,9 +139,7 @@ export function CaseInvestigationExperience({
   };
 
   const handleDecision = (decision: CaseFinalDecision) => {
-    if (lockedRef.current) return;
-    lockedRef.current = true;
-    setDecisionLocked(true);
+    if (confirmed) return;
     setSelectedDecision(decision);
 
     const triggeredStatementIds = new Set(
@@ -176,6 +175,7 @@ export function CaseInvestigationExperience({
   const handleNextStep = () => {
     if (!pendingResult || nextStepSubmittedRef.current) return;
     nextStepSubmittedRef.current = true;
+    setConfirmed(true);
     onComplete(pendingResult);
   };
 
@@ -417,7 +417,7 @@ export function CaseInvestigationExperience({
             key={decision}
             type="button"
             onClick={() => handleDecision(decision)}
-            disabled={decisionLocked}
+            disabled={confirmed}
             className={
               selectedDecision === decision
                 ? primaryButtonClass
