@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { JeonseHouse, ModuleResult } from "@/types/experience";
 import { computeGrade } from "@/lib/scoring";
+import { NextStepButton } from "@/components/ui/NextStepButton";
 import { MapBoard } from "./jeonse/MapBoard";
 
 interface JeonseExperienceProps {
@@ -29,6 +30,8 @@ export function JeonseExperience({ content, onComplete }: JeonseExperienceProps)
   const [answers, setAnswers] = useState<Record<number, boolean>>({});
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hintUsedIndex, setHintUsedIndex] = useState<number | null>(null);
+  const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
+  const nextStepSubmittedRef = useRef(false);
 
   const handleUseHint = (index: number) => {
     setHintUsedIndex((prev) => (prev === null ? index : prev));
@@ -47,7 +50,7 @@ export function JeonseExperience({ content, onComplete }: JeonseExperienceProps)
       const grade = computeGrade(score);
       const isCorrect = grade === "safe";
 
-      onComplete({
+      setPendingResult({
         typeId: "jeonse",
         contentId: content
           .map((house) => house.id)
@@ -64,13 +67,28 @@ export function JeonseExperience({ content, onComplete }: JeonseExperienceProps)
     }
   };
 
+  const handleNextStep = () => {
+    if (!pendingResult || nextStepSubmittedRef.current) return;
+    nextStepSubmittedRef.current = true;
+    onComplete(pendingResult);
+  };
+
   return (
-    <MapBoard
-      houses={content}
-      answers={answers}
-      onAnswer={handleAnswer}
-      hintUsedIndex={hintUsedIndex}
-      onUseHint={handleUseHint}
-    />
+    <div className="space-y-4">
+      <MapBoard
+        houses={content}
+        answers={answers}
+        onAnswer={handleAnswer}
+        hintUsedIndex={hintUsedIndex}
+        onUseHint={handleUseHint}
+      />
+
+      {pendingResult && (
+        <div className="flex flex-col items-center gap-3">
+          <p className="text-sm font-medium text-muted">모든 매물 판정을 완료했습니다.</p>
+          <NextStepButton onClick={handleNextStep} />
+        </div>
+      )}
+    </div>
   );
 }

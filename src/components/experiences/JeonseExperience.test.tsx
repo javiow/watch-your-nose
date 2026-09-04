@@ -67,6 +67,9 @@ describe("JeonseExperience", () => {
 
     houses.forEach((house, i) => judgeHouse(i, house, false));
 
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
     expect(result.typeId).toBe("jeonse");
@@ -92,6 +95,9 @@ describe("JeonseExperience", () => {
     judgeHouse(1, houses[1], false);
     houses.slice(2).forEach((house, idx) => judgeHouse(idx + 2, house, false));
 
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
     expect(onComplete).toHaveBeenCalledTimes(1);
     const result = onComplete.mock.calls[0][0];
     expect(result.score).toBe(60);
@@ -99,6 +105,21 @@ describe("JeonseExperience", () => {
     expect(result.mistakeTag).toBe("missed-lease-fraud-signal");
     expect(result.explanation).toContain(houses[0].reason);
     expect(result.explanation).toContain(houses[1].reason);
+  });
+
+  it("5채를 모두 판정한 직후에는 다음으로 넘어가기 버튼이 나타나고, 연속 클릭해도 onComplete는 1회만 호출된다", () => {
+    const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
+    const onComplete = vi.fn();
+    render(<JeonseExperience content={houses} onComplete={onComplete} />);
+
+    houses.forEach((house, i) => judgeHouse(i, house, false));
+
+    expect(onComplete).not.toHaveBeenCalled();
+    const nextButton = screen.getByText("다음으로 넘어가기");
+    fireEvent.click(nextButton);
+    fireEvent.click(nextButton);
+
+    expect(onComplete).toHaveBeenCalledTimes(1);
   });
 
   it("힌트로 공개한 집은 판정 전에 닫았다가 다시 들어가도 서류 상태가 계속 보인다", () => {
