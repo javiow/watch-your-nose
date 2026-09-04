@@ -31,7 +31,8 @@
     {
       "step": 4,
       "name": "jeonse-defer-complete",
-      "status": "pending"
+      "status": "completed",
+      "summary": "JeonseExperience에 pendingResult state + NextStepButton 추가, 5채 판정 완료 시 onComplete 호출을 버튼 클릭까지 지연. 관련 테스트 2개 갱신 + 1개 신규. build/lint/test(7/7) 통과"
     },
     {
       "step": 5,
