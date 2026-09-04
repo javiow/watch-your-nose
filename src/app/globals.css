@@ -197,22 +197,6 @@ body {
     animation: card-float-c 15s ease-in-out infinite;
     animation-delay: -8s;
   }
-
-  /* Scroll-down cue */
-  @keyframes scroll-cue {
-    0%,
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    50% {
-      transform: translateY(6px);
-      opacity: 0.4;
-    }
-  }
-  .scroll-cue {
-    animation: scroll-cue 1.8s ease-in-out infinite;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -223,8 +207,7 @@ body {
   .hero-grain::after,
   .card-float-a,
   .card-float-b,
-  .card-float-c,
-  .scroll-cue {
+  .card-float-c {
     animation: none !important;
   }
   .mascot-frame {

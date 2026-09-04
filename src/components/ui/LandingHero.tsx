@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
 import { Mascot } from "@/components/ui/Mascot";
 import { StartButton } from "@/components/ui/StartButton";
 
@@ -68,14 +67,6 @@ export function LandingHero() {
           <StartButton />
         </div>
       </div>
-
-      <Link
-        href="/how-it-works"
-        aria-label="더 알아보기"
-        className="scroll-cue absolute bottom-6 text-2xl leading-none text-subtle"
-      >
-        ⌄
-      </Link>
     </section>
   );
 }
