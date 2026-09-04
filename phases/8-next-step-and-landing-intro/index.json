@@ -43,7 +43,8 @@
     {
       "step": 6,
       "name": "result-page-content-labels",
-      "status": "pending"
+      "status": "completed",
+      "summary": "/result 문항별 리뷰(N번 · 유형)와 대응 방안에 EXPERIENCE_TYPE_LABELS 라벨 추가. completeResults() 픽스처를 EXPERIENCE_MODULES 기반 혼합 typeId로 갱신, 라벨 노출 테스트 2개 추가. build/lint/test(8/8, 전체 274) 통과"
     },
     {
       "step": 7,
