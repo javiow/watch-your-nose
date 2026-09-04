@@ -1,0 +1,54 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "8-next-step-and-landing-intro",
+  "steps": [
+    {
+      "step": 0,
+      "name": "next-step-button",
+      "status": "completed",
+      "started_at": "2026-09-04T23:22:32+0900",
+      "summary": "src/components/ui/NextStepButton.tsx 공용 버튼 컴포넌트를 TDD로 신규 추가 (기본 라벨, label override, disabled 처리, accent 톤 재사용)"
+    },
+    {
+      "step": 1,
+      "name": "experience-type-labels",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "voice-phishing-defer-complete",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "case-investigation-defer-complete",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "jeonse-defer-complete",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "name": "fraud-judgment-defer-complete",
+      "status": "pending"
+    },
+    {
+      "step": 6,
+      "name": "result-page-content-labels",
+      "status": "pending"
+    },
+    {
+      "step": 7,
+      "name": "landing-mobile-hero-cards",
+      "status": "pending"
+    },
+    {
+      "step": 8,
+      "name": "how-it-works-page",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-09-04T23:22:32+0900"
+}
