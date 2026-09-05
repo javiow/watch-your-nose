@@ -120,7 +120,8 @@
     {
       "step": 19,
       "name": "case-investigation-question-limit-hint",
-      "status": "pending"
+      "status": "completed",
+      "summary": "CaseInvestigationExperience 질문 소진 메시지 두 곳에 '지금까지 확인한 내용과 서류를 바탕으로 판단해보세요.' 부연 추가. 테스트 1개 보강. 전체 332 통과"
     }
   ],
   "created_at": "2026-09-05T22:47:16+0900"
