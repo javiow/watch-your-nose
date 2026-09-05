@@ -42,7 +42,8 @@
     {
       "step": 6,
       "name": "wire-glossary-fraud-judgment",
-      "status": "pending"
+      "status": "completed",
+      "summary": "fraud-judgment.ts content 2곳에 마커(대환대출 L107, 명의도용 L512). title/explanation/source 미변경. FraudJudgmentExperience {currentCard.content}→<GlossaryTermText>. 테스트 18 통과(스포일러 비노출 테스트 포함)"
     },
     {
       "step": 7,
