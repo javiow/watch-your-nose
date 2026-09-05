@@ -124,6 +124,23 @@ describe("CaseInvestigationExperience", () => {
     }
   });
 
+  it("마운트 직후 안내 모달(dialog)이 뜨고 상황 설명이 보인다", () => {
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={vi.fn()} />);
+    expect(screen.getByRole("dialog")).toBeDefined();
+    expect(screen.getByText(/조사를 많이 할수록 단서는 늘지만/)).toBeDefined();
+  });
+
+  it("조사 화면에서 '안내 다시 보기'로 모달을 다시 열고 닫을 수 있다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "안내 다시 보기" }));
+    expect(screen.getByRole("dialog")).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "닫기" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
   it("조사 시작 클릭 후 조사 화면으로 전환되고 포인트가 부족한 조사는 비활성화된다", () => {
     render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
     startInvestigating();

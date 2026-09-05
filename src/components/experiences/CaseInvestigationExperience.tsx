@@ -17,8 +17,9 @@ import { MAX_NPC_QUESTIONS, isMeaningfulQuestion } from "@/lib/npc-chat";
 import { classifyQuestion } from "@/lib/npc-chat-client";
 import { NextStepButton } from "@/components/ui/NextStepButton";
 import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
-import { FormatBadge } from "@/components/ui/FormatBadge";
+import { IntroDialog } from "@/components/ui/IntroDialog";
 import { EXPERIENCE_FORMAT } from "@/data/experience-format";
+import { EXPERIENCE_INTRO } from "@/data/experience-intro";
 
 interface ChatEntry {
   key: string;
@@ -96,6 +97,7 @@ export function CaseInvestigationExperience({
   const [inputError, setInputError] = useState<string | null>(null);
   const [isClassifying, setIsClassifying] = useState(false);
   const [selectedDecision, setSelectedDecision] = useState<CaseFinalDecision | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
   const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
   // "다음으로 넘어가기"를 누르기 전까지는 잘못 누른 판단을 다시 골라 바꿀 수 있다.
   // 확정(다음으로 넘어가기 클릭) 이후에만 판단 버튼을 잠근다.
@@ -184,36 +186,35 @@ export function CaseInvestigationExperience({
 
   if (phase === "briefing") {
     return (
-      <div className="space-y-6">
-        <FormatBadge format={EXPERIENCE_FORMAT["case-investigation"]} />
-        <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
-          <p className="text-sm font-medium text-muted">조사 예산 {content.initialPoints}P</p>
-          <h2 className="mt-2 text-lg font-semibold text-foreground">
-            {content.scenario.propertyLocation}
-          </h2>
-          <p className="mt-1 text-sm text-subtle">{content.scenario.propertyPriceDescription}</p>
-          <div className="mt-4 rounded-xl border border-border bg-surface-muted p-4">
-            <p className="text-sm font-medium text-muted">{content.scenario.speakerLabel}</p>
-            <p className="mt-1 text-sm leading-relaxed text-muted">
-              &ldquo;{content.scenario.brokerLine}&rdquo;
+      <>
+        <div className="space-y-6">
+          <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
+            <p className="text-sm font-medium text-muted">조사 예산 {content.initialPoints}P</p>
+            <h2 className="mt-2 text-lg font-semibold text-foreground">
+              {content.scenario.propertyLocation}
+            </h2>
+            <p className="mt-1 text-sm text-subtle">{content.scenario.propertyPriceDescription}</p>
+            <div className="mt-4 rounded-xl border border-border bg-surface-muted p-4">
+              <p className="text-sm font-medium text-muted">{content.scenario.speakerLabel}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">
+                &ldquo;{content.scenario.brokerLine}&rdquo;
+              </p>
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              {content.scenario.description}
             </p>
+            <p className="mt-2 text-sm font-medium text-muted">{content.scenario.goal}</p>
           </div>
-          <p className="mt-4 text-sm leading-relaxed text-muted">
-            {content.scenario.description}
-          </p>
-          <p className="mt-2 text-sm font-medium text-muted">{content.scenario.goal}</p>
         </div>
 
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={() => setPhase("investigating")}
-            className={primaryButtonClass}
-          >
-            조사 시작
-          </button>
-        </div>
-      </div>
+        <IntroDialog
+          mode="gate"
+          format={EXPERIENCE_FORMAT["case-investigation"]}
+          intro={EXPERIENCE_INTRO["case-investigation"]}
+          confirmLabel="조사 시작"
+          onConfirm={() => setPhase("investigating")}
+        />
+      </>
     );
   }
 
@@ -227,10 +228,30 @@ export function CaseInvestigationExperience({
 
     return (
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-3">
-          <span className="text-sm text-subtle">남은 포인트 {points}P</span>
-          <span className="text-sm text-subtle">등록된 증거 {registeredEvidence.size}건</span>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-3">
+            <span className="text-sm text-subtle">남은 포인트 {points}P</span>
+            <span className="text-sm text-subtle">등록된 증거 {registeredEvidence.size}건</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowHelp(true)}
+            className="text-xs font-medium text-subtle underline underline-offset-2 transition-colors hover:text-accent"
+          >
+            안내 다시 보기
+          </button>
         </div>
+
+        {showHelp && (
+          <IntroDialog
+            mode="help"
+            format={EXPERIENCE_FORMAT["case-investigation"]}
+            intro={EXPERIENCE_INTRO["case-investigation"]}
+            confirmLabel="조사 시작"
+            onDismiss={() => setShowHelp(false)}
+            onConfirm={() => setShowHelp(false)}
+          />
+        )}
 
         {!openDocument && (
           <div className="space-y-3">
