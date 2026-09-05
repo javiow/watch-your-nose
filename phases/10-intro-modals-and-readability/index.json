@@ -55,7 +55,9 @@
     {
       "step": 7,
       "name": "case-investigation-guidance-ui",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T08:50:00+0900",
+      "summary": "CaseInvestigationExperience investigating: 조사 버튼 둘째 줄 + 열람 문서 헤더에 inv.purpose 노출. 조사 목록 위 예산 안내 콜아웃(bg-surface-muted). 상태 행에 '조사 {completedInvestigationIds.size}/{visibleInvestigations.length}' 분모(visible 기준으로 hiddenUntilUnlocked 누출 방지). '등록된 증거 N건'·handleStartInvestigation/handleRegisterEvidence·scoring 불변. importance 체험 중 미노출 유지 + lock-in 테스트. 테스트 6 추가(purpose 버튼/헤더, 예산 안내, 조사 0/2→1/2, 중요도 미노출). 기존 /숨겨진 조사/ getByText→getByRole. build/lint/test(전체 379) 통과"
     },
     {
       "step": 8,
