@@ -13,7 +13,9 @@
     {
       "step": 1,
       "name": "experience-intro-data",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T08:34:00+0900",
+      "summary": "src/data/experience-intro.ts 신규: EXPERIENCE_INTRO Record<ExperienceTypeId, {situation: string, task: string[]}>. situation은 \\n\\n로 나뉜 2문단, task는 명령형 3~4개. case-investigation situation에 포인트 경제 설명(많이=단서↑예산↓, 적게=핵심 단서 놓침) 포함 — step7 안내 카피와 겸용. ExperienceModule/registry 무변경. 테스트 5(키 1:1, 최소 길이, 유형라벨 미포함, 금칙어 정규식, 문단 형식). build/lint/test(전체 358) 통과"
     },
     {
       "step": 2,
