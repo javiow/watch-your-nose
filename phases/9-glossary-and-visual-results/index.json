@@ -108,7 +108,8 @@
     {
       "step": 17,
       "name": "result-page-remediation-render",
-      "status": "pending"
+      "status": "completed",
+      "summary": "/result 대응 방안 섹션: getRemediationEntry로 전환, 긴 message 대신 짧은 불릿 <ul> + 공식 링크 칩(target=_blank rel=noopener noreferrer). page.test.tsx: 강조 문구 테스트를 불릿+링크 href/target/rel 검증으로 교체. 전체 331 통과"
     },
     {
       "step": 18,
