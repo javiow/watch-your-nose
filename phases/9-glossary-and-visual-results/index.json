@@ -18,7 +18,8 @@
     {
       "step": 2,
       "name": "glossary-term-text",
-      "status": "pending"
+      "status": "completed",
+      "summary": "src/components/ui/GlossaryTermText.tsx 신규: {{term:키}} / {{term:키|표시}} 마커를 정규식 파싱해 TermTooltip으로 치환(resolveGlossaryKey 사용), 미존재 키는 표시 텍스트만. dangerouslySetInnerHTML 미사용. 테스트 5케이스"
     },
     {
       "step": 3,
