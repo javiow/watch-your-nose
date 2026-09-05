@@ -44,6 +44,10 @@
       "dir": "8-next-step-and-landing-intro",
       "status": "completed",
       "completed_at": "2026-09-04T23:54:47+0900"
+    },
+    {
+      "dir": "9-glossary-and-visual-results",
+      "status": "pending"
     }
   ]
 }
