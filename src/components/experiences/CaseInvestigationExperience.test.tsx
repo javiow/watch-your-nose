@@ -248,6 +248,7 @@ describe("CaseInvestigationExperience", () => {
     expect(screen.getByPlaceholderText(/궁금한 점을 자유롭게/)).toBeDisabled();
     expect(screen.getByRole("button", { name: "물어보기" })).toBeDisabled();
     expect(screen.getByText(/질문 횟수를 모두 사용/)).toBeDefined();
+    expect(screen.getByText(/판단해보세요/)).toBeDefined();
   });
 
   it("질문 가능 횟수가 화면에 표시되고 질문할 때마다 갱신된다", async () => {

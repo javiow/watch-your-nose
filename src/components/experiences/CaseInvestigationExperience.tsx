@@ -117,7 +117,7 @@ export function CaseInvestigationExperience({
 
   const handleSubmitQuestion = async (rawInput: string) => {
     if (chatLog.length >= MAX_NPC_QUESTIONS) {
-      setInputError("질문 횟수를 모두 사용했어요.");
+      setInputError("질문 횟수를 모두 사용했어요. 지금까지 확인한 내용과 서류를 바탕으로 판단해보세요.");
       return;
     }
     const trimmed = rawInput.trim();
@@ -370,7 +370,7 @@ export function CaseInvestigationExperience({
             </button>
           </form>
           {questionLimitReached ? (
-            <p className="mt-2 text-sm text-subtle">질문 횟수를 모두 사용했어요.</p>
+            <p className="mt-2 text-sm text-subtle">질문 횟수를 모두 사용했어요. 지금까지 확인한 내용과 서류를 바탕으로 판단해보세요.</p>
           ) : (
             inputError && <p className="mt-2 text-sm text-subtle">{inputError}</p>
           )}
