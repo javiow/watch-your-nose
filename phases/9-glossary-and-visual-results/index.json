@@ -72,7 +72,8 @@
     {
       "step": 11,
       "name": "fraud-judgment-start-gate",
-      "status": "pending"
+      "status": "completed",
+      "summary": "FraudJudgmentExperience: started state + !started면 FormatBadge+hint+'판정 시작' 버튼만 렌더(타이머 없어 useEffect 불필요). 기존 12개 테스트에 start() 삽입 + 시작화면 테스트 2개 신규. 전체 320 통과"
     },
     {
       "step": 12,
