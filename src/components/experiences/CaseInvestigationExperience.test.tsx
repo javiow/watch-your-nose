@@ -111,6 +111,11 @@ describe("CaseInvestigationExperience", () => {
     expect(screen.getByText(jeonse001.scenario.propertyLocation)).toBeDefined();
   });
 
+  it("브리핑 화면에 형식 배지(현장 조사)가 렌더된다", () => {
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={vi.fn()} />);
+    expect(screen.getByText("현장 조사")).toBeDefined();
+  });
+
   it("브리핑 단계에서 hiddenTruth.explanation과 endingOptions[].comment를 렌더링하지 않는다", () => {
     render(<CaseInvestigationExperience content={jeonse001} onComplete={vi.fn()} />);
     expect(screen.queryByText(jeonse001.hiddenTruth.explanation)).toBeNull();

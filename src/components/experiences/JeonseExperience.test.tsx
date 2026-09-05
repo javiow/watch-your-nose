@@ -46,6 +46,12 @@ describe("JeonseExperience", () => {
     expect(screen.getAllByText("미점검").length).toBeGreaterThanOrEqual(5);
   });
 
+  it("보드 상단에 형식 배지(매물 확인)가 렌더된다", () => {
+    const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
+    render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+    expect(screen.getByText("매물 확인")).toBeDefined();
+  });
+
   it("매물 하나를 판정한 직후 정답/오답/해설 텍스트가 없다", () => {
     const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
     render(<JeonseExperience content={houses} onComplete={vi.fn()} />);

@@ -17,6 +17,8 @@ import { MAX_NPC_QUESTIONS, isMeaningfulQuestion } from "@/lib/npc-chat";
 import { classifyQuestion } from "@/lib/npc-chat-client";
 import { NextStepButton } from "@/components/ui/NextStepButton";
 import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
+import { FormatBadge } from "@/components/ui/FormatBadge";
+import { EXPERIENCE_FORMAT } from "@/data/experience-format";
 
 interface ChatEntry {
   key: string;
@@ -183,6 +185,7 @@ export function CaseInvestigationExperience({
   if (phase === "briefing") {
     return (
       <div className="space-y-6">
+        <FormatBadge format={EXPERIENCE_FORMAT["case-investigation"]} />
         <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
           <p className="text-sm font-medium text-muted">조사 예산 {content.initialPoints}P</p>
           <h2 className="mt-2 text-lg font-semibold text-foreground">
