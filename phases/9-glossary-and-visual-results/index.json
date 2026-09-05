@@ -96,7 +96,8 @@
     {
       "step": 15,
       "name": "result-page-visual-redesign",
-      "status": "pending"
+      "status": "completed",
+      "summary": "/result 재구성: 종합 점수→<ScoreGauge>+describeGradeThresholds 캡션(Mascot 유지), '유형별 점수' 섹션에 <ScoreBarChart>, 문항별 리뷰 압축(✓/✗ 아이콘+sr-only, '내 선택 A · 정답 B' 한 줄). 대응 방안은 step17 위해 그대로. ScoreBarChart ul/li→div(리뷰 li querySelector 충돌 방지). page.test.tsx mock에 describeGradeThresholds·computeGrade 추가, 라벨 카운트 테스트 2·3으로 갱신. 전체 327 통과"
     },
     {
       "step": 16,
