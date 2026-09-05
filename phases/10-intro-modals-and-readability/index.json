@@ -83,7 +83,9 @@
     {
       "step": 11,
       "name": "adopt-prose-remaining",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T08:59:00+0900",
+      "summary": "how-it-works/page.tsx 상단 소개 <p> → <Prose size=\"base\">(2문단, mx-auto text-center). '진행 방식' 불릿 '종합 점수·유형별 점수·문항별 리뷰·대응 방안' → '종합 점수와 유형별 점수, 문항별 리뷰(대응 방안 포함)'. 테스트 substring 매처(다음으로 넘어가기 / 정답과 오답을 알려주지 않습니다) 유지. CaseInvestigationExperience 브리핑 scenario.description <p> → <Prose size=\"sm\" className=\"mt-4\">. 서버 컴포넌트·유형명 비노출 유지. build/lint/test(전체 382) 통과"
     },
     {
       "step": 12,
