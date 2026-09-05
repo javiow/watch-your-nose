@@ -60,7 +60,8 @@
     {
       "step": 9,
       "name": "attach-format-badge-briefing-experiences",
-      "status": "pending"
+      "status": "completed",
+      "summary": "CaseInvestigationExperience briefing 최상단 + MapBoard(전세매물) 헤더 최상단에 <FormatBadge> 추가(EXPERIENCE_FORMAT[typeId] 참조). 배지 노출 테스트 각 1개. VoicePhishing/FraudJudgment는 미변경. 테스트 35 통과"
     },
     {
       "step": 10,
