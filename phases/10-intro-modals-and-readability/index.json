@@ -41,7 +41,9 @@
     {
       "step": 5,
       "name": "wire-intro-jeonse-gate",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T08:44:00+0900",
+      "summary": "JeonseExperience에 started state 게이트 추가: !started면 <IntroDialog mode=\"gate\" confirmLabel=\"점검 시작\">만 렌더, <MapBoard>는 조건부로 마운트 안 함(CSS 숨김 아님) → MapBoard의 RAF 이동 루프·window keydown/keyup·ResizeObserver 마운트 이펙트가 모달 뒤에서 안 붙음. MapBoard.tsx/eslint-disable 이펙트 무수정. started 후 보드 위 '안내 다시 보기' 버튼 + showHelp + <IntroDialog mode=\"help\">. JeonseExperience.test.tsx: startJeonse() 헬퍼를 모든 render 뒤 호출하도록 전체 갱신 + dialog 마운트/재열람 2케이스 추가. build/lint/test(전체 372) 통과"
     },
     {
       "step": 6,
