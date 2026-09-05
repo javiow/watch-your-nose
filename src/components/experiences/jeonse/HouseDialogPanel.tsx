@@ -12,6 +12,7 @@ function statusClassFor(status: JeonseFieldStatus): string {
 export interface HouseDialogPanelProps {
   house: JeonseHouse;
   answered: boolean;
+  answer?: boolean; // answered일 때만 의미 있음: true=O(위험 있음) 선택, false=X(위험 없음) 선택
   onAnswer: (risky: boolean) => void;
   onClose: () => void;
   hintRevealed: boolean;
@@ -22,6 +23,7 @@ export interface HouseDialogPanelProps {
 export function HouseDialogPanel({
   house,
   answered,
+  answer,
   onAnswer,
   onClose,
   hintRevealed,
@@ -53,23 +55,6 @@ export function HouseDialogPanel({
               나중에
             </button>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (answered) {
-    return (
-      <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/70 p-4">
-        <div className="w-full max-w-md rounded-lg border border-border bg-surface p-6">
-          <p className="text-sm text-muted">판정을 기록했습니다. 다음 집으로 이동하세요.</p>
-          <button
-            type="button"
-            onClick={onClose}
-            className="mt-6 min-h-11 rounded-lg bg-accent px-5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-          >
-            닫기
-          </button>
         </div>
       </div>
     );
@@ -125,7 +110,7 @@ export function HouseDialogPanel({
                 ? "서류 상태(정상/주의/위험)는 가려져 있습니다. 세션당 1회, 힌트로 모두 확인할 수 있습니다."
                 : "힌트를 이미 다른 매물에서 사용했습니다."}
           </p>
-          {!hintRevealed && (
+          {!answered && !hintRevealed && (
             <button
               type="button"
               onClick={onUseHint}
@@ -155,28 +140,37 @@ export function HouseDialogPanel({
           ))}
         </div>
 
-        <div className="p-5">
-          <p className="text-base font-semibold text-foreground">이 집, 위험 신호가 있습니까?</p>
-          <p className="mt-1 text-xs text-subtle">
-            O — 위험 있음 (계약 보류) · X — 위험 없음 (계약 가능)
-          </p>
-          <div className="mt-4 flex gap-3">
-            <button
-              type="button"
-              onClick={() => onAnswer(true)}
-              className="min-h-11 flex-1 rounded-lg bg-danger px-4 text-sm font-medium text-white transition-colors hover:brightness-95"
-            >
-              O — 위험 있음
-            </button>
-            <button
-              type="button"
-              onClick={() => onAnswer(false)}
-              className="min-h-11 flex-1 rounded-lg bg-safe px-4 text-sm font-medium text-white transition-colors hover:brightness-95"
-            >
-              X — 위험 없음
-            </button>
+        {answered ? (
+          <div className="p-5">
+            <p className="text-base font-semibold text-foreground">당신의 판정</p>
+            <p className="mt-1 text-sm text-muted">
+              {answer ? "O — 위험 있음 (계약 보류)" : "X — 위험 없음 (계약 가능)"}
+            </p>
           </div>
-        </div>
+        ) : (
+          <div className="p-5">
+            <p className="text-base font-semibold text-foreground">이 집, 위험 신호가 있습니까?</p>
+            <p className="mt-1 text-xs text-subtle">
+              O — 위험 있음 (계약 보류) · X — 위험 없음 (계약 가능)
+            </p>
+            <div className="mt-4 flex gap-3">
+              <button
+                type="button"
+                onClick={() => onAnswer(true)}
+                className="min-h-11 flex-1 rounded-lg bg-danger px-4 text-sm font-medium text-white transition-colors hover:brightness-95"
+              >
+                O — 위험 있음
+              </button>
+              <button
+                type="button"
+                onClick={() => onAnswer(false)}
+                className="min-h-11 flex-1 rounded-lg bg-safe px-4 text-sm font-medium text-white transition-colors hover:brightness-95"
+              >
+                X — 위험 없음
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
