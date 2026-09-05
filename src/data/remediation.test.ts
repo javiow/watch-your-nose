@@ -2,9 +2,13 @@ import { describe, expect, it } from "vitest";
 import type { ModuleResult } from "@/types/experience";
 import {
   DEFAULT_REMEDIATION_MESSAGE,
+  REMEDIATION_ENTRIES,
   getRemediation,
+  getRemediationEntry,
   getRemediationsForResults,
 } from "./remediation";
+
+const TAGS = Object.keys(REMEDIATION_ENTRIES);
 
 describe("getRemediation", () => {
   it("blind-refusal 태그에 대한 대응 방안을 반환한다", () => {
@@ -49,6 +53,40 @@ describe("getRemediation", () => {
 
   it("태그가 없으면 기본 안내 문구를 반환한다", () => {
     expect(getRemediation(undefined)).toBe(DEFAULT_REMEDIATION_MESSAGE);
+  });
+});
+
+describe("getRemediationEntry", () => {
+  it("모든 태그가 짧은 불릿 2~3개를 가진다 (각 25자 이내)", () => {
+    for (const tag of TAGS) {
+      const { bullets } = getRemediationEntry(tag);
+      expect(bullets.length).toBeGreaterThanOrEqual(2);
+      expect(bullets.length).toBeLessThanOrEqual(3);
+      for (const b of bullets) expect(b.length).toBeLessThanOrEqual(25);
+    }
+  });
+
+  it("모든 태그가 https 공식 링크를 1개 이상 가진다", () => {
+    for (const tag of TAGS) {
+      const links = getRemediationEntry(tag).links ?? [];
+      expect(links.length).toBeGreaterThanOrEqual(1);
+      for (const link of links) {
+        expect(link.url.startsWith("https://")).toBe(true);
+        expect(link.label.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("태그가 없으면 기본 엔트리(링크 없음)를 반환하고 message가 기본 문구와 같다", () => {
+    const entry = getRemediationEntry(undefined);
+    expect(entry.links).toBeUndefined();
+    expect(entry.message).toBe(DEFAULT_REMEDIATION_MESSAGE);
+  });
+
+  it("getRemediation은 항상 getRemediationEntry(tag).message와 동일하다", () => {
+    for (const tag of [...TAGS, undefined, "typo"]) {
+      expect(getRemediation(tag)).toBe(getRemediationEntry(tag).message);
+    }
   });
 });
 
