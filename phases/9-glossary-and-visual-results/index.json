@@ -84,7 +84,8 @@
     {
       "step": 13,
       "name": "score-gauge-component",
-      "status": "pending"
+      "status": "completed",
+      "summary": "src/components/ui/ScoreGauge.tsx 신규: SVG stroke-dasharray 도넛(라이브러리 無), data-grade + ARC_COLOR(safe/danger=CSS 토큰, caution=#d97706), 중앙 percent+등급 텍스트, role=img aria-label. describeGradeThresholds 캡션은 step15의 result 페이지에서 렌더. 테스트 3"
     },
     {
       "step": 14,
