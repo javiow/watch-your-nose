@@ -18,6 +18,7 @@ import { classifyQuestion } from "@/lib/npc-chat-client";
 import { NextStepButton } from "@/components/ui/NextStepButton";
 import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
 import { IntroDialog } from "@/components/ui/IntroDialog";
+import { Prose } from "@/components/ui/Prose";
 import { EXPERIENCE_FORMAT } from "@/data/experience-format";
 import { EXPERIENCE_INTRO } from "@/data/experience-intro";
 
@@ -200,9 +201,7 @@ export function CaseInvestigationExperience({
                 &ldquo;{content.scenario.brokerLine}&rdquo;
               </p>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-muted">
-              {content.scenario.description}
-            </p>
+            <Prose className="mt-4" text={content.scenario.description} size="sm" />
             <p className="mt-2 text-sm font-medium text-muted">{content.scenario.goal}</p>
           </div>
         </div>
