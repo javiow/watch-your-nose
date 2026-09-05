@@ -78,7 +78,8 @@
     {
       "step": 12,
       "name": "grade-threshold-text",
-      "status": "pending"
+      "status": "completed",
+      "summary": "src/lib/scoring.ts에 describeGradeThresholds() 추가 — GRADE_THRESHOLDS/GRADE_LABELS 조합('80% 이상 안전 · 50~79% 주의 · 50% 미만 위험'). 기존 export 불변. scoring.test.ts에 상수 기반 회귀 테스트 1개. 테스트 18"
     },
     {
       "step": 13,
