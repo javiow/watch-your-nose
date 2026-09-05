@@ -54,7 +54,8 @@
     {
       "step": 8,
       "name": "format-badge-component",
-      "status": "pending"
+      "status": "completed",
+      "summary": "src/components/ui/FormatBadge.tsx 신규: ExperienceFormatMeta를 받아 icon(aria-hidden)+formatLabel+hint pill 렌더. 기존 토큰(bg-surface-muted/border-border/text-*)만 사용. 테스트 2"
     },
     {
       "step": 9,
