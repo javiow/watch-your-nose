@@ -61,6 +61,7 @@ const gatingFixture: CaseInvestigationContent = {
       cost: 50,
       unlockCondition: null,
       documentId: "DOC_A",
+      purpose: "저렴한 조사의 목적 설명",
     },
     {
       investigationId: "INV_EXPENSIVE",
@@ -68,6 +69,7 @@ const gatingFixture: CaseInvestigationContent = {
       cost: 9999,
       unlockCondition: null,
       documentId: "DOC_A",
+      purpose: "비싼 조사의 목적 설명",
     },
     {
       investigationId: "INV_HIDDEN",
@@ -76,6 +78,7 @@ const gatingFixture: CaseInvestigationContent = {
       unlockCondition: { kind: "evidence", pattern: "PATTERN_A" },
       documentId: "DOC_B",
       hiddenUntilUnlocked: true,
+      purpose: "숨겨진 조사의 목적 설명",
     },
   ],
   npc: {

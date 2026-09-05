@@ -91,6 +91,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 100,
         unlockCondition: null,
         documentId: "DOC_LISTING",
+        purpose:
+          "광고 문구에 계약을 재촉하거나 조건을 부풀리는 표현이 있는지 봅니다.",
       },
       {
         investigationId: "CHECK_MARKET",
@@ -98,6 +100,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: null,
         documentId: "DOC_MARKET",
+        purpose:
+          "제시된 금액이 주변 실거래가와 맞는 수준인지 비교합니다.",
       },
     ],
     npc: {
@@ -257,6 +261,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 500,
         unlockCondition: null,
         documentId: "DOC_REGISTRY",
+        purpose:
+          "소유자가 누구인지, 근저당·압류 같은 권리관계가 있는지 확인합니다.",
       },
       {
         investigationId: "CHECK_MARKET",
@@ -264,6 +270,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: null,
         documentId: "DOC_MARKET",
+        purpose:
+          "제시된 금액이 주변 실거래가와 맞는 수준인지 비교합니다.",
       },
       {
         investigationId: "CHECK_LANDLORD",
@@ -271,6 +279,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 400,
         unlockCondition: { kind: "evidence", pattern: "MULTIPLE_PROPERTY_ACQUISITION" },
         documentId: "DOC_LANDLORD",
+        purpose:
+          "계약 상대가 실제 소유자이고 다른 문제 이력은 없는지 확인합니다.",
       },
     ],
     npc: {
@@ -465,6 +475,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 500,
         unlockCondition: null,
         documentId: "DOC_REGISTRY",
+        purpose:
+          "소유자가 누구인지, 근저당·압류 같은 권리관계가 있는지 확인합니다.",
       },
       {
         investigationId: "CHECK_AGENT",
@@ -472,6 +484,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 200,
         unlockCondition: null,
         documentId: "DOC_AGENT",
+        purpose:
+          "중개를 맡은 곳이 정식 등록된 공인중개사무소이고 설명이 서류와 맞는지 확인합니다.",
       },
       {
         investigationId: "CHECK_CONTRACT",
@@ -479,6 +493,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: { kind: "investigation", investigationId: "CHECK_REGISTRY" },
         documentId: "DOC_CONTRACT",
+        purpose:
+          "계약서 특약과 조건에 불리하거나 이상한 항목이 있는지 확인합니다.",
       },
     ],
     npc: {
@@ -679,6 +695,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 0,
         unlockCondition: null,
         documentId: "DOC_SMS",
+        purpose:
+          "받은 문자의 발신 번호와 링크, 문구가 정상적인 안내인지 확인합니다.",
       },
       {
         investigationId: "CHECK_SITE",
@@ -686,6 +704,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 200,
         unlockCondition: { kind: "investigation", investigationId: "CHECK_SMS" },
         documentId: "DOC_SITE",
+        purpose:
+          "문자 속 사이트가 공식 도메인인지, 개인정보를 요구하는지 확인합니다.",
         hiddenUntilUnlocked: true,
       },
       {
@@ -694,6 +714,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 400,
         unlockCondition: null,
         documentId: "DOC_OFFICIAL",
+        purpose:
+          "청약Home과 건설사 공식 채널의 안내가 문자 내용과 일치하는지 대조합니다.",
       },
       {
         investigationId: "CHECK_PAYMENT",
@@ -701,6 +723,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 100,
         unlockCondition: { kind: "investigation", investigationId: "CHECK_SMS" },
         documentId: "DOC_PAYMENT",
+        purpose:
+          "입금하라는 계좌가 공식 계좌인지, 예금주 명의가 맞는지 다시 확인합니다.",
         hiddenUntilUnlocked: true,
       },
     ],
@@ -874,6 +898,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 200,
         unlockCondition: null,
         documentId: "DOC_DEVELOPER",
+        purpose:
+          "분양을 맡은 시행사가 실제 등록된 곳이고 사업 실적이 있는지 확인합니다.",
       },
       {
         investigationId: "CHECK_BUILDER",
@@ -881,6 +907,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 200,
         unlockCondition: null,
         documentId: "DOC_BUILDER",
+        purpose:
+          "시공을 맡은 건설사의 규모와 신용, 시공 능력을 확인합니다.",
       },
       {
         investigationId: "CHECK_YIELD",
@@ -888,6 +916,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 400,
         unlockCondition: null,
         documentId: "DOC_YIELD",
+        purpose:
+          "약속한 수익률의 근거가 무엇인지, 보장 주체가 책임질 수 있는지 확인합니다.",
       },
       {
         investigationId: "CHECK_LAND",
@@ -895,6 +925,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: null,
         documentId: "DOC_LAND",
+        purpose:
+          "토지 용도와 건축 인허가 상태가 분양 내용과 맞는지 확인합니다.",
       },
       {
         investigationId: "CHECK_CONTRACT",
@@ -902,6 +934,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: { kind: "investigation", investigationId: "CHECK_YIELD" },
         documentId: "DOC_CONTRACT",
+        purpose:
+          "계약서 특약과 조건에 불리하거나 이상한 항목이 있는지 확인합니다.",
       },
     ],
     npc: {
@@ -1084,6 +1118,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 500,
         unlockCondition: null,
         documentId: "DOC_REGISTRY",
+        purpose:
+          "소유자가 누구인지, 근저당·압류 같은 권리관계가 있는지 확인합니다.",
       },
       {
         investigationId: "CHECK_AGENT",
@@ -1091,6 +1127,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 200,
         unlockCondition: null,
         documentId: "DOC_AGENT",
+        purpose:
+          "중개를 맡은 곳이 정식 등록된 공인중개사무소이고 설명이 서류와 맞는지 확인합니다.",
       },
       {
         investigationId: "CHECK_GUARANTEE",
@@ -1098,6 +1136,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: null,
         documentId: "DOC_GUARANTEE",
+        purpose:
+          "보증보험 가입 서류가 실제 유효한지, 조건이 충족되는지 확인합니다.",
       },
     ],
     npc: {

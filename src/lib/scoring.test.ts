@@ -163,6 +163,7 @@ describe("computeCaseInvestigationScore", () => {
         cost: 100,
         documentId: "DOC_A",
         unlockCondition: null,
+        purpose: "조사 1의 목적",
       },
       {
         investigationId: "INV_2",
@@ -170,6 +171,7 @@ describe("computeCaseInvestigationScore", () => {
         cost: 100,
         documentId: "DOC_B",
         unlockCondition: null,
+        purpose: "조사 2의 목적",
       },
     ],
     npc: {
