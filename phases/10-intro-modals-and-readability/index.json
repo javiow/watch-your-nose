@@ -76,7 +76,9 @@
     {
       "step": 10,
       "name": "result-merge-remediation",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T08:57:00+0900",
+      "summary": "src/app/result/page.tsx: 독립 '대응 방안' <section>과 incorrectResults 삭제. 문항별 리뷰 results.map의 각 <li> 안, 설명 다음에 !isCorrect면 getRemediationEntry(mistakeTag) → '이렇게 대응하세요' 블록(<Prose message> + bullets <ul> + links <ul> target=_blank rel=noopener noreferrer). 정답 문항은 설명만. explanation·message를 <Prose size=\"sm\">로 렌더(HighlightedText import 제거, ** 강조는 renderInlineMarkup이 처리). page.test.tsx: '대응 방안' 헤더 제거, 전세매물 라벨 카운트 3→2, 정답 결과 대응 미노출·오답 대응이 해당 문항 li 포함 2케이스 추가. build/lint/test(전체 382) 통과"
     },
     {
       "step": 11,
