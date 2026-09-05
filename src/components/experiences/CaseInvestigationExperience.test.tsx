@@ -144,6 +144,49 @@ describe("CaseInvestigationExperience", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
+  it("조사 버튼에 purpose 설명이 함께 노출된다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    expect(screen.getByText("저렴한 조사의 목적 설명")).toBeDefined();
+    expect(screen.getByText("비싼 조사의 목적 설명")).toBeDefined();
+  });
+
+  it("조사 목록 위에 예산 사용 안내 문구가 표시된다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    expect(screen.getByText(/예산 안에서 꼭 필요한 조사를 고르세요/)).toBeDefined();
+  });
+
+  it("열람한 문서 헤더에 해당 조사의 purpose가 노출된다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    fireEvent.click(screen.getByRole("button", { name: /저렴한 조사/ }));
+    expect(screen.getByText("저렴한 조사의 목적 설명")).toBeDefined();
+    expect(screen.getByText("문서 A")).toBeDefined();
+  });
+
+  it("조사 진행 상황이 n/m 분모와 함께 표시되고, 조사할 때마다 증가한다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    // INV_HIDDEN은 hiddenUntilUnlocked라 visible 2개
+    expect(screen.getByText("조사 0/2")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: /저렴한 조사/ }));
+    expect(screen.getByText("조사 1/2")).toBeDefined();
+  });
+
+  it("증거를 등록해도 중요도(핵심/참고)를 체험 중 노출하지 않는다 (ADR-004)", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    fireEvent.click(screen.getByRole("button", { name: /저렴한 조사/ }));
+    fireEvent.click(screen.getByRole("button", { name: "증거 블록 텍스트입니다" }));
+
+    expect(screen.getByText(/확인:/)).toBeDefined();
+    expect(screen.queryByText(/핵심 단서/)).toBeNull();
+    expect(screen.queryByText(/참고 단서/)).toBeNull();
+    expect(screen.queryByText(/중요도/)).toBeNull();
+  });
+
   it("조사 시작 클릭 후 조사 화면으로 전환되고 포인트가 부족한 조사는 비활성화된다", () => {
     render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
     startInvestigating();
@@ -192,7 +235,7 @@ describe("CaseInvestigationExperience", () => {
     fireEvent.click(screen.getByRole("button", { name: "증거 블록 텍스트입니다" }));
     fireEvent.click(screen.getByText("목록으로"));
 
-    expect(screen.getByText(/숨겨진 조사/)).toBeDefined();
+    expect(screen.getByRole("button", { name: /숨겨진 조사/ })).toBeDefined();
   });
 
   it("추천 질문 칩을 클릭하면 대사가 나타나고, 같은 칩을 다시 클릭하면 다시 응답한다", async () => {

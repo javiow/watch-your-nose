@@ -231,6 +231,9 @@ export function CaseInvestigationExperience({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-3">
             <span className="text-sm text-subtle">남은 포인트 {points}P</span>
+            <span className="text-sm text-subtle">
+              조사 {completedInvestigationIds.size}/{visibleInvestigations.length}
+            </span>
             <span className="text-sm text-subtle">등록된 증거 {registeredEvidence.size}건</span>
           </div>
           <button
@@ -255,6 +258,10 @@ export function CaseInvestigationExperience({
 
         {!openDocument && (
           <div className="space-y-3">
+            <p className="rounded-xl border border-border bg-surface-muted p-3 text-xs leading-relaxed text-muted">
+              예산 안에서 꼭 필요한 조사를 고르세요. 조사를 많이 할수록 단서는 늘지만 남는 예산이
+              줄고, 너무 아끼면 핵심 단서를 놓칠 수 있어요.
+            </p>
             {visibleInvestigations.map((inv) => {
               const unlocked = isUnlocked(inv, registeredEvidence, completedInvestigationIds);
               const completed = completedInvestigationIds.has(inv.investigationId);
@@ -271,6 +278,9 @@ export function CaseInvestigationExperience({
                 >
                   <span className="text-sm font-medium text-muted">{inv.name}</span>
                   <span className="ml-2 text-sm text-subtle">{inv.cost}P</span>
+                  <span className="mt-1 block text-xs leading-relaxed text-subtle">
+                    {inv.purpose}
+                  </span>
                 </button>
               );
             })}
@@ -280,6 +290,14 @@ export function CaseInvestigationExperience({
         {openDocument && (
           <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
             <p className="text-sm font-medium text-muted">{openDocument.title}</p>
+            {(() => {
+              const openInv = content.investigations.find(
+                (inv) => inv.documentId === openDocumentId
+              );
+              return openInv ? (
+                <p className="mt-1 text-xs leading-relaxed text-subtle">{openInv.purpose}</p>
+              ) : null;
+            })()}
             <div className="mt-3 space-y-3">
               {openDocument.blocks.map((block) => {
                 if (block.evidencePattern === null) {
