@@ -30,7 +30,8 @@
     {
       "step": 4,
       "name": "wire-glossary-jeonse",
-      "status": "pending"
+      "status": "completed",
+      "summary": "HouseDialogPanel: 전세가율 통계 라벨 + fields의 {label}/{value} 모두 <GlossaryTermText>로 감쌈. jeonse.ts 첫 출현부에 8개 용어 마커(근저당권/선순위 보증금/전세가율/전입세대열람/확정일자/신탁등기·수탁사/가압류/신탁원부/공동담보) — 210개 전부가 아니라 용어당 1회. explain/lesson/reason 미변경. 테스트 16 통과"
     },
     {
       "step": 5,
