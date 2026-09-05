@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/session-context";
 import { EXPERIENCE_MODULES } from "@/lib/registry";
 import { aggregateResults, describeGradeThresholds } from "@/lib/scoring";
-import { getRemediation } from "@/data/remediation";
+import { getRemediationEntry } from "@/data/remediation";
 import { EXPERIENCE_TYPE_LABELS } from "@/data/experience-types";
 import { Mascot } from "@/components/ui/Mascot";
 import { HighlightedText } from "@/components/ui/HighlightedText";
@@ -104,19 +104,48 @@ export default function ResultPage() {
         <section className="space-y-3">
           <h2 className="text-sm font-medium text-muted">대응 방안</h2>
           <ul className="flex flex-col gap-3">
-            {incorrectResults.map((result, index) => (
-              <li
-                key={`${result.typeId}-remediation-${index}`}
-                className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
-              >
-                <p className="text-xs font-medium text-accent">
-                  {EXPERIENCE_TYPE_LABELS[result.typeId]}
-                </p>
-                <p className="text-sm leading-relaxed text-muted">
-                  <HighlightedText text={getRemediation(result.mistakeTag)} />
-                </p>
-              </li>
-            ))}
+            {incorrectResults.map((result, index) => {
+              const entry = getRemediationEntry(result.mistakeTag);
+              return (
+                <li
+                  key={`${result.typeId}-remediation-${index}`}
+                  className="space-y-3 rounded-xl border border-border bg-surface p-4 shadow-sm"
+                >
+                  <p className="text-xs font-medium text-accent">
+                    {EXPERIENCE_TYPE_LABELS[result.typeId]}
+                  </p>
+                  <ul className="flex flex-col gap-1.5">
+                    {entry.bullets.map((bullet) => (
+                      <li
+                        key={bullet}
+                        className="flex gap-2 text-sm leading-relaxed text-muted"
+                      >
+                        <span aria-hidden="true" className="text-accent">
+                          ·
+                        </span>
+                        {bullet}
+                      </li>
+                    ))}
+                  </ul>
+                  {entry.links && entry.links.length > 0 && (
+                    <ul className="flex flex-wrap gap-2">
+                      {entry.links.map((link) => (
+                        <li key={link.url}>
+                          <a
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent"
+                          >
+                            {link.label} ↗
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </section>
       )}

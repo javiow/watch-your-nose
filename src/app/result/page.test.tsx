@@ -135,7 +135,7 @@ describe("ResultPage 마스코트", () => {
     );
   });
 
-  it("대응 방안 텍스트에서도 실제 콘텐츠에 표시된 핵심 문구만 강조된다", () => {
+  it("대응 방안은 짧은 불릿 목록과 공식 링크(새 탭)로 렌더된다", () => {
     const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
     const overrides = EXPERIENCE_MODULES.map((_, i) =>
       i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
@@ -144,10 +144,14 @@ describe("ResultPage 마스코트", () => {
     aggregate.mockReturnValue({ average: 75, grade: "caution" });
 
     render(<ResultPage />);
-    const highlighted = screen.getByText(
-      "소유자와 계약 상대방 명의 불일치, 과도한 근저당, 대리인 명의 계좌로의 잔금 입금 요구"
-    );
-    expect(highlighted.tagName).toBe("STRONG");
+    expect(
+      screen.getByText("등기부등본으로 소유자·근저당 직접 확인")
+    ).toBeDefined();
+
+    const link = screen.getByRole("link", { name: /인터넷등기소/ });
+    expect(link.getAttribute("href")).toBe("https://www.iros.go.kr");
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
   });
 
   it("미완료 세션이면 홈으로 리다이렉트하고 마스코트를 렌더하지 않는다", () => {
