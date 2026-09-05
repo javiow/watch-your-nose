@@ -24,7 +24,8 @@
     {
       "step": 3,
       "name": "wire-glossary-voice-phishing",
-      "status": "pending"
+      "status": "completed",
+      "summary": "voice-phishing.ts 대사 4곳에 {{term:}} 마커 삽입(원격지원 앱/대환대출/대포통장·자금세탁/명의도용). ChatBubble.tsx {text}→<GlossaryTermText>. 이상거래탐지는 speaker 필드라 미렌더 대상이라 제외. 테스트 30 통과"
     },
     {
       "step": 4,
