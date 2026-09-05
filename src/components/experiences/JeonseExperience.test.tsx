@@ -40,8 +40,8 @@ function startJeonse() {
 function judgeHouse(index: number, house: JeonseHouse, risky: boolean) {
   fireEvent.click(screen.getByRole("button", { name: `${house.short} 입장` }));
   fireEvent.click(screen.getByText("확인"));
+  // O/X 선택 시 패널이 자동으로 닫히므로 별도 "닫기" 클릭이 필요 없다.
   fireEvent.click(screen.getByText(risky ? "O — 위험 있음" : "X — 위험 없음"));
-  fireEvent.click(screen.getByText("닫기"));
 }
 
 describe("JeonseExperience", () => {

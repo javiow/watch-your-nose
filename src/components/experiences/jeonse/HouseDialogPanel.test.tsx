@@ -97,20 +97,27 @@ describe("HouseDialogPanel", () => {
     expect(screen.queryByText("위험")).toBeNull();
   });
 
-  it("O를 선택하면 onAnswer(true)가 호출된다", () => {
+  it("O를 선택하면 onAnswer(true) 후 onClose가 호출된다(자동 닫힘)", () => {
     const onAnswer = vi.fn();
-    renderPanel({ onAnswer });
+    const onClose = vi.fn();
+    renderPanel({ onAnswer, onClose });
     fireEvent.click(screen.getByText("확인"));
     fireEvent.click(screen.getByText("O — 위험 있음"));
     expect(onAnswer).toHaveBeenCalledWith(true);
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onAnswer.mock.invocationCallOrder[0]).toBeLessThan(
+      onClose.mock.invocationCallOrder[0]
+    );
   });
 
-  it("X를 선택하면 onAnswer(false)가 호출된다", () => {
+  it("X를 선택하면 onAnswer(false) 후 onClose가 호출된다(자동 닫힘)", () => {
     const onAnswer = vi.fn();
-    renderPanel({ onAnswer });
+    const onClose = vi.fn();
+    renderPanel({ onAnswer, onClose });
     fireEvent.click(screen.getByText("확인"));
     fireEvent.click(screen.getByText("X — 위험 없음"));
     expect(onAnswer).toHaveBeenCalledWith(false);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("answered가 true면 정답/오답/해설/교훈을 보여주지 않고, 내 판정과 서류 8항목을 다시 보여준다", () => {

@@ -163,14 +163,20 @@ export function HouseDialogPanel({
             <div className="mt-4 flex gap-3">
               <button
                 type="button"
-                onClick={() => onAnswer(true)}
+                onClick={() => {
+                  onAnswer(true);
+                  onClose();
+                }}
                 className="min-h-11 flex-1 rounded-lg bg-danger px-4 text-sm font-medium text-white transition-colors hover:brightness-95"
               >
                 O — 위험 있음
               </button>
               <button
                 type="button"
-                onClick={() => onAnswer(false)}
+                onClick={() => {
+                  onAnswer(false);
+                  onClose();
+                }}
                 className="min-h-11 flex-1 rounded-lg bg-safe px-4 text-sm font-medium text-white transition-colors hover:brightness-95"
               >
                 X — 위험 없음

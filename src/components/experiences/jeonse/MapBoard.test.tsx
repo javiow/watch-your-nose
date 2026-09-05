@@ -90,13 +90,18 @@ describe("MapBoard", () => {
     expect(screen.getByText("확인")).toBeDefined();
   });
 
-  it("점검 패널에서 O/X를 선택하면 onAnswer(index, risky)가 호출된다", () => {
+  it("점검 패널에서 O/X를 선택하면 onAnswer(index, risky)가 호출되고 패널이 자동으로 닫힌다", () => {
     const onAnswer = vi.fn();
     renderBoard({ onAnswer });
     fireEvent.click(screen.getByRole("button", { name: `${houses[0].short} 입장` }));
     fireEvent.click(screen.getByText("확인"));
     fireEvent.click(screen.getByText("X — 위험 없음"));
     expect(onAnswer).toHaveBeenCalledWith(0, false);
+
+    // 자동 닫힘: 판정/O·X 버튼이 더 이상 보이지 않는다
+    expect(screen.queryByText("당신의 판정")).toBeNull();
+    expect(screen.queryByRole("button", { name: "O — 위험 있음" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "X — 위험 없음" })).toBeNull();
   });
 
   it("유형명을 드러내는 문구를 쓰지 않는다", () => {
