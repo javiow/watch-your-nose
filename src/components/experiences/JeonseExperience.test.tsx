@@ -32,6 +32,11 @@ function makeHouse(id: string, risky: boolean): JeonseHouse {
   };
 }
 
+// 시작 전 IntroDialog(mode="gate")를 지나 보드로 진입한다.
+function startJeonse() {
+  fireEvent.click(screen.getByRole("button", { name: "점검 시작" }));
+}
+
 function judgeHouse(index: number, house: JeonseHouse, risky: boolean) {
   fireEvent.click(screen.getByRole("button", { name: `${house.short} 입장` }));
   fireEvent.click(screen.getByText("확인"));
@@ -40,21 +45,48 @@ function judgeHouse(index: number, house: JeonseHouse, risky: boolean) {
 }
 
 describe("JeonseExperience", () => {
+  it("마운트 직후 안내 모달(dialog)이 뜨고, 확인해야 보드가 나타난다", () => {
+    const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
+    render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+
+    expect(screen.getByRole("dialog")).toBeDefined();
+    expect(screen.queryByText("미점검")).toBeNull();
+
+    startJeonse();
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getAllByText("미점검").length).toBeGreaterThanOrEqual(5);
+  });
+
+  it("보드 화면에서 '안내 다시 보기'로 모달을 다시 열고 닫을 수 있다", () => {
+    const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
+    render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+    startJeonse();
+
+    fireEvent.click(screen.getByRole("button", { name: "안내 다시 보기" }));
+    expect(screen.getByRole("dialog")).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "닫기" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getAllByText("미점검").length).toBeGreaterThanOrEqual(5);
+  });
+
   it("초기 렌더 시 5채 모두 미판정 상태로 보드가 표시된다", () => {
     const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
     render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+    startJeonse();
     expect(screen.getAllByText("미점검").length).toBeGreaterThanOrEqual(5);
   });
 
   it("보드 상단에 형식 배지(매물 확인)가 렌더된다", () => {
     const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
     render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+    startJeonse();
     expect(screen.getByText("매물 확인")).toBeDefined();
   });
 
   it("매물 하나를 판정한 직후 정답/오답/해설 텍스트가 없다", () => {
     const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
     render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+    startJeonse();
 
     fireEvent.click(screen.getByRole("button", { name: `${houses[0].short} 입장` }));
     fireEvent.click(screen.getByText("확인"));
@@ -70,6 +102,7 @@ describe("JeonseExperience", () => {
     const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
     const onComplete = vi.fn();
     render(<JeonseExperience content={houses} onComplete={onComplete} />);
+    startJeonse();
 
     houses.forEach((house, i) => judgeHouse(i, house, false));
 
@@ -95,6 +128,7 @@ describe("JeonseExperience", () => {
     ];
     const onComplete = vi.fn();
     render(<JeonseExperience content={houses} onComplete={onComplete} />);
+    startJeonse();
 
     // 1, 2번은 실제로 위험(risky=true)한데 안전(X)으로 오판정 → 3/5 정답(60%)
     judgeHouse(0, houses[0], false);
@@ -117,6 +151,7 @@ describe("JeonseExperience", () => {
     const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
     const onComplete = vi.fn();
     render(<JeonseExperience content={houses} onComplete={onComplete} />);
+    startJeonse();
 
     houses.forEach((house, i) => judgeHouse(i, house, false));
 
@@ -131,6 +166,7 @@ describe("JeonseExperience", () => {
   it("힌트로 공개한 집은 판정 전에 닫았다가 다시 들어가도 서류 상태가 계속 보인다", () => {
     const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
     render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+    startJeonse();
 
     fireEvent.click(screen.getByRole("button", { name: `${houses[0].short} 입장` }));
     fireEvent.click(screen.getByText("확인"));
@@ -150,6 +186,7 @@ describe("JeonseExperience", () => {
   it("한 집에서 힌트를 쓰면 다른 집에서는 힌트 버튼이 비활성화된다", () => {
     const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
     render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+    startJeonse();
 
     fireEvent.click(screen.getByRole("button", { name: `${houses[0].short} 입장` }));
     fireEvent.click(screen.getByText("확인"));
