@@ -114,7 +114,8 @@
     {
       "step": 18,
       "name": "how-it-works-icon-steps",
-      "status": "pending"
+      "status": "completed",
+      "summary": "/how-it-works: 소개 문단 2→1문장, '무엇을 배우는지'를 아이콘 3스텝(🔍위험 신호 포착/📑서류·정보 비교/🤔판단 연습)으로 교체, 진행 방식 불릿 문구 축약(+유형별 점수 반영). 서버 컴포넌트 유지, 유형명 비노출. 테스트 4"
     },
     {
       "step": 19,
