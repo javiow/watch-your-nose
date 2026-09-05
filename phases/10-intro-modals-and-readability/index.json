@@ -27,7 +27,9 @@
     {
       "step": 3,
       "name": "wire-intro-voice-phishing-fraud-judgment",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T08:39:00+0900",
+      "summary": "VoicePhishingExperience/FraudJudgmentExperience: 인라인 !started 시작 화면(FormatBadge+hint+버튼)을 <IntroDialog mode=\"gate\" confirmLabel=\"통화 시작\"|\"판정 시작\" onConfirm={setStarted}>로 교체. started 가드·대화 노출 타이머 useEffect 불변. 시작 후 화면에 '안내 다시 보기' 버튼 + showHelp state + <IntroDialog mode=\"help\">. FormatBadge import 제거. 기존 start() 헬퍼(버튼 라벨 동일)·'시작 화면' 테스트 통과. 각 파일에 dialog 등장/확인/재열람 테스트 2개 추가. build/lint/test(전체 368) 통과"
     },
     {
       "step": 4,
