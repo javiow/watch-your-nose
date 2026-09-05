@@ -69,7 +69,9 @@
     {
       "step": 9,
       "name": "jeonse-panel-auto-close",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T08:55:00+0900",
+      "summary": "HouseDialogPanel O/X 버튼: onClick에서 onAnswer(risky) 직후 onClose() 호출 → 판정 시 패널 자동 닫힘. MapBoard.closeDialog(플레이어 문 밖 텔레포트) 무수정이라 checkDoor 즉시 재열림 없음. 확인/힌트 단계는 자동 닫힘 안 함. handleAnswer 재판정 가드·pendingResult·NextStepButton 불변. JeonseExperience.test.tsx judgeHouse에서 trailing '닫기' 클릭 제거. HouseDialogPanel.test.tsx: O/X → onClose 1회 + 호출 순서(invocationCallOrder). MapBoard.test.tsx: O/X 후 '당신의 판정'·O/X 버튼 미존재. build/lint/test(전체 380) 통과"
     },
     {
       "step": 10,
