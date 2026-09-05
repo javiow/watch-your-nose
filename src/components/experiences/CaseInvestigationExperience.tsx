@@ -16,6 +16,7 @@ import {
 import { MAX_NPC_QUESTIONS, isMeaningfulQuestion } from "@/lib/npc-chat";
 import { classifyQuestion } from "@/lib/npc-chat-client";
 import { NextStepButton } from "@/components/ui/NextStepButton";
+import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
 
 interface ChatEntry {
   key: string;
@@ -260,7 +261,7 @@ export function CaseInvestigationExperience({
                 if (block.evidencePattern === null) {
                   return (
                     <p key={block.blockId} className="text-sm leading-relaxed text-muted">
-                      {block.text}
+                      <GlossaryTermText text={block.text} />
                     </p>
                   );
                 }
