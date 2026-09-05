@@ -48,7 +48,8 @@
     {
       "step": 7,
       "name": "experience-format-data",
-      "status": "pending"
+      "status": "completed",
+      "summary": "src/data/experience-format.ts 신규: EXPERIENCE_FORMAT Record<ExperienceTypeId, {icon,formatLabel,hint,learningPhrase}>. 형식명=전화 통화/현장 조사/매물 확인/빠른 판별. 가드레일 테스트: formatLabel이 EXPERIENCE_TYPE_LABELS와 겹치지 않음 + 레지스트리 키 일치. 테스트 3"
     },
     {
       "step": 8,
