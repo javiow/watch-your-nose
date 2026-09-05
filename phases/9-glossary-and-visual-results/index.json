@@ -90,7 +90,8 @@
     {
       "step": 14,
       "name": "score-bar-chart-component",
-      "status": "pending"
+      "status": "completed",
+      "summary": "src/components/ui/ScoreBarChart.tsx 신규: results 순회 행 = icon(aria-hidden)+EXPERIENCE_TYPE_LABELS+learningPhrase 캡션+CSS width 막대(computeGrade 기반 색)+점수(tabular-nums). '오늘 배운 것' 문단 섹션 대체. 테스트 3"
     },
     {
       "step": 15,
