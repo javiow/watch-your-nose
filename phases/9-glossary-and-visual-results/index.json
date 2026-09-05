@@ -36,7 +36,8 @@
     {
       "step": 5,
       "name": "wire-glossary-case-investigation",
-      "status": "pending"
+      "status": "completed",
+      "summary": "CaseInvestigationExperience: evidencePattern===null 블록(<p>)만 <GlossaryTermText>로 교체(버튼 블록은 중첩 방지 위해 제외). case-investigation.ts null 블록에 전세가율(L57), 을구·근저당권(2곳) 마커. 갑구/수탁자/신탁원부/채권최고액/WHOIS는 전부 증거등록 버튼 블록이라 제외. 테스트 40 통과"
     },
     {
       "step": 6,
