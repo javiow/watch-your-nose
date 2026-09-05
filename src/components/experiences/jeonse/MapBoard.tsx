@@ -20,6 +20,28 @@ import type { Facing } from "./sprites";
 const PLAYER_SPRITE_WIDTH = 26;
 const PLAYER_SPRITE_HEIGHT = 32;
 
+const DPAD_ROTATION: Record<"up" | "down" | "left" | "right", number> = {
+  up: 0,
+  right: 90,
+  down: 180,
+  left: 270,
+};
+
+function DirectionIcon({ dir }: { dir: "up" | "down" | "left" | "right" }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={18}
+      height={18}
+      aria-hidden="true"
+      className="pointer-events-none select-none"
+      style={{ transform: `rotate(${DPAD_ROTATION[dir]}deg)` }}
+    >
+      <path d="M12 4 L20 18 L4 18 Z" fill="currentColor" />
+    </svg>
+  );
+}
+
 function blocked(x: number, y: number): boolean {
   return LAYOUT.some(
     (l) => x + PLAYER_SIZE > l.x && x < l.x + HOUSE_WIDTH && y + PLAYER_SIZE > l.y && y < l.y + HOUSE_HEIGHT
@@ -259,50 +281,58 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
         <span>집을 클릭해도 입장</span>
       </p>
 
-      <div className="grid w-40 grid-cols-3 gap-2">
+      <div className="grid w-40 select-none grid-cols-3 gap-2">
         <button
           type="button"
           aria-label="위로 이동"
-          className="col-start-2 min-h-11 rounded-lg border border-border bg-surface text-muted"
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+          className="col-start-2 flex min-h-11 select-none touch-none items-center justify-center rounded-lg border border-border bg-surface text-muted"
           onPointerDown={dpadPress("arrowup")}
           onPointerUp={dpadRelease("arrowup")}
           onPointerCancel={dpadRelease("arrowup")}
           onPointerLeave={dpadRelease("arrowup")}
         >
-          ▲
+          <DirectionIcon dir="up" />
         </button>
         <button
           type="button"
           aria-label="왼쪽으로 이동"
-          className="col-start-1 row-start-2 min-h-11 rounded-lg border border-border bg-surface text-muted"
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+          className="col-start-1 row-start-2 flex min-h-11 select-none touch-none items-center justify-center rounded-lg border border-border bg-surface text-muted"
           onPointerDown={dpadPress("arrowleft")}
           onPointerUp={dpadRelease("arrowleft")}
           onPointerCancel={dpadRelease("arrowleft")}
           onPointerLeave={dpadRelease("arrowleft")}
         >
-          ◀
+          <DirectionIcon dir="left" />
         </button>
         <button
           type="button"
           aria-label="오른쪽으로 이동"
-          className="col-start-3 row-start-2 min-h-11 rounded-lg border border-border bg-surface text-muted"
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+          className="col-start-3 row-start-2 flex min-h-11 select-none touch-none items-center justify-center rounded-lg border border-border bg-surface text-muted"
           onPointerDown={dpadPress("arrowright")}
           onPointerUp={dpadRelease("arrowright")}
           onPointerCancel={dpadRelease("arrowright")}
           onPointerLeave={dpadRelease("arrowright")}
         >
-          ▶
+          <DirectionIcon dir="right" />
         </button>
         <button
           type="button"
           aria-label="아래로 이동"
-          className="col-start-2 row-start-3 min-h-11 rounded-lg border border-border bg-surface text-muted"
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+          className="col-start-2 row-start-3 flex min-h-11 select-none touch-none items-center justify-center rounded-lg border border-border bg-surface text-muted"
           onPointerDown={dpadPress("arrowdown")}
           onPointerUp={dpadRelease("arrowdown")}
           onPointerCancel={dpadRelease("arrowdown")}
           onPointerLeave={dpadRelease("arrowdown")}
         >
-          ▼
+          <DirectionIcon dir="down" />
         </button>
       </div>
 
@@ -315,16 +345,28 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
         </div>
         <ul className="divide-y divide-border border-t border-border">
           {houses.map((house, i) => {
-            const done = answers[i] !== undefined;
+            const answer = answers[i];
+            const done = answer !== undefined;
             return (
               <li key={house.id} className="flex items-center justify-between gap-3 py-2 text-sm">
                 <span className="truncate text-muted">{house.short}</span>
-                <span
-                  className={`shrink-0 rounded border px-2 py-0.5 text-xs ${
-                    done ? "border-muted text-muted" : "border-border text-subtle"
-                  }`}
-                >
-                  {done ? "완료" : "미점검"}
+                <span className="flex shrink-0 items-center gap-2">
+                  <span
+                    className={`rounded border px-2 py-0.5 text-xs ${
+                      done ? "border-muted text-muted" : "border-border text-subtle"
+                    }`}
+                  >
+                    {done ? "완료" : "미점검"}
+                  </span>
+                  {done && (
+                    <span
+                      className={`rounded border px-2 py-0.5 text-xs font-semibold ${
+                        answer ? "border-danger/60 text-danger" : "border-safe/60 text-safe"
+                      }`}
+                    >
+                      내 판정 · {answer ? "O — 위험 있음" : "X — 위험 없음"}
+                    </span>
+                  )}
                 </span>
               </li>
             );
@@ -337,6 +379,7 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
           key={activeIndex}
           house={activeHouse}
           answered={answers[activeIndex] !== undefined}
+          answer={answers[activeIndex]}
           onAnswer={(risky) => onAnswer(activeIndex, risky)}
           onClose={closeDialog}
           hintRevealed={hintUsedIndex === activeIndex}
