@@ -104,6 +104,13 @@ describe("MapBoard", () => {
     expect(container.textContent).not.toMatch(/전세사기|jeonse|JEONSE/i);
   });
 
+  it("클릭으로 입장한다는 안내가 이동(방향키) 안내보다 먼저 나온다", () => {
+    const { container } = renderBoard();
+    const text = container.textContent ?? "";
+    expect(text.indexOf("클릭")).toBeGreaterThanOrEqual(0);
+    expect(text.indexOf("클릭")).toBeLessThan(text.indexOf("방향키"));
+  });
+
   it("힌트 버튼 클릭 시 onUseHint가 현재 입장한 집의 인덱스와 함께 호출된다", () => {
     const onUseHint = vi.fn();
     renderBoard({ hintUsedIndex: null, onUseHint });
