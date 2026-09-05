@@ -456,4 +456,35 @@ describe("VoicePhishingExperience", () => {
     fireEvent.click(screen.getByText("다음으로 넘어가기"));
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
+
+  it("마운트 직후 안내 모달(dialog)이 뜨고, 확인하면 사라지고 대화가 시작된다", () => {
+    render(
+      <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
+    );
+
+    expect(screen.getByRole("dialog")).toBeDefined();
+    expect(screen.getByText(/모르는 번호로 전화/)).toBeDefined();
+
+    start();
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    advanceAllTimers();
+    expect(screen.getByText("본인 확인 차 전화드렸습니다.")).toBeDefined();
+  });
+
+  it("대화 중 '안내 다시 보기'로 모달을 다시 열고 닫을 수 있으며 대화 상태는 유지된다", () => {
+    render(
+      <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
+    );
+    start();
+    advanceAllTimers();
+    expect(screen.getByText("본인 확인 차 전화드렸습니다.")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "안내 다시 보기" }));
+    expect(screen.getByRole("dialog")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "닫기" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByText("본인 확인 차 전화드렸습니다.")).toBeDefined();
+  });
 });

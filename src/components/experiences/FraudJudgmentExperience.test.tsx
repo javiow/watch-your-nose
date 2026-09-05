@@ -220,4 +220,24 @@ describe("FraudJudgmentExperience", () => {
     fireEvent.click(screen.getByText("사기예요"));
     expect(screen.getByText("2 / 4")).toBeDefined();
   });
+
+  it("마운트 직후 안내 모달(dialog)이 뜨고, 확인하면 사라지고 첫 카드가 나온다", () => {
+    render(<FraudJudgmentExperience content={fourCards} onComplete={vi.fn()} />);
+    expect(screen.getByRole("dialog")).toBeDefined();
+    expect(screen.getByText(/짧은 상황 카드/)).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "판정 시작" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByText(fraudCard.content)).toBeDefined();
+  });
+
+  it("판정 중 '안내 다시 보기'로 모달을 다시 열고 닫을 수 있다", () => {
+    render(<FraudJudgmentExperience content={fourCards} onComplete={vi.fn()} />);
+    start();
+    fireEvent.click(screen.getByRole("button", { name: "안내 다시 보기" }));
+    expect(screen.getByRole("dialog")).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "닫기" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByText(fraudCard.content)).toBeDefined();
+  });
 });

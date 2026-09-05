@@ -5,8 +5,9 @@ import type { FraudJudgmentAnswer, FraudJudgmentCard, ModuleResult } from "@/typ
 import { computeGrade } from "@/lib/scoring";
 import { NextStepButton } from "@/components/ui/NextStepButton";
 import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
-import { FormatBadge } from "@/components/ui/FormatBadge";
+import { IntroDialog } from "@/components/ui/IntroDialog";
 import { EXPERIENCE_FORMAT } from "@/data/experience-format";
+import { EXPERIENCE_INTRO } from "@/data/experience-intro";
 
 interface FraudJudgmentExperienceProps {
   content: FraudJudgmentCard[];
@@ -31,6 +32,7 @@ function buildMistakeTag(content: FraudJudgmentCard[], answers: Record<number, F
 
 export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentExperienceProps) {
   const [started, setStarted] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, FraudJudgmentAnswer>>({});
   const lockedRef = useRef(false);
@@ -84,29 +86,41 @@ export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentEx
 
   if (!started) {
     return (
-      <div className="space-y-6">
-        <FormatBadge format={EXPERIENCE_FORMAT["fraud-judgment"]} />
-        <p className="text-sm leading-relaxed text-muted">
-          {EXPERIENCE_FORMAT["fraud-judgment"].hint}
-        </p>
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={() => setStarted(true)}
-            className="min-h-11 rounded-xl bg-accent px-6 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-          >
-            판정 시작
-          </button>
-        </div>
-      </div>
+      <IntroDialog
+        mode="gate"
+        format={EXPERIENCE_FORMAT["fraud-judgment"]}
+        intro={EXPERIENCE_INTRO["fraud-judgment"]}
+        confirmLabel="판정 시작"
+        onConfirm={() => setStarted(true)}
+      />
     );
   }
 
   return (
     <div className="space-y-6">
-      <p className="text-xs font-medium text-subtle">
-        {currentIndex + 1} / {content.length}
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-medium text-subtle">
+          {currentIndex + 1} / {content.length}
+        </p>
+        <button
+          type="button"
+          onClick={() => setShowHelp(true)}
+          className="text-xs font-medium text-subtle underline underline-offset-2 transition-colors hover:text-accent"
+        >
+          안내 다시 보기
+        </button>
+      </div>
+
+      {showHelp && (
+        <IntroDialog
+          mode="help"
+          format={EXPERIENCE_FORMAT["fraud-judgment"]}
+          intro={EXPERIENCE_INTRO["fraud-judgment"]}
+          confirmLabel="판정 시작"
+          onDismiss={() => setShowHelp(false)}
+          onConfirm={() => setShowHelp(false)}
+        />
+      )}
 
       <div className="rounded-xl border border-border bg-surface p-4">
         <p className="text-sm font-medium text-muted">{currentCard.title}</p>

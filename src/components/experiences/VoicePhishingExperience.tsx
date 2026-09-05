@@ -10,8 +10,9 @@ import type {
 } from "@/types/experience";
 import { computeGrade, computeVoicePhishingScore } from "@/lib/scoring";
 import { NextStepButton } from "@/components/ui/NextStepButton";
-import { FormatBadge } from "@/components/ui/FormatBadge";
+import { IntroDialog } from "@/components/ui/IntroDialog";
 import { EXPERIENCE_FORMAT } from "@/data/experience-format";
+import { EXPERIENCE_INTRO } from "@/data/experience-intro";
 import { ChatBubble } from "./ChatBubble";
 import { ChatChoiceButtons } from "./ChatChoiceButtons";
 import { TypingIndicator } from "./TypingIndicator";
@@ -64,6 +65,7 @@ export function VoicePhishingExperience({
   onComplete,
 }: VoicePhishingExperienceProps) {
   const [started, setStarted] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [currentNodeId, setCurrentNodeId] = useState(content.startNodeId);
   const [typing, setTyping] = useState(false);
@@ -174,26 +176,39 @@ export function VoicePhishingExperience({
 
   if (!started) {
     return (
-      <div className="space-y-6">
-        <FormatBadge format={EXPERIENCE_FORMAT["voice-phishing"]} />
-        <p className="text-sm leading-relaxed text-muted">
-          {EXPERIENCE_FORMAT["voice-phishing"].hint}
-        </p>
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={() => setStarted(true)}
-            className="min-h-11 rounded-xl bg-accent px-6 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-          >
-            통화 시작
-          </button>
-        </div>
-      </div>
+      <IntroDialog
+        mode="gate"
+        format={EXPERIENCE_FORMAT["voice-phishing"]}
+        intro={EXPERIENCE_INTRO["voice-phishing"]}
+        confirmLabel="통화 시작"
+        onConfirm={() => setStarted(true)}
+      />
     );
   }
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={() => setShowHelp(true)}
+          className="text-xs font-medium text-subtle underline underline-offset-2 transition-colors hover:text-accent"
+        >
+          안내 다시 보기
+        </button>
+      </div>
+
+      {showHelp && (
+        <IntroDialog
+          mode="help"
+          format={EXPERIENCE_FORMAT["voice-phishing"]}
+          intro={EXPERIENCE_INTRO["voice-phishing"]}
+          confirmLabel="통화 시작"
+          onDismiss={() => setShowHelp(false)}
+          onConfirm={() => setShowHelp(false)}
+        />
+      )}
+
       <div className="space-y-3">
         {history.map((entry) => (
           <ChatBubble key={entry.id} speaker={entry.speaker} text={entry.text} />
