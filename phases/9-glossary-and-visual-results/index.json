@@ -12,7 +12,8 @@
     {
       "step": 1,
       "name": "term-tooltip",
-      "status": "pending"
+      "status": "completed",
+      "summary": "src/components/ui/TermTooltip.tsx 신규: term/definition props, (?) 버튼 토글, aria-expanded/-controls(useId), aria-live 팝오버, 바깥 pointerdown·Esc로 닫힘. glossary.ts 미import(범용). 테스트 6케이스. build/lint 통과"
     },
     {
       "step": 2,
