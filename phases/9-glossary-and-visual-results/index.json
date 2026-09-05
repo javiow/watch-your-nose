@@ -1,0 +1,128 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "9-glossary-and-visual-results",
+  "steps": [
+    {
+      "step": 0,
+      "name": "glossary-data",
+      "status": "completed",
+      "started_at": "2026-09-05T22:47:16+0900",
+      "summary": "src/data/glossary.ts 신규: GLOSSARY_TERMS(20개 용어, 정의 1문장·70자 이내) + resolveGlossaryKey(별칭 '수탁사'→'수탁자', 미존재 키 undefined). glossary.test.ts 7케이스. build/lint/test(298) 통과"
+    },
+    {
+      "step": 1,
+      "name": "term-tooltip",
+      "status": "completed",
+      "summary": "src/components/ui/TermTooltip.tsx 신규: term/definition props, (?) 버튼 토글, aria-expanded/-controls(useId), aria-live 팝오버, 바깥 pointerdown·Esc로 닫힘. glossary.ts 미import(범용). 테스트 6케이스. build/lint 통과"
+    },
+    {
+      "step": 2,
+      "name": "glossary-term-text",
+      "status": "completed",
+      "summary": "src/components/ui/GlossaryTermText.tsx 신규: {{term:키}} / {{term:키|표시}} 마커를 정규식 파싱해 TermTooltip으로 치환(resolveGlossaryKey 사용), 미존재 키는 표시 텍스트만. dangerouslySetInnerHTML 미사용. 테스트 5케이스"
+    },
+    {
+      "step": 3,
+      "name": "wire-glossary-voice-phishing",
+      "status": "completed",
+      "summary": "voice-phishing.ts 대사 4곳에 {{term:}} 마커 삽입(원격지원 앱/대환대출/대포통장·자금세탁/명의도용). ChatBubble.tsx {text}→<GlossaryTermText>. 이상거래탐지는 speaker 필드라 미렌더 대상이라 제외. 테스트 30 통과"
+    },
+    {
+      "step": 4,
+      "name": "wire-glossary-jeonse",
+      "status": "completed",
+      "summary": "HouseDialogPanel: 전세가율 통계 라벨 + fields의 {label}/{value} 모두 <GlossaryTermText>로 감쌈. jeonse.ts 첫 출현부에 8개 용어 마커(근저당권/선순위 보증금/전세가율/전입세대열람/확정일자/신탁등기·수탁사/가압류/신탁원부/공동담보) — 210개 전부가 아니라 용어당 1회. explain/lesson/reason 미변경. 테스트 16 통과"
+    },
+    {
+      "step": 5,
+      "name": "wire-glossary-case-investigation",
+      "status": "completed",
+      "summary": "CaseInvestigationExperience: evidencePattern===null 블록(<p>)만 <GlossaryTermText>로 교체(버튼 블록은 중첩 방지 위해 제외). case-investigation.ts null 블록에 전세가율(L57), 을구·근저당권(2곳) 마커. 갑구/수탁자/신탁원부/채권최고액/WHOIS는 전부 증거등록 버튼 블록이라 제외. 테스트 40 통과"
+    },
+    {
+      "step": 6,
+      "name": "wire-glossary-fraud-judgment",
+      "status": "completed",
+      "summary": "fraud-judgment.ts content 2곳에 마커(대환대출 L107, 명의도용 L512). title/explanation/source 미변경. FraudJudgmentExperience {currentCard.content}→<GlossaryTermText>. 테스트 18 통과(스포일러 비노출 테스트 포함)"
+    },
+    {
+      "step": 7,
+      "name": "experience-format-data",
+      "status": "completed",
+      "summary": "src/data/experience-format.ts 신규: EXPERIENCE_FORMAT Record<ExperienceTypeId, {icon,formatLabel,hint,learningPhrase}>. 형식명=전화 통화/현장 조사/매물 확인/빠른 판별. 가드레일 테스트: formatLabel이 EXPERIENCE_TYPE_LABELS와 겹치지 않음 + 레지스트리 키 일치. 테스트 3"
+    },
+    {
+      "step": 8,
+      "name": "format-badge-component",
+      "status": "completed",
+      "summary": "src/components/ui/FormatBadge.tsx 신규: ExperienceFormatMeta를 받아 icon(aria-hidden)+formatLabel+hint pill 렌더. 기존 토큰(bg-surface-muted/border-border/text-*)만 사용. 테스트 2"
+    },
+    {
+      "step": 9,
+      "name": "attach-format-badge-briefing-experiences",
+      "status": "completed",
+      "summary": "CaseInvestigationExperience briefing 최상단 + MapBoard(전세매물) 헤더 최상단에 <FormatBadge> 추가(EXPERIENCE_FORMAT[typeId] 참조). 배지 노출 테스트 각 1개. VoicePhishing/FraudJudgment는 미변경. 테스트 35 통과"
+    },
+    {
+      "step": 10,
+      "name": "voice-phishing-start-gate",
+      "status": "completed",
+      "summary": "VoicePhishingExperience: started state 추가, mount useEffect를 [started] 의존 + !started 가드로 변경. !started면 FormatBadge+hint+'통화 시작' 버튼만 렌더. 기존 13개 테스트에 start() 헬퍼 삽입 + 시작화면 테스트 2개 신규. 전체 318 통과"
+    },
+    {
+      "step": 11,
+      "name": "fraud-judgment-start-gate",
+      "status": "completed",
+      "summary": "FraudJudgmentExperience: started state + !started면 FormatBadge+hint+'판정 시작' 버튼만 렌더(타이머 없어 useEffect 불필요). 기존 12개 테스트에 start() 삽입 + 시작화면 테스트 2개 신규. 전체 320 통과"
+    },
+    {
+      "step": 12,
+      "name": "grade-threshold-text",
+      "status": "completed",
+      "summary": "src/lib/scoring.ts에 describeGradeThresholds() 추가 — GRADE_THRESHOLDS/GRADE_LABELS 조합('80% 이상 안전 · 50~79% 주의 · 50% 미만 위험'). 기존 export 불변. scoring.test.ts에 상수 기반 회귀 테스트 1개. 테스트 18"
+    },
+    {
+      "step": 13,
+      "name": "score-gauge-component",
+      "status": "completed",
+      "summary": "src/components/ui/ScoreGauge.tsx 신규: SVG stroke-dasharray 도넛(라이브러리 無), data-grade + ARC_COLOR(safe/danger=CSS 토큰, caution=#d97706), 중앙 percent+등급 텍스트, role=img aria-label. describeGradeThresholds 캡션은 step15의 result 페이지에서 렌더. 테스트 3"
+    },
+    {
+      "step": 14,
+      "name": "score-bar-chart-component",
+      "status": "completed",
+      "summary": "src/components/ui/ScoreBarChart.tsx 신규: results 순회 행 = icon(aria-hidden)+EXPERIENCE_TYPE_LABELS+learningPhrase 캡션+CSS width 막대(computeGrade 기반 색)+점수(tabular-nums). '오늘 배운 것' 문단 섹션 대체. 테스트 3"
+    },
+    {
+      "step": 15,
+      "name": "result-page-visual-redesign",
+      "status": "completed",
+      "summary": "/result 재구성: 종합 점수→<ScoreGauge>+describeGradeThresholds 캡션(Mascot 유지), '유형별 점수' 섹션에 <ScoreBarChart>, 문항별 리뷰 압축(✓/✗ 아이콘+sr-only, '내 선택 A · 정답 B' 한 줄). 대응 방안은 step17 위해 그대로. ScoreBarChart ul/li→div(리뷰 li querySelector 충돌 방지). page.test.tsx mock에 describeGradeThresholds·computeGrade 추가, 라벨 카운트 테스트 2·3으로 갱신. 전체 327 통과"
+    },
+    {
+      "step": 16,
+      "name": "remediation-bullets-and-links",
+      "status": "completed",
+      "summary": "remediation.ts: RemediationEntry {message,bullets,links?} 도입, REMEDIATION_COPY→REMEDIATION_ENTRIES, getRemediationEntry 추가. getRemediation(tag)=entry.message로 하위호환 유지(message는 기존 카피 그대로). 6개 태그에 짧은 불릿 2~3개(≤25자) + 실접속 검증 링크(FSS 보이스피싱지킴이/ECRM/KISA 118/인터넷등기소/HUG/파인). 신규 테스트 4. 전체 331 통과"
+    },
+    {
+      "step": 17,
+      "name": "result-page-remediation-render",
+      "status": "completed",
+      "summary": "/result 대응 방안 섹션: getRemediationEntry로 전환, 긴 message 대신 짧은 불릿 <ul> + 공식 링크 칩(target=_blank rel=noopener noreferrer). page.test.tsx: 강조 문구 테스트를 불릿+링크 href/target/rel 검증으로 교체. 전체 331 통과"
+    },
+    {
+      "step": 18,
+      "name": "how-it-works-icon-steps",
+      "status": "completed",
+      "summary": "/how-it-works: 소개 문단 2→1문장, '무엇을 배우는지'를 아이콘 3스텝(🔍위험 신호 포착/📑서류·정보 비교/🤔판단 연습)으로 교체, 진행 방식 불릿 문구 축약(+유형별 점수 반영). 서버 컴포넌트 유지, 유형명 비노출. 테스트 4"
+    },
+    {
+      "step": 19,
+      "name": "case-investigation-question-limit-hint",
+      "status": "completed",
+      "summary": "CaseInvestigationExperience 질문 소진 메시지 두 곳에 '지금까지 확인한 내용과 서류를 바탕으로 판단해보세요.' 부연 추가. 테스트 1개 보강. 전체 332 통과"
+    }
+  ],
+  "created_at": "2026-09-05T22:47:16+0900"
+}

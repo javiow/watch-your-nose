@@ -17,6 +17,8 @@ const aggregate = vi.fn();
 vi.mock("@/lib/scoring", () => ({
   GRADE_LABELS: { safe: "안전", caution: "주의", danger: "위험" },
   aggregateResults: (...args: unknown[]) => aggregate(...args),
+  describeGradeThresholds: () => "80% 이상 안전 · 50~79% 주의 · 50% 미만 위험",
+  computeGrade: (n: number) => (n >= 80 ? "safe" : n >= 50 ? "caution" : "danger"),
 }));
 
 import ResultPage from "./page";
@@ -75,12 +77,15 @@ describe("ResultPage 마스코트", () => {
     );
   });
 
-  it("종합 정답률·문항별 리뷰는 그대로 렌더된다", () => {
+  it("종합 점수 게이지·등급 기준·유형별 점수·문항별 리뷰가 렌더된다", () => {
     mockResults = completeResults();
     aggregate.mockReturnValue({ average: 80, grade: "safe" });
 
     render(<ResultPage />);
     expect(screen.getByText("종합 정답률")).toBeDefined();
+    expect(screen.getByRole("img", { name: /80.*안전/ })).toBeDefined();
+    expect(screen.getByText(/80% 이상 안전/)).toBeDefined();
+    expect(screen.getByText("유형별 점수")).toBeDefined();
     expect(screen.getByText("문항별 리뷰")).toBeDefined();
   });
 
@@ -90,7 +95,10 @@ describe("ResultPage 마스코트", () => {
 
     render(<ResultPage />);
     for (const mod of EXPERIENCE_MODULES) {
-      expect(screen.getByText(new RegExp(EXPERIENCE_TYPE_LABELS[mod.typeId]))).toBeDefined();
+      // 막대 그래프 + 문항별 리뷰 양쪽에 라벨이 나오므로 최소 1곳 이상.
+      expect(
+        screen.getAllByText(new RegExp(EXPERIENCE_TYPE_LABELS[mod.typeId])).length
+      ).toBeGreaterThanOrEqual(1);
     }
   });
 
@@ -104,10 +112,10 @@ describe("ResultPage 마스코트", () => {
 
     render(<ResultPage />);
     expect(screen.getByText("대응 방안")).toBeDefined();
-    // 문항별 리뷰 1곳(번호와 함께) + 대응 방안 1곳(단독), 총 2곳에 전세매물 라벨이 노출된다.
+    // 유형별 점수 막대 1곳 + 문항별 리뷰 1곳 + 대응 방안 1곳, 총 3곳에 전세매물 라벨이 노출된다.
     expect(
       screen.getAllByText(new RegExp(EXPERIENCE_TYPE_LABELS.jeonse))
-    ).toHaveLength(2);
+    ).toHaveLength(3);
   });
 
   it("문항별 리뷰 설명에서 **로 감싼 핵심 문구만 강조되고 나머지는 일반 텍스트다", () => {
@@ -127,7 +135,7 @@ describe("ResultPage 마스코트", () => {
     );
   });
 
-  it("대응 방안 텍스트에서도 실제 콘텐츠에 표시된 핵심 문구만 강조된다", () => {
+  it("대응 방안은 짧은 불릿 목록과 공식 링크(새 탭)로 렌더된다", () => {
     const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
     const overrides = EXPERIENCE_MODULES.map((_, i) =>
       i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
@@ -136,10 +144,14 @@ describe("ResultPage 마스코트", () => {
     aggregate.mockReturnValue({ average: 75, grade: "caution" });
 
     render(<ResultPage />);
-    const highlighted = screen.getByText(
-      "소유자와 계약 상대방 명의 불일치, 과도한 근저당, 대리인 명의 계좌로의 잔금 입금 요구"
-    );
-    expect(highlighted.tagName).toBe("STRONG");
+    expect(
+      screen.getByText("등기부등본으로 소유자·근저당 직접 확인")
+    ).toBeDefined();
+
+    const link = screen.getByRole("link", { name: /인터넷등기소/ });
+    expect(link.getAttribute("href")).toBe("https://www.iros.go.kr");
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
   });
 
   it("미완료 세션이면 홈으로 리다이렉트하고 마스코트를 렌더하지 않는다", () => {

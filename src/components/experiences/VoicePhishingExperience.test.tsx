@@ -123,6 +123,10 @@ function advanceAllTimers() {
   });
 }
 
+function start() {
+  fireEvent.click(screen.getByRole("button", { name: "통화 시작" }));
+}
+
 describe("VoicePhishingExperience", () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -132,10 +136,33 @@ describe("VoicePhishingExperience", () => {
     vi.useRealTimers();
   });
 
+  it("시작 화면에서는 형식 배지와 '통화 시작' 버튼만 보이고 대화는 시작되지 않는다", () => {
+    render(
+      <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
+    );
+
+    expect(screen.getByText("전화 통화")).toBeDefined();
+    expect(screen.getByRole("button", { name: "통화 시작" })).toBeDefined();
+    expect(screen.queryByTestId("typing-indicator")).toBeNull();
+
+    advanceAllTimers();
+    expect(screen.queryByText("본인 확인 차 전화드렸습니다.")).toBeNull();
+  });
+
+  it("'통화 시작'을 누른 뒤 타이머를 진행하면 첫 대사가 나타난다", () => {
+    render(
+      <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
+    );
+    start();
+    advanceAllTimers();
+    expect(screen.getByText("본인 확인 차 전화드렸습니다.")).toBeDefined();
+  });
+
   it("마운트 직후에는 타이핑 인디케이터만 보이다가, 딜레이 이후 말풍선과 선택지가 나타난다", () => {
     render(
       <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
     );
+    start();
 
     expect(screen.getByTestId("typing-indicator")).toBeDefined();
     expect(screen.queryByText("본인 확인 차 전화드렸습니다.")).toBeNull();
@@ -152,6 +179,7 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
     );
+    start();
     advanceAllTimers();
 
     fireEvent.click(screen.getByText("확인해준다"));
@@ -168,6 +196,7 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={normalScenario} onComplete={vi.fn()} />
     );
+    start();
     advanceAllTimers();
 
     fireEvent.click(screen.getByText("전화를 끊는다"));
@@ -181,6 +210,7 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={normalScenario} onComplete={onComplete} />
     );
+    start();
     advanceAllTimers();
 
     fireEvent.click(screen.getByText("전화를 끊는다"));
@@ -202,6 +232,7 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={normalScenario} onComplete={onComplete} />
     );
+    start();
     advanceAllTimers();
 
     fireEvent.click(screen.getByText("확인해준다"));
@@ -226,6 +257,7 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={scamScenario} onComplete={onComplete} />
     );
+    start();
     advanceAllTimers();
 
     fireEvent.click(screen.getByText("더 들어본다"));
@@ -248,6 +280,7 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={scamScenario} onComplete={onComplete} />
     );
+    start();
     advanceAllTimers();
 
     fireEvent.click(screen.getByText("더 들어본다"));
@@ -273,6 +306,7 @@ describe("VoicePhishingExperience", () => {
         onComplete={onComplete}
       />
     );
+    start();
     advanceAllTimers();
 
     fireEvent.click(screen.getByText("더 들어본다"));
@@ -302,6 +336,7 @@ describe("VoicePhishingExperience", () => {
         onComplete={onComplete}
       />
     );
+    start();
     advanceAllTimers();
 
     fireEvent.click(screen.getByText("전화를 끊는다"));
@@ -321,6 +356,7 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={danglingScenario} onComplete={onComplete} />
     );
+    start();
     advanceAllTimers();
 
     expect(() => {
@@ -362,6 +398,7 @@ describe("VoicePhishingExperience", () => {
         onComplete={vi.fn()}
       />
     );
+    start();
     advanceAllTimers();
 
     expect(screen.getByText("본인 확인 절차임을 이해하고 알려준다")).toBeDefined();
@@ -380,6 +417,7 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={normalScenario} onComplete={onComplete} />
     );
+    start();
     advanceAllTimers();
 
     const choiceButton = screen.getByText("전화를 끊는다");
@@ -406,6 +444,7 @@ describe("VoicePhishingExperience", () => {
     render(
       <VoicePhishingExperience content={normalScenario} onComplete={onComplete} />
     );
+    start();
     advanceAllTimers();
 
     fireEvent.click(screen.getByText("전화를 끊는다"));

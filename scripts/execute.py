@@ -241,8 +241,11 @@ class StepExecutor:
             sys.exit(1)
 
         prompt = preamble + step_file.read_text(encoding="utf-8")
+        # 프롬프트는 stdin으로 전달한다. argv로 넘기면 Windows CreateProcess의
+        # 명령줄 길이 제한(약 32KB)을 초과해 WinError 206으로 실패한다.
         result = subprocess.run(
-            ["claude", "-p", "--dangerously-skip-permissions", "--output-format", "json", prompt],
+            ["claude", "-p", "--dangerously-skip-permissions", "--output-format", "json"],
+            input=prompt,
             cwd=self._root, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=1800,
         )
 

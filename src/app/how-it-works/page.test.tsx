@@ -10,6 +10,13 @@ describe("HowItWorksPage", () => {
     expect(screen.getByText(/정답과 오답을 알려주지 않습니다/)).toBeDefined();
   });
 
+  it("무엇을 연습하는지 아이콘 스텝으로 보여준다", () => {
+    render(<HowItWorksPage />);
+    expect(screen.getByText("위험 신호 포착")).toBeDefined();
+    expect(screen.getByText("서류·정보 비교")).toBeDefined();
+    expect(screen.getByText("판단 연습")).toBeDefined();
+  });
+
   it("체험 유형명을 노출하지 않는다", () => {
     render(<HowItWorksPage />);
     expect(

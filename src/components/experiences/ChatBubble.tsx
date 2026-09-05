@@ -1,3 +1,5 @@
+import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
+
 interface ChatBubbleProps {
   speaker: "caller" | "me";
   text: string;
@@ -15,7 +17,7 @@ export function ChatBubble({ speaker, text }: ChatBubbleProps) {
             : "border border-border bg-surface text-muted"
         }`}
       >
-        {text}
+        <GlossaryTermText text={text} />
       </div>
     </div>
   );

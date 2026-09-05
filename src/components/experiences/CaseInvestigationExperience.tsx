@@ -16,6 +16,9 @@ import {
 import { MAX_NPC_QUESTIONS, isMeaningfulQuestion } from "@/lib/npc-chat";
 import { classifyQuestion } from "@/lib/npc-chat-client";
 import { NextStepButton } from "@/components/ui/NextStepButton";
+import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
+import { FormatBadge } from "@/components/ui/FormatBadge";
+import { EXPERIENCE_FORMAT } from "@/data/experience-format";
 
 interface ChatEntry {
   key: string;
@@ -114,7 +117,7 @@ export function CaseInvestigationExperience({
 
   const handleSubmitQuestion = async (rawInput: string) => {
     if (chatLog.length >= MAX_NPC_QUESTIONS) {
-      setInputError("질문 횟수를 모두 사용했어요.");
+      setInputError("질문 횟수를 모두 사용했어요. 지금까지 확인한 내용과 서류를 바탕으로 판단해보세요.");
       return;
     }
     const trimmed = rawInput.trim();
@@ -182,6 +185,7 @@ export function CaseInvestigationExperience({
   if (phase === "briefing") {
     return (
       <div className="space-y-6">
+        <FormatBadge format={EXPERIENCE_FORMAT["case-investigation"]} />
         <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
           <p className="text-sm font-medium text-muted">조사 예산 {content.initialPoints}P</p>
           <h2 className="mt-2 text-lg font-semibold text-foreground">
@@ -260,7 +264,7 @@ export function CaseInvestigationExperience({
                 if (block.evidencePattern === null) {
                   return (
                     <p key={block.blockId} className="text-sm leading-relaxed text-muted">
-                      {block.text}
+                      <GlossaryTermText text={block.text} />
                     </p>
                   );
                 }
@@ -366,7 +370,7 @@ export function CaseInvestigationExperience({
             </button>
           </form>
           {questionLimitReached ? (
-            <p className="mt-2 text-sm text-subtle">질문 횟수를 모두 사용했어요.</p>
+            <p className="mt-2 text-sm text-subtle">질문 횟수를 모두 사용했어요. 지금까지 확인한 내용과 서류를 바탕으로 판단해보세요.</p>
           ) : (
             inputError && <p className="mt-2 text-sm text-subtle">{inputError}</p>
           )}

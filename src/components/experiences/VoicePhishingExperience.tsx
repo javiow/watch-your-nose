@@ -10,6 +10,8 @@ import type {
 } from "@/types/experience";
 import { computeGrade, computeVoicePhishingScore } from "@/lib/scoring";
 import { NextStepButton } from "@/components/ui/NextStepButton";
+import { FormatBadge } from "@/components/ui/FormatBadge";
+import { EXPERIENCE_FORMAT } from "@/data/experience-format";
 import { ChatBubble } from "./ChatBubble";
 import { ChatChoiceButtons } from "./ChatChoiceButtons";
 import { TypingIndicator } from "./TypingIndicator";
@@ -61,6 +63,7 @@ export function VoicePhishingExperience({
   content,
   onComplete,
 }: VoicePhishingExperienceProps) {
+  const [started, setStarted] = useState(false);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [currentNodeId, setCurrentNodeId] = useState(content.startNodeId);
   const [typing, setTyping] = useState(false);
@@ -91,13 +94,14 @@ export function VoicePhishingExperience({
   };
 
   useEffect(() => {
+    if (!started) return;
     revealNode(content.startNodeId);
     return () => {
       timers.current.forEach((timerId) => window.clearTimeout(timerId));
       timers.current = [];
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [started]);
 
   const currentNode = findNode(content.nodes, currentNodeId);
 
@@ -167,6 +171,26 @@ export function VoicePhishingExperience({
 
     finishScenario(choice);
   };
+
+  if (!started) {
+    return (
+      <div className="space-y-6">
+        <FormatBadge format={EXPERIENCE_FORMAT["voice-phishing"]} />
+        <p className="text-sm leading-relaxed text-muted">
+          {EXPERIENCE_FORMAT["voice-phishing"].hint}
+        </p>
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setStarted(true)}
+            className="min-h-11 rounded-xl bg-accent px-6 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+          >
+            통화 시작
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

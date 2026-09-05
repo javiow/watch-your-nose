@@ -4,6 +4,9 @@ import { useRef, useState } from "react";
 import type { FraudJudgmentAnswer, FraudJudgmentCard, ModuleResult } from "@/types/experience";
 import { computeGrade } from "@/lib/scoring";
 import { NextStepButton } from "@/components/ui/NextStepButton";
+import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
+import { FormatBadge } from "@/components/ui/FormatBadge";
+import { EXPERIENCE_FORMAT } from "@/data/experience-format";
 
 interface FraudJudgmentExperienceProps {
   content: FraudJudgmentCard[];
@@ -27,6 +30,7 @@ function buildMistakeTag(content: FraudJudgmentCard[], answers: Record<number, F
 }
 
 export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentExperienceProps) {
+  const [started, setStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, FraudJudgmentAnswer>>({});
   const lockedRef = useRef(false);
@@ -78,6 +82,26 @@ export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentEx
     onComplete(pendingResult);
   };
 
+  if (!started) {
+    return (
+      <div className="space-y-6">
+        <FormatBadge format={EXPERIENCE_FORMAT["fraud-judgment"]} />
+        <p className="text-sm leading-relaxed text-muted">
+          {EXPERIENCE_FORMAT["fraud-judgment"].hint}
+        </p>
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setStarted(true)}
+            className="min-h-11 rounded-xl bg-accent px-6 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+          >
+            판정 시작
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <p className="text-xs font-medium text-subtle">
@@ -86,7 +110,9 @@ export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentEx
 
       <div className="rounded-xl border border-border bg-surface p-4">
         <p className="text-sm font-medium text-muted">{currentCard.title}</p>
-        <p className="mt-2 text-sm leading-relaxed text-muted">{currentCard.content}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          <GlossaryTermText text={currentCard.content} />
+        </p>
       </div>
 
       <div className="flex flex-col gap-3 md:flex-row">
