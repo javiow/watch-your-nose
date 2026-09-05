@@ -47,7 +47,8 @@
     },
     {
       "dir": "9-glossary-and-visual-results",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-05T23:50:00+0900"
     }
   ]
 }
