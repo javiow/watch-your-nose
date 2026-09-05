@@ -4,19 +4,14 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/session-context";
 import { EXPERIENCE_MODULES } from "@/lib/registry";
-import { GRADE_LABELS, aggregateResults } from "@/lib/scoring";
+import { aggregateResults, describeGradeThresholds } from "@/lib/scoring";
 import { getRemediation } from "@/data/remediation";
 import { EXPERIENCE_TYPE_LABELS } from "@/data/experience-types";
 import { Mascot } from "@/components/ui/Mascot";
 import { HighlightedText } from "@/components/ui/HighlightedText";
+import { ScoreGauge } from "@/components/ui/ScoreGauge";
+import { ScoreBarChart } from "@/components/ui/ScoreBarChart";
 import { GRADE_EXPRESSION } from "@/lib/mascot-frames";
-import type { Grade } from "@/types/experience";
-
-const GRADE_TEXT_COLOR: Record<Grade, string> = {
-  safe: "text-safe",
-  caution: "text-subtle",
-  danger: "text-danger",
-};
 
 export default function ResultPage() {
   const router = useRouter();
@@ -54,21 +49,22 @@ export default function ResultPage() {
       <h1 className="text-4xl font-semibold text-foreground">결과</h1>
 
       <section className="rounded-xl border border-border bg-surface p-6 shadow-sm">
-        <div className="flex items-center gap-4">
+        <p className="text-sm font-medium text-muted">종합 정답률</p>
+        <div className="mt-3 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Mascot
             expression={GRADE_EXPRESSION[grade]}
-            className="h-24 w-24 shrink-0"
+            className="h-20 w-20 shrink-0"
           />
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted">종합 정답률</p>
-            <p className="text-4xl font-semibold text-foreground">
-              {roundedAverage}%{" "}
-              <span className={GRADE_TEXT_COLOR[grade]}>
-                {GRADE_LABELS[grade]}
-              </span>
-            </p>
+          <div className="flex flex-col items-center gap-1">
+            <ScoreGauge percent={roundedAverage} grade={grade} />
+            <p className="text-xs text-subtle">{describeGradeThresholds()}</p>
           </div>
         </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-medium text-muted">유형별 점수</h2>
+        <ScoreBarChart results={results} />
       </section>
 
       <section className="space-y-3">
@@ -79,23 +75,22 @@ export default function ResultPage() {
               key={`${result.typeId}-${result.contentId}`}
               className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
             >
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-subtle">
-                  {index + 1}번 · {EXPERIENCE_TYPE_LABELS[result.typeId]}
-                </p>
-                <p
-                  className={`text-sm font-medium ${
-                    result.isCorrect ? "text-safe" : "text-danger"
-                  }`}
+              <div className="flex items-center gap-2 text-sm">
+                <span
+                  aria-hidden="true"
+                  className={result.isCorrect ? "text-safe" : "text-danger"}
                 >
+                  {result.isCorrect ? "✓" : "✗"}
+                </span>
+                <span className="sr-only">
                   {result.isCorrect ? "정답" : "오답"}
-                </p>
+                </span>
+                <span className="text-subtle">
+                  {index + 1}번 · {EXPERIENCE_TYPE_LABELS[result.typeId]}
+                </span>
               </div>
               <p className="text-sm text-muted">
-                내 선택: {result.userChoice}
-              </p>
-              <p className="text-sm text-muted">
-                정답: {result.correctChoice}
+                내 선택 {result.userChoice} · 정답 {result.correctChoice}
               </p>
               <p className="text-sm leading-relaxed text-muted">
                 <HighlightedText text={result.explanation} />

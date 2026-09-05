@@ -19,13 +19,13 @@ const BAR_COLOR: Record<Grade, string> = {
  */
 export function ScoreBarChart({ results }: ScoreBarChartProps) {
   return (
-    <ul className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       {results.map((result, index) => {
         const score = Math.round(result.score);
         const grade = computeGrade(score);
         const format = EXPERIENCE_FORMAT[result.typeId];
         return (
-          <li
+          <div
             key={`${result.typeId}-${result.contentId}-${index}`}
             data-grade={grade}
             className="grid grid-cols-[1.5rem_1fr_2.5rem] items-center gap-x-3"
@@ -51,9 +51,9 @@ export function ScoreBarChart({ results }: ScoreBarChartProps) {
             <span className="text-right text-sm text-muted [font-variant-numeric:tabular-nums]">
               {score}
             </span>
-          </li>
+          </div>
         );
       })}
-    </ul>
+    </div>
   );
 }

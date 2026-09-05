@@ -17,6 +17,8 @@ const aggregate = vi.fn();
 vi.mock("@/lib/scoring", () => ({
   GRADE_LABELS: { safe: "안전", caution: "주의", danger: "위험" },
   aggregateResults: (...args: unknown[]) => aggregate(...args),
+  describeGradeThresholds: () => "80% 이상 안전 · 50~79% 주의 · 50% 미만 위험",
+  computeGrade: (n: number) => (n >= 80 ? "safe" : n >= 50 ? "caution" : "danger"),
 }));
 
 import ResultPage from "./page";
@@ -75,12 +77,15 @@ describe("ResultPage 마스코트", () => {
     );
   });
 
-  it("종합 정답률·문항별 리뷰는 그대로 렌더된다", () => {
+  it("종합 점수 게이지·등급 기준·유형별 점수·문항별 리뷰가 렌더된다", () => {
     mockResults = completeResults();
     aggregate.mockReturnValue({ average: 80, grade: "safe" });
 
     render(<ResultPage />);
     expect(screen.getByText("종합 정답률")).toBeDefined();
+    expect(screen.getByRole("img", { name: /80.*안전/ })).toBeDefined();
+    expect(screen.getByText(/80% 이상 안전/)).toBeDefined();
+    expect(screen.getByText("유형별 점수")).toBeDefined();
     expect(screen.getByText("문항별 리뷰")).toBeDefined();
   });
 
@@ -90,7 +95,10 @@ describe("ResultPage 마스코트", () => {
 
     render(<ResultPage />);
     for (const mod of EXPERIENCE_MODULES) {
-      expect(screen.getByText(new RegExp(EXPERIENCE_TYPE_LABELS[mod.typeId]))).toBeDefined();
+      // 막대 그래프 + 문항별 리뷰 양쪽에 라벨이 나오므로 최소 1곳 이상.
+      expect(
+        screen.getAllByText(new RegExp(EXPERIENCE_TYPE_LABELS[mod.typeId])).length
+      ).toBeGreaterThanOrEqual(1);
     }
   });
 
@@ -104,10 +112,10 @@ describe("ResultPage 마스코트", () => {
 
     render(<ResultPage />);
     expect(screen.getByText("대응 방안")).toBeDefined();
-    // 문항별 리뷰 1곳(번호와 함께) + 대응 방안 1곳(단독), 총 2곳에 전세매물 라벨이 노출된다.
+    // 유형별 점수 막대 1곳 + 문항별 리뷰 1곳 + 대응 방안 1곳, 총 3곳에 전세매물 라벨이 노출된다.
     expect(
       screen.getAllByText(new RegExp(EXPERIENCE_TYPE_LABELS.jeonse))
-    ).toHaveLength(2);
+    ).toHaveLength(3);
   });
 
   it("문항별 리뷰 설명에서 **로 감싼 핵심 문구만 강조되고 나머지는 일반 텍스트다", () => {
