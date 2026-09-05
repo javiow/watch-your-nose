@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import type { FraudJudgmentAnswer, FraudJudgmentCard, ModuleResult } from "@/types/experience";
 import { computeGrade } from "@/lib/scoring";
 import { NextStepButton } from "@/components/ui/NextStepButton";
+import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
 
 interface FraudJudgmentExperienceProps {
   content: FraudJudgmentCard[];
@@ -86,7 +87,9 @@ export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentEx
 
       <div className="rounded-xl border border-border bg-surface p-4">
         <p className="text-sm font-medium text-muted">{currentCard.title}</p>
-        <p className="mt-2 text-sm leading-relaxed text-muted">{currentCard.content}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          <GlossaryTermText text={currentCard.content} />
+        </p>
       </div>
 
       <div className="flex flex-col gap-3 md:flex-row">
