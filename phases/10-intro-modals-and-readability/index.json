@@ -48,7 +48,9 @@
     {
       "step": 6,
       "name": "case-investigation-purpose-data",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T08:47:00+0900",
+      "summary": "src/types/experience.ts CaseInvestigation에 required `purpose: string` 추가. src/data/case-investigation.ts 6케이스 20개 investigation 전부에 purpose 한 줄 작성(documentId 다음 줄에 삽입). 유형명/케이스 title/정답 암시어(사기·위험 등) 금지. 픽스처 수리: CaseInvestigationExperience.test.tsx gatingFixture 3개, scoring.test.ts 2개. case-investigation.test.ts 완결성 테스트 2개(purpose 비어있지 않음·≤60자, title/금칙어 미포함). build/lint/test(전체 374) 통과"
     },
     {
       "step": 7,
