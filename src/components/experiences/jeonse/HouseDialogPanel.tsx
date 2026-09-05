@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { JeonseFieldStatus, JeonseHouse } from "@/types/experience";
+import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
 
 function statusClassFor(status: JeonseFieldStatus): string {
   if (status === "위험") return "border-danger/60 text-danger";
@@ -112,7 +113,9 @@ export function HouseDialogPanel({
             <p className="mt-1 text-lg font-bold text-foreground">{house.market}</p>
           </div>
           <div className="p-4">
-            <p className="text-[10px] uppercase tracking-wide text-subtle">전세가율</p>
+            <p className="text-[10px] uppercase tracking-wide text-subtle">
+              <GlossaryTermText text="{{term:전세가율}}" />
+            </p>
             <p className="mt-1 text-lg font-bold text-foreground">{house.ratio}</p>
           </div>
         </div>
@@ -141,7 +144,9 @@ export function HouseDialogPanel({
           {house.fields.map(([label, value, status]) => (
             <div key={label} className="py-3">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-xs font-semibold text-muted">{label}</p>
+                <p className="text-xs font-semibold text-muted">
+                  <GlossaryTermText text={label} />
+                </p>
                 {hintRevealed && (
                   <span
                     className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-semibold tracking-wide ${statusClassFor(status)}`}
@@ -150,7 +155,9 @@ export function HouseDialogPanel({
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-sm leading-relaxed text-muted">{value}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">
+                <GlossaryTermText text={value} />
+              </p>
             </div>
           ))}
         </div>
