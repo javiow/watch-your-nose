@@ -66,7 +66,8 @@
     {
       "step": 10,
       "name": "voice-phishing-start-gate",
-      "status": "pending"
+      "status": "completed",
+      "summary": "VoicePhishingExperience: started state 추가, mount useEffect를 [started] 의존 + !started 가드로 변경. !started면 FormatBadge+hint+'통화 시작' 버튼만 렌더. 기존 13개 테스트에 start() 헬퍼 삽입 + 시작화면 테스트 2개 신규. 전체 318 통과"
     },
     {
       "step": 11,
