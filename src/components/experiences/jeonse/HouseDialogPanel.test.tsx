@@ -113,18 +113,43 @@ describe("HouseDialogPanel", () => {
     expect(onAnswer).toHaveBeenCalledWith(false);
   });
 
-  it("answered가 true면 정답/오답/해설/교훈을 보여주지 않고 중립 안내만 보여준다", () => {
-    renderPanel({ answered: true });
+  it("answered가 true면 정답/오답/해설/교훈을 보여주지 않고, 내 판정과 서류 8항목을 다시 보여준다", () => {
+    renderPanel({ answered: true, answer: true });
     expect(screen.queryByText(/정답/)).toBeNull();
     expect(screen.queryByText(/오답/)).toBeNull();
     expect(screen.queryByText(house.explain)).toBeNull();
     expect(screen.queryByText(house.lesson)).toBeNull();
-    expect(screen.getByText(/판정을 기록했습니다/)).toBeDefined();
+    expect(screen.getByText(/당신의 판정/)).toBeDefined();
+    expect(screen.getByText(/O — 위험 있음/)).toBeDefined();
+    expect(screen.getByText("등기부등본")).toBeDefined();
+    expect(screen.getByText("전입세대 열람")).toBeDefined();
+    expect(screen.queryByRole("button", { name: "O — 위험 있음" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "X — 위험 없음" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "힌트 사용" })).toBeNull();
+  });
+
+  it("answered가 true이고 answer가 false(X)면 X 판정 문구를 보여준다", () => {
+    renderPanel({ answered: true, answer: false });
+    expect(screen.getByText(/X — 위험 없음/)).toBeDefined();
+  });
+
+  it("재열람 시에도 힌트를 쓰지 않았다면 위험도 태그(정상/주의/위험)는 가려져 있다", () => {
+    renderPanel({ answered: true, answer: true, hintRevealed: false });
+    expect(screen.queryByText("정상")).toBeNull();
+    expect(screen.queryByText("주의")).toBeNull();
+    expect(screen.queryByText("위험")).toBeNull();
+  });
+
+  it("재열람 시 힌트를 이미 썼다면(hintRevealed) 위험도 태그가 보인다", () => {
+    renderPanel({ answered: true, answer: true, hintRevealed: true });
+    expect(screen.getAllByText("정상").length).toBeGreaterThan(0);
+    expect(screen.getByText("주의")).toBeDefined();
+    expect(screen.getByText("위험")).toBeDefined();
   });
 
   it("닫기를 누르면 onClose가 호출된다", () => {
     const onClose = vi.fn();
-    renderPanel({ answered: true, onClose });
+    renderPanel({ answered: true, answer: true, onClose });
     fireEvent.click(screen.getByText("닫기"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });

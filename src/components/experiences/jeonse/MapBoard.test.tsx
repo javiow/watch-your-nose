@@ -68,6 +68,22 @@ describe("MapBoard", () => {
     expect(screen.queryByText("오답")).toBeNull();
   });
 
+  it("하단 체크리스트에서 완료된 매물은 내가 고른 O/X 판정을 보여준다", () => {
+    renderBoard({ answers: { 0: true, 1: false } });
+    expect(screen.getByText(/O — 위험 있음/)).toBeDefined();
+    expect(screen.getByText(/X — 위험 없음/)).toBeDefined();
+  });
+
+  it("완료된 매물을 다시 클릭하면 내 판정과 서류 8항목을 다시 볼 수 있다", () => {
+    renderBoard({ answers: { 0: true } });
+    fireEvent.click(screen.getByRole("button", { name: `${houses[0].short} 입장` }));
+    expect(screen.getByText(/당신의 판정/)).toBeDefined();
+    expect(screen.getAllByText(/O — 위험 있음/).length).toBeGreaterThan(0);
+    expect(screen.getByText("등기부등본")).toBeDefined();
+    expect(screen.queryByRole("button", { name: "O — 위험 있음" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "X — 위험 없음" })).toBeNull();
+  });
+
   it("매물을 클릭하면 점검 패널이 열린다", () => {
     renderBoard();
     fireEvent.click(screen.getByRole("button", { name: `${houses[0].short} 입장` }));
@@ -111,5 +127,14 @@ describe("MapBoard", () => {
     fireEvent.click(screen.getByText("확인"));
     expect(screen.getByRole("button", { name: "힌트 사용" })).toBeDisabled();
     expect(screen.queryByText("정상")).toBeNull();
+  });
+
+  it("방향키 버튼은 텍스트 드래그/선택이 되지 않도록 select-none/touch-none이 적용돼 있다", () => {
+    renderBoard();
+    for (const label of ["위로 이동", "아래로 이동", "왼쪽으로 이동", "오른쪽으로 이동"]) {
+      const button = screen.getByRole("button", { name: label });
+      expect(button.className).toMatch(/select-none/);
+      expect(button.className).toMatch(/touch-none/);
+    }
   });
 });
