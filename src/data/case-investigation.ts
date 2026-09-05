@@ -54,7 +54,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
           },
           {
             blockId: "MKT_02",
-            text: "매매가 대비 전세가율 참고자료: 해당 단지 평균 전세가율 68% (국토부 통계 기준)",
+            text: "매매가 대비 {{term:전세가율}} 참고자료: 해당 단지 평균 전세가율 68% (국토부 통계 기준)",
             evidencePattern: null,
           },
           {
@@ -184,7 +184,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
           },
           {
             blockId: "REG_03",
-            text: "【을구】 근저당권 설정 등기 없음 (해당 사항 없음)",
+            text: "【{{term:을구}}】 {{term:근저당권}} 설정 등기 없음 (해당 사항 없음)",
             evidencePattern: null,
           },
         ],
@@ -376,7 +376,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
           },
           {
             blockId: "REG_03",
-            text: "【을구】 근저당권 설정 등기 없음 (해당 사항 없음)",
+            text: "【{{term:을구}}】 {{term:근저당권}} 설정 등기 없음 (해당 사항 없음)",
             evidencePattern: null,
           },
           {

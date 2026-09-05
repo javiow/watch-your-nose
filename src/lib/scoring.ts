@@ -24,6 +24,12 @@ export function computeGrade(scorePercent: number): Grade {
   return "danger";
 }
 
+/** 결과 페이지에 노출할 등급 기준 안내 문구. GRADE_THRESHOLDS/GRADE_LABELS를 그대로 조합한다. */
+export function describeGradeThresholds(): string {
+  const cautionMax = GRADE_THRESHOLDS.safe - 1;
+  return `${GRADE_THRESHOLDS.safe}% 이상 ${GRADE_LABELS.safe} · ${GRADE_THRESHOLDS.caution}~${cautionMax}% ${GRADE_LABELS.caution} · ${GRADE_THRESHOLDS.caution}% 미만 ${GRADE_LABELS.danger}`;
+}
+
 export function aggregateResults(results: ModuleResult[]): {
   average: number;
   grade: Grade;

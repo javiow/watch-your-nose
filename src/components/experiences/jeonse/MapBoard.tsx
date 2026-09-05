@@ -16,6 +16,8 @@ import { HouseDialogPanel } from "./HouseDialogPanel";
 import { HouseSprite } from "./HouseSprite";
 import { PlayerSprite } from "./PlayerSprite";
 import type { Facing } from "./sprites";
+import { FormatBadge } from "@/components/ui/FormatBadge";
+import { EXPERIENCE_FORMAT } from "@/data/experience-format";
 
 const PLAYER_SPRITE_WIDTH = 26;
 const PLAYER_SPRITE_HEIGHT = 32;
@@ -194,6 +196,7 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
 
   return (
     <div className="space-y-6">
+      <FormatBadge format={EXPERIENCE_FORMAT["jeonse"]} />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">골목을 돌며 매물을 점검하세요</h1>

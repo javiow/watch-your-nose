@@ -233,7 +233,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
       {
         id: "s3",
         speaker: "OO쇼핑 고객만족센터",
-        line: "환불 처리를 위해 원격지원 앱을 하나 설치해주시면 저희 상담원이 화면을 보면서 계좌로 바로 환불해드릴 수 있어요.",
+        line: "환불 처리를 위해 {{term:원격지원 앱}}을 하나 설치해주시면 저희 상담원이 화면을 보면서 계좌로 바로 환불해드릴 수 있어요.",
         choices: [
           {
             id: "refuse-remote-app",
@@ -281,7 +281,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
       {
         id: "s1",
         speaker: "서민금융지원센터",
-        line: "안녕하세요 고객님, 정부 지원 저금리 대환대출 대상자로 안내드리려 연락드렸습니다. 기존 대출을 더 낮은 금리로 바꿔드릴 수 있어요.",
+        line: "안녕하세요 고객님, 정부 지원 저금리 {{term:대환대출}} 대상자로 안내드리려 연락드렸습니다. 기존 대출을 더 낮은 금리로 바꿔드릴 수 있어요.",
         choices: [
           {
             id: "refuse-hangup",
@@ -470,7 +470,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
       {
         id: "s1",
         speaker: "OO지방검찰청 수사관",
-        line: "고객님 명의 계좌가 대포통장 개설 및 자금세탁 사건에 연루된 정황이 확인되어 연락드렸습니다. 본인 명의 계좌가 맞으신가요?",
+        line: "고객님 명의 계좌가 {{term:대포통장}} 개설 및 {{term:자금세탁}} 사건에 연루된 정황이 확인되어 연락드렸습니다. 본인 명의 계좌가 맞으신가요?",
         choices: [
           {
             id: "refuse-hangup",
@@ -490,7 +490,7 @@ export const VOICE_PHISHING_SCENARIOS: VoicePhishingScenario[] = [
       {
         id: "s2",
         speaker: "OO지방검찰청 수사관",
-        line: "명의도용 확인을 위해 성함과 생년월일을 불러주시겠어요?",
+        line: "{{term:명의도용}} 확인을 위해 성함과 생년월일을 불러주시겠어요?",
         choices: [
           {
             id: "refuse-no-info-by-phone",

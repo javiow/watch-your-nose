@@ -6,10 +6,12 @@ import type {
 } from "@/types/experience";
 import {
   GRADE_LABELS,
+  GRADE_THRESHOLDS,
   aggregateResults,
   computeCaseInvestigationScore,
   computeGrade,
   computeVoicePhishingScore,
+  describeGradeThresholds,
   getBestEndingOption,
 } from "./scoring";
 import type { CaseInvestigationState } from "./scoring";
@@ -19,6 +21,13 @@ describe("GRADE_LABELS", () => {
     expect(GRADE_LABELS.safe).toBe("안전");
     expect(GRADE_LABELS.caution).toBe("주의");
     expect(GRADE_LABELS.danger).toBe("위험");
+  });
+});
+
+describe("describeGradeThresholds", () => {
+  it("GRADE_THRESHOLDS/GRADE_LABELS 값을 그대로 반영한 안내 문구를 만든다", () => {
+    const expected = `${GRADE_THRESHOLDS.safe}% 이상 ${GRADE_LABELS.safe} · ${GRADE_THRESHOLDS.caution}~${GRADE_THRESHOLDS.safe - 1}% ${GRADE_LABELS.caution} · ${GRADE_THRESHOLDS.caution}% 미만 ${GRADE_LABELS.danger}`;
+    expect(describeGradeThresholds()).toBe(expected);
   });
 });
 
