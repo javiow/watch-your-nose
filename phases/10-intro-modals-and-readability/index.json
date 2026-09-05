@@ -34,7 +34,9 @@
     {
       "step": 4,
       "name": "wire-intro-case-investigation",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T08:41:00+0900",
+      "summary": "CaseInvestigationExperience 브리핑: 시나리오 카드 유지, FormatBadge와 카드의 '조사 시작' 버튼 제거, 위에 <IntroDialog mode=\"gate\" confirmLabel=\"조사 시작\" onConfirm={setPhase(\"investigating\")}> 얹음(briefing return을 fragment로). startInvestigating() 헬퍼 그대로 통과. 스포일러 비노출 테스트(title/hiddenTruth.explanation/endingOptions.comment) 유지. investigating 상태 행을 justify-between으로 바꿔 '안내 다시 보기' 버튼 + showHelp state + <IntroDialog mode=\"help\"> 추가. 테스트 2(마운트 시 dialog+상황문구, investigating 재열람). build/lint/test(전체 370) 통과"
     },
     {
       "step": 5,
