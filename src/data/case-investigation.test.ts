@@ -163,4 +163,34 @@ describe("CASE_INVESTIGATION_CASES", () => {
     expect(jeonse001?.investigations.length).toBe(2);
     expect(jeonse001?.evidenceDefinitions.length).toBe(2);
   });
+
+  it("모든 investigation에 비어있지 않은 purpose가 있다 (60자 이내)", () => {
+    for (const c of CASE_INVESTIGATION_CASES) {
+      for (const inv of c.investigations) {
+        expect(inv.purpose.trim().length).toBeGreaterThan(0);
+        expect(inv.purpose.length).toBeLessThanOrEqual(60);
+      }
+    }
+  });
+
+  it("hiddenTruth.explanation과 endingOptions[].comment 본문이 짧게 유지된다", () => {
+    for (const c of CASE_INVESTIGATION_CASES) {
+      expect(c.hiddenTruth.explanation.length, `${c.caseId} hiddenTruth`).toBeLessThanOrEqual(260);
+      expect(c.hiddenTruth.explanation.startsWith("\n")).toBe(false);
+      expect(c.hiddenTruth.explanation.endsWith("\n")).toBe(false);
+      for (const o of c.endingOptions) {
+        expect(o.comment.length, `${c.caseId} ${o.decision} comment`).toBeLessThanOrEqual(200);
+      }
+    }
+  });
+
+  it("purpose는 케이스 제목·사기 유형·정답 암시어를 포함하지 않는다 (ADR-004)", () => {
+    const banned = /사기|위험|보이스피싱|전세사기|깡통전세/;
+    for (const c of CASE_INVESTIGATION_CASES) {
+      for (const inv of c.investigations) {
+        expect(inv.purpose.includes(c.title)).toBe(false);
+        expect(banned.test(inv.purpose)).toBe(false);
+      }
+    }
+  });
 });

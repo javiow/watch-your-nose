@@ -178,6 +178,8 @@ export interface CaseInvestigation {
   documentId: string;
   unlockCondition: CaseInvestigationUnlock | null;
   hiddenUntilUnlocked?: boolean; // true면 unlock 전 조사 목록 자체에서 숨김. 원본에 없으면 생략(비활성 표시만).
+  // 체험자에게 보여줄 "이 조사를 왜 하는가" 한 줄 설명. 사기 유형·케이스 제목·정답을 암시하지 않는다.
+  purpose: string;
 }
 
 export interface CaseNpcStatement {

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Prose } from "@/components/ui/Prose";
 
 const LEARNING_STEPS = [
   { icon: "🔍", label: "위험 신호 포착" },
@@ -14,10 +15,13 @@ export default function HowItWorksPage() {
         <h1 className="text-3xl font-bold text-foreground">
           시작하기 전에 잠깐 알려드릴게요
         </h1>
-        <p className="text-base leading-relaxed text-muted">
-          코심코심은 전화·문자·온라인 거래·계약 확인까지, 일상에서 마주칠 수 있는
-          사기 상황을 사전 안내 없이 체험하며 내가 정말 안 속을지 점검합니다.
-        </p>
+        <Prose
+          className="mx-auto text-center"
+          size="base"
+          text={
+            "코심코심은 전화·문자·온라인 거래·계약 확인처럼 일상에서 마주칠 수 있는 상황을 사전 안내 없이 체험합니다.\n\n직접 겪어 보며 내가 정말 안 속을지 점검하는 것이 목표입니다."
+          }
+        />
       </div>
 
       <ul className="flex justify-center gap-6 text-sm text-muted">
@@ -44,8 +48,8 @@ export default function HowItWorksPage() {
           </li>
           <li>선택 직후에는 정답과 오답을 알려주지 않습니다.</li>
           <li>
-            모든 단계를 마치면 결과 페이지에서 종합 점수·유형별 점수·문항별 리뷰·대응
-            방안을 한 번에 확인합니다.
+            모든 단계를 마치면 결과 페이지에서 종합 점수와 유형별 점수, 문항별
+            리뷰(대응 방안 포함)를 한 번에 확인합니다.
           </li>
         </ul>
       </div>

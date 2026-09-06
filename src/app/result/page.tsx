@@ -8,7 +8,7 @@ import { aggregateResults, describeGradeThresholds } from "@/lib/scoring";
 import { getRemediationEntry } from "@/data/remediation";
 import { EXPERIENCE_TYPE_LABELS } from "@/data/experience-types";
 import { Mascot } from "@/components/ui/Mascot";
-import { HighlightedText } from "@/components/ui/HighlightedText";
+import { Prose } from "@/components/ui/Prose";
 import { ScoreGauge } from "@/components/ui/ScoreGauge";
 import { ScoreBarChart } from "@/components/ui/ScoreBarChart";
 import { GRADE_EXPRESSION } from "@/lib/mascot-frames";
@@ -36,7 +36,6 @@ export default function ResultPage() {
 
   const { average, grade } = aggregateResults(results);
   const roundedAverage = Math.round(average);
-  const incorrectResults = results.filter((result) => !result.isCorrect);
 
   const handleRetry = () => {
     isRetryingRef.current = true;
@@ -70,85 +69,74 @@ export default function ResultPage() {
       <section className="space-y-3">
         <h2 className="text-sm font-medium text-muted">문항별 리뷰</h2>
         <ul className="flex flex-col gap-3">
-          {results.map((result, index) => (
-            <li
-              key={`${result.typeId}-${result.contentId}`}
-              className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
-            >
-              <div className="flex items-center gap-2 text-sm">
-                <span
-                  aria-hidden="true"
-                  className={result.isCorrect ? "text-safe" : "text-danger"}
-                >
-                  {result.isCorrect ? "✓" : "✗"}
-                </span>
-                <span className="sr-only">
-                  {result.isCorrect ? "정답" : "오답"}
-                </span>
-                <span className="text-subtle">
-                  {index + 1}번 · {EXPERIENCE_TYPE_LABELS[result.typeId]}
-                </span>
-              </div>
-              <p className="text-sm text-muted">
-                내 선택 {result.userChoice} · 정답 {result.correctChoice}
-              </p>
-              <p className="text-sm leading-relaxed text-muted">
-                <HighlightedText text={result.explanation} />
-              </p>
-            </li>
-          ))}
-        </ul>
-      </section>
+          {results.map((result, index) => {
+            const remediation = result.isCorrect
+              ? null
+              : getRemediationEntry(result.mistakeTag);
+            return (
+              <li
+                key={`${result.typeId}-${result.contentId}`}
+                className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm"
+              >
+                <div className="flex items-center gap-2 text-sm">
+                  <span
+                    aria-hidden="true"
+                    className={result.isCorrect ? "text-safe" : "text-danger"}
+                  >
+                    {result.isCorrect ? "✓" : "✗"}
+                  </span>
+                  <span className="sr-only">
+                    {result.isCorrect ? "정답" : "오답"}
+                  </span>
+                  <span className="text-subtle">
+                    {index + 1}번 · {EXPERIENCE_TYPE_LABELS[result.typeId]}
+                  </span>
+                </div>
+                <p className="text-sm text-muted">
+                  내 선택 {result.userChoice} · 정답 {result.correctChoice}
+                </p>
+                <Prose text={result.explanation} size="sm" />
 
-      {incorrectResults.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="text-sm font-medium text-muted">대응 방안</h2>
-          <ul className="flex flex-col gap-3">
-            {incorrectResults.map((result, index) => {
-              const entry = getRemediationEntry(result.mistakeTag);
-              return (
-                <li
-                  key={`${result.typeId}-remediation-${index}`}
-                  className="space-y-3 rounded-xl border border-border bg-surface p-4 shadow-sm"
-                >
-                  <p className="text-xs font-medium text-accent">
-                    {EXPERIENCE_TYPE_LABELS[result.typeId]}
-                  </p>
-                  <ul className="flex flex-col gap-1.5">
-                    {entry.bullets.map((bullet) => (
-                      <li
-                        key={bullet}
-                        className="flex gap-2 text-sm leading-relaxed text-muted"
-                      >
-                        <span aria-hidden="true" className="text-accent">
-                          ·
-                        </span>
-                        {bullet}
-                      </li>
-                    ))}
-                  </ul>
-                  {entry.links && entry.links.length > 0 && (
-                    <ul className="flex flex-wrap gap-2">
-                      {entry.links.map((link) => (
-                        <li key={link.url}>
-                          <a
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent"
-                          >
-                            {link.label} ↗
-                          </a>
+                {remediation && (
+                  <div className="space-y-2 rounded-lg border border-border bg-surface-muted p-3">
+                    <p className="text-xs font-medium text-accent">이렇게 대응하세요</p>
+                    <Prose text={remediation.message} size="sm" />
+                    <ul className="flex flex-col gap-1.5">
+                      {remediation.bullets.map((bullet) => (
+                        <li
+                          key={bullet}
+                          className="flex gap-2 text-sm leading-relaxed text-muted"
+                        >
+                          <span aria-hidden="true" className="text-accent">
+                            ·
+                          </span>
+                          {bullet}
                         </li>
                       ))}
                     </ul>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
+                    {remediation.links && remediation.links.length > 0 && (
+                      <ul className="flex flex-wrap gap-2">
+                        {remediation.links.map((link) => (
+                          <li key={link.url}>
+                            <a
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent"
+                            >
+                              {link.label} ↗
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
 
       <div className="flex justify-end">
         <button

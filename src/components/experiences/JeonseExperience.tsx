@@ -4,6 +4,9 @@ import { useRef, useState } from "react";
 import type { JeonseHouse, ModuleResult } from "@/types/experience";
 import { computeGrade } from "@/lib/scoring";
 import { NextStepButton } from "@/components/ui/NextStepButton";
+import { IntroDialog } from "@/components/ui/IntroDialog";
+import { EXPERIENCE_FORMAT } from "@/data/experience-format";
+import { EXPERIENCE_INTRO } from "@/data/experience-intro";
 import { MapBoard } from "./jeonse/MapBoard";
 
 interface JeonseExperienceProps {
@@ -27,6 +30,8 @@ function buildExplanation(
 }
 
 export function JeonseExperience({ content, onComplete }: JeonseExperienceProps) {
+  const [started, setStarted] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [answers, setAnswers] = useState<Record<number, boolean>>({});
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hintUsedIndex, setHintUsedIndex] = useState<number | null>(null);
@@ -73,8 +78,41 @@ export function JeonseExperience({ content, onComplete }: JeonseExperienceProps)
     onComplete(pendingResult);
   };
 
+  if (!started) {
+    return (
+      <IntroDialog
+        mode="gate"
+        format={EXPERIENCE_FORMAT.jeonse}
+        intro={EXPERIENCE_INTRO.jeonse}
+        confirmLabel="점검 시작"
+        onConfirm={() => setStarted(true)}
+      />
+    );
+  }
+
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={() => setShowHelp(true)}
+          className="text-xs font-medium text-subtle underline underline-offset-2 transition-colors hover:text-accent"
+        >
+          안내 다시 보기
+        </button>
+      </div>
+
+      {showHelp && (
+        <IntroDialog
+          mode="help"
+          format={EXPERIENCE_FORMAT.jeonse}
+          intro={EXPERIENCE_INTRO.jeonse}
+          confirmLabel="점검 시작"
+          onDismiss={() => setShowHelp(false)}
+          onConfirm={() => setShowHelp(false)}
+        />
+      )}
+
       <MapBoard
         houses={content}
         answers={answers}

@@ -197,20 +197,30 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
   return (
     <div className="space-y-6">
       <FormatBadge format={EXPERIENCE_FORMAT["jeonse"]} />
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-2">
           <h1 className="text-2xl font-semibold text-foreground">골목을 돌며 매물을 점검하세요</h1>
-          <p className="mt-1 max-w-prose pl-4 text-xs leading-relaxed text-muted">
-            방향키(또는 WASD)로 이동해 붉은 문에 서면 서류가 열립니다. 서류를 읽고{" "}
-            <strong className="text-foreground">위험 신호가 있는 집인지</strong> O · X로 판정하세요. 서류의
-            위험도 표시는 기본적으로 가려져 있으며,{" "}
-            <strong className="text-foreground">힌트는 매물 전체에서 딱 1번만</strong> 확인할 수 있습니다.
-          </p>
+          <div className="max-w-prose space-y-2 text-xs leading-relaxed text-muted">
+            <p>
+              <strong className="text-foreground">매물을 클릭하면 바로 서류가 열립니다.</strong> 원하면
+              방향키(WASD)로 골목을 걸어 붉은 문 앞에 서도 됩니다.
+            </p>
+            <p>
+              서류를 읽고 위험 신호가 있으면 O, 없으면 X로 판정하세요. 서류의 위험도 표시는 가려져
+              있고, <strong className="text-foreground">힌트는 매물 전체에서 딱 1번</strong> 쓸 수 있습니다.
+            </p>
+          </div>
         </div>
         <p className="shrink-0 text-sm text-subtle">
           점검 {answeredCount} / {houses.length}
         </p>
       </div>
+
+      <p className="flex flex-wrap gap-4 text-xs text-subtle">
+        <span>집을 클릭하면 입장</span>
+        <span>붉은 문에 서면 자동 입장</span>
+        <span>방향키 / WASD — 이동</span>
+      </p>
 
       <div ref={boardWrapRef} style={{ width: "100%", maxWidth: BOARD_WIDTH, height: BOARD_HEIGHT * boardScale }}>
         <div
@@ -277,12 +287,6 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
           </div>
         </div>
       </div>
-
-      <p className="flex flex-wrap gap-4 text-xs text-subtle">
-        <span>↑ ↓ ← → / WASD — 이동</span>
-        <span>붉은 문에 서면 자동 입장</span>
-        <span>집을 클릭해도 입장</span>
-      </p>
 
       <div className="grid w-40 select-none grid-cols-3 gap-2">
         <button

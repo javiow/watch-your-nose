@@ -70,7 +70,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       riskPatterns: ["HIGH_JEONSE_RATIO", "URGENCY"],
       requiredEvidence: ["HIGH_JEONSE_RATIO"],
       explanation:
-        "이 매물은 전세금이 주변 시세보다 높게 책정된, 이른바 '깡통전세' 위험이 있는 사례입니다. 전세가율이 높을수록 매매가가 하락하거나 집이 경매로 넘어갈 경우 보증금을 온전히 돌려받지 못할 가능성이 커집니다.",
+        "이 매물은 전세금이 주변 시세보다 높게 책정된, 이른바 '깡통전세' 위험이 있는 사례입니다.\n\n전세가율이 높을수록 매매가가 하락하거나 집이 경매로 넘어갈 경우 보증금을 온전히 돌려받지 못할 가능성이 커집니다.",
     },
     evidenceDefinitions: [
       {
@@ -91,6 +91,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 100,
         unlockCondition: null,
         documentId: "DOC_LISTING",
+        purpose:
+          "광고 문구에 계약을 재촉하거나 조건을 부풀리는 표현이 있는지 봅니다.",
       },
       {
         investigationId: "CHECK_MARKET",
@@ -98,6 +100,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: null,
         documentId: "DOC_MARKET",
+        purpose:
+          "제시된 금액이 주변 실거래가와 맞는 수준인지 비교합니다.",
       },
     ],
     npc: {
@@ -231,7 +235,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       ],
       requiredEvidence: ["MULTIPLE_PROPERTY_ACQUISITION", "HIGH_JEONSE_RATIO"],
       explanation:
-        "임대인이 짧은 기간 여러 채를 연달아 매입한 정황은 '무자본 갭투자'의 전형적인 패턴입니다. 세입자에게 받은 보증금으로 다음 매물을 매입하는 방식이라, 임대인의 자금 사정이 악화되면 여러 세입자가 동시에 보증금을 돌려받지 못하는 사고로 이어질 수 있습니다.",
+        "임대인이 짧은 기간 여러 채를 연달아 매입한 정황은 '무자본 갭투자'의 전형적인 패턴입니다.\n\n세입자에게 받은 보증금으로 다음 매물을 매입하는 방식이라, 임대인의 자금 사정이 악화되면 여러 세입자가 동시에 보증금을 돌려받지 못하는 사고로 이어질 수 있습니다.",
     },
     evidenceDefinitions: [
       {
@@ -257,6 +261,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 500,
         unlockCondition: null,
         documentId: "DOC_REGISTRY",
+        purpose:
+          "소유자가 누구인지, 근저당·압류 같은 권리관계가 있는지 확인합니다.",
       },
       {
         investigationId: "CHECK_MARKET",
@@ -264,6 +270,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: null,
         documentId: "DOC_MARKET",
+        purpose:
+          "제시된 금액이 주변 실거래가와 맞는 수준인지 비교합니다.",
       },
       {
         investigationId: "CHECK_LANDLORD",
@@ -271,6 +279,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 400,
         unlockCondition: { kind: "evidence", pattern: "MULTIPLE_PROPERTY_ACQUISITION" },
         documentId: "DOC_LANDLORD",
+        purpose:
+          "계약 상대가 실제 소유자이고 다른 문제 이력은 없는지 확인합니다.",
       },
     ],
     npc: {
@@ -434,7 +444,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       riskPatterns: ["TRUST_REGISTRATION", "VERIFICATION_BLOCK", "URGENCY"],
       requiredEvidence: ["TRUST_REGISTRATION", "VERIFICATION_BLOCK"],
       explanation:
-        "이 매물은 신탁회사에 신탁 등기가 되어 있는 '신탁부동산'이었습니다. 신탁 부동산은 등기부상 소유자가 아니라 신탁회사(수탁자)가 처분·관리 권한을 갖기 때문에, 수탁자의 동의 없이 체결된 임대차 계약은 무효가 되거나 임차인이 보증금을 지키지 못할 위험이 있습니다. 중개사의 '집주인이 직접 계약하면 문제없다'는 설명은 이 사실과 정면으로 배치됩니다.",
+        "이 매물은 신탁회사에 신탁 등기가 되어 있는 '신탁부동산'이었습니다.\n\n신탁 부동산은 등기부상 소유자가 아니라 신탁회사(수탁자)가 처분·관리 권한을 갖기 때문에, 수탁자의 동의 없이 체결된 임대차 계약은 무효가 되거나 임차인이 보증금을 지키지 못할 위험이 있습니다. 중개사의 '집주인이 직접 계약하면 문제없다'는 설명은 이 사실과 정면으로 배치됩니다.",
     },
     evidenceDefinitions: [
       {
@@ -465,6 +475,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 500,
         unlockCondition: null,
         documentId: "DOC_REGISTRY",
+        purpose:
+          "소유자가 누구인지, 근저당·압류 같은 권리관계가 있는지 확인합니다.",
       },
       {
         investigationId: "CHECK_AGENT",
@@ -472,6 +484,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 200,
         unlockCondition: null,
         documentId: "DOC_AGENT",
+        purpose:
+          "중개를 맡은 곳이 정식 등록된 공인중개사무소이고 설명이 서류와 맞는지 확인합니다.",
       },
       {
         investigationId: "CHECK_CONTRACT",
@@ -479,6 +493,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: { kind: "investigation", investigationId: "CHECK_REGISTRY" },
         documentId: "DOC_CONTRACT",
+        purpose:
+          "계약서 특약과 조건에 불리하거나 이상한 항목이 있는지 확인합니다.",
       },
     ],
     npc: {
@@ -648,7 +664,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       riskPatterns: ["FAKE_AUTHORITY", "FAKE_WEBSITE", "URGENCY", "PAYMENT_PRESSURE"],
       requiredEvidence: ["FAKE_AUTHORITY", "FAKE_WEBSITE"],
       explanation:
-        "이 문자는 건설사를 사칭한 분양 사기 시도였습니다. 실제 특별공급 당첨자는 청약Home을 통해서만 개별 통지되며, 문자로 개인 계좌 입금을 요구하는 경우가 없습니다. 공식 도메인과 다른 가짜 사이트, 법인이 아닌 개인 명의 계좌가 이 사기를 드러내는 결정적 단서였습니다.",
+        "이 문자는 건설사를 사칭한 분양 사기 시도였습니다.\n\n실제 특별공급 당첨자는 청약Home을 통해서만 개별 통지되며, 문자로 개인 계좌 입금을 요구하는 경우가 없습니다. 공식 도메인과 다른 가짜 사이트, 법인이 아닌 개인 명의 계좌가 이 사기를 드러내는 결정적 단서였습니다.",
     },
     evidenceDefinitions: [
       {
@@ -679,6 +695,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 0,
         unlockCondition: null,
         documentId: "DOC_SMS",
+        purpose:
+          "받은 문자의 발신 번호와 링크, 문구가 정상적인 안내인지 확인합니다.",
       },
       {
         investigationId: "CHECK_SITE",
@@ -686,6 +704,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 200,
         unlockCondition: { kind: "investigation", investigationId: "CHECK_SMS" },
         documentId: "DOC_SITE",
+        purpose:
+          "문자 속 사이트가 공식 도메인인지, 개인정보를 요구하는지 확인합니다.",
         hiddenUntilUnlocked: true,
       },
       {
@@ -694,6 +714,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 400,
         unlockCondition: null,
         documentId: "DOC_OFFICIAL",
+        purpose:
+          "청약Home과 건설사 공식 채널의 안내가 문자 내용과 일치하는지 대조합니다.",
       },
       {
         investigationId: "CHECK_PAYMENT",
@@ -701,6 +723,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 100,
         unlockCondition: { kind: "investigation", investigationId: "CHECK_SMS" },
         documentId: "DOC_PAYMENT",
+        purpose:
+          "입금하라는 계좌가 공식 계좌인지, 예금주 명의가 맞는지 다시 확인합니다.",
         hiddenUntilUnlocked: true,
       },
     ],
@@ -858,7 +882,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       riskPatterns: ["LIMITED_GUARANTEE_PERIOD"],
       requiredEvidence: ["LIMITED_GUARANTEE_PERIOD"],
       explanation:
-        "이 사례는 위험 신호가 있었지만 치명적인 사기는 아니었습니다. 인허가와 분양보증은 정상이었고, 유일하게 주의할 부분은 수익보장 기간이 3년으로 제한되어 있다는 점이었습니다. 이 조건을 정확히 이해하고 진행했다면 합리적인 선택일 수 있습니다 — 모든 위험 신호가 곧 사기를 의미하지는 않습니다.",
+        "이 사례는 위험 신호가 있었지만 치명적인 사기는 아니었습니다.\n\n인허가와 분양보증은 정상이었고, 유일하게 주의할 부분은 수익보장 기간이 3년으로 제한되어 있다는 점이었습니다. 이 조건을 정확히 이해하고 진행했다면 합리적인 선택일 수 있습니다 — 모든 위험 신호가 곧 사기를 의미하지는 않습니다.",
     },
     evidenceDefinitions: [
       {
@@ -874,6 +898,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 200,
         unlockCondition: null,
         documentId: "DOC_DEVELOPER",
+        purpose:
+          "분양을 맡은 시행사가 실제 등록된 곳이고 사업 실적이 있는지 확인합니다.",
       },
       {
         investigationId: "CHECK_BUILDER",
@@ -881,6 +907,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 200,
         unlockCondition: null,
         documentId: "DOC_BUILDER",
+        purpose:
+          "시공을 맡은 건설사의 규모와 신용, 시공 능력을 확인합니다.",
       },
       {
         investigationId: "CHECK_YIELD",
@@ -888,6 +916,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 400,
         unlockCondition: null,
         documentId: "DOC_YIELD",
+        purpose:
+          "약속한 수익률의 근거가 무엇인지, 보장 주체가 책임질 수 있는지 확인합니다.",
       },
       {
         investigationId: "CHECK_LAND",
@@ -895,6 +925,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: null,
         documentId: "DOC_LAND",
+        purpose:
+          "토지 용도와 건축 인허가 상태가 분양 내용과 맞는지 확인합니다.",
       },
       {
         investigationId: "CHECK_CONTRACT",
@@ -902,6 +934,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: { kind: "investigation", investigationId: "CHECK_YIELD" },
         documentId: "DOC_CONTRACT",
+        purpose:
+          "계약서 특약과 조건에 불리하거나 이상한 항목이 있는지 확인합니다.",
       },
     ],
     npc: {
@@ -1048,7 +1082,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       ],
       requiredEvidence: ["HIGH_JEONSE_RATIO", "EXCESSIVE_MORTGAGE", "VERIFICATION_BLOCK"],
       explanation:
-        "전세가율 92%, 최근 소유권 변경, 근저당권 설정, 보증보험 미확인까지 여러 위험 신호가 동시에 발견된 사례입니다. 이렇게 위험 요소가 겹칠 때는 확신 없이 '사기다'라고 단정하기보다, 오늘 계약을 보류하고 추가로 확인하는 것이 가장 안전한 판단입니다.",
+        "전세가율 92%, 최근 소유권 변경, 근저당권 설정, 보증보험 미확인까지 여러 위험 신호가 동시에 발견된 사례입니다.\n\n이렇게 위험 요소가 겹칠 때는 확신 없이 '사기다'라고 단정하기보다, 오늘 계약을 보류하고 추가로 확인하는 것이 가장 안전한 판단입니다.",
     },
     evidenceDefinitions: [
       {
@@ -1084,6 +1118,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 500,
         unlockCondition: null,
         documentId: "DOC_REGISTRY",
+        purpose:
+          "소유자가 누구인지, 근저당·압류 같은 권리관계가 있는지 확인합니다.",
       },
       {
         investigationId: "CHECK_AGENT",
@@ -1091,6 +1127,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 200,
         unlockCondition: null,
         documentId: "DOC_AGENT",
+        purpose:
+          "중개를 맡은 곳이 정식 등록된 공인중개사무소이고 설명이 서류와 맞는지 확인합니다.",
       },
       {
         investigationId: "CHECK_GUARANTEE",
@@ -1098,6 +1136,8 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
         cost: 300,
         unlockCondition: null,
         documentId: "DOC_GUARANTEE",
+        purpose:
+          "보증보험 가입 서류가 실제 유효한지, 조건이 충족되는지 확인합니다.",
       },
     ],
     npc: {

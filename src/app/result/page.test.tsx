@@ -102,7 +102,7 @@ describe("ResultPage 마스코트", () => {
     }
   });
 
-  it("오답 결과의 대응 방안에도 해당 결과의 체험 유형 라벨이 함께 노출된다", () => {
+  it("오답 결과의 문항 리뷰 안에 대응 방안이 함께 노출된다", () => {
     const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
     const overrides = EXPERIENCE_MODULES.map((_, i) =>
       i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
@@ -111,11 +111,41 @@ describe("ResultPage 마스코트", () => {
     aggregate.mockReturnValue({ average: 75, grade: "caution" });
 
     render(<ResultPage />);
-    expect(screen.getByText("대응 방안")).toBeDefined();
-    // 유형별 점수 막대 1곳 + 문항별 리뷰 1곳 + 대응 방안 1곳, 총 3곳에 전세매물 라벨이 노출된다.
+    // 별도 "대응 방안" 섹션은 없어지고 문항 리뷰 안에 "이렇게 대응하세요"로 들어간다.
+    expect(screen.queryByText("대응 방안")).toBeNull();
+    expect(screen.getByText("이렇게 대응하세요")).toBeDefined();
+    // 유형별 점수 막대 1곳 + 문항별 리뷰 1곳, 총 2곳에 전세매물 라벨이 노출된다.
     expect(
       screen.getAllByText(new RegExp(EXPERIENCE_TYPE_LABELS.jeonse))
-    ).toHaveLength(3);
+    ).toHaveLength(2);
+  });
+
+  it("정답 결과의 문항 리뷰에는 대응 방안이 렌더되지 않는다", () => {
+    mockResults = completeResults();
+    aggregate.mockReturnValue({ average: 100, grade: "safe" });
+
+    render(<ResultPage />);
+    expect(screen.queryByText("이렇게 대응하세요")).toBeNull();
+  });
+
+  it("오답 대응 블록이 해당 문항(N번) 리뷰 항목 안에 위치한다", () => {
+    const incorrectIndex = EXPERIENCE_MODULES.findIndex((mod) => mod.typeId === "jeonse");
+    const overrides = EXPERIENCE_MODULES.map((_, i) =>
+      i === incorrectIndex ? { isCorrect: false, mistakeTag: "missed-lease-fraud-signal" } : {}
+    );
+    mockResults = completeResults(overrides);
+    aggregate.mockReturnValue({ average: 75, grade: "caution" });
+
+    const { container } = render(<ResultPage />);
+    const items = Array.from(container.querySelectorAll("li"));
+    const reviewItem = items.find(
+      (li) =>
+        li.textContent?.includes(`${incorrectIndex + 1}번`) &&
+        li.textContent?.includes(EXPERIENCE_TYPE_LABELS.jeonse)
+    );
+    expect(reviewItem).toBeDefined();
+    expect(reviewItem?.textContent).toContain("이렇게 대응하세요");
+    expect(reviewItem?.textContent).toContain("등기부등본으로 소유자·근저당 직접 확인");
   });
 
   it("문항별 리뷰 설명에서 **로 감싼 핵심 문구만 강조되고 나머지는 일반 텍스트다", () => {
