@@ -192,11 +192,24 @@ describe("ResultPage 마스코트", () => {
     expect(link.getAttribute("rel")).toContain("noopener");
   });
 
-  it("미완료 세션이면 홈으로 리다이렉트하고 마스코트를 렌더하지 않는다", () => {
+  it("세션을 전혀 안 거쳤으면(results 0건) 홈으로 리다이렉트하고 마스코트를 렌더하지 않는다", () => {
     mockResults = [];
     const { container } = render(<ResultPage />);
     expect(replace).toHaveBeenCalledWith("/");
     expect(container.querySelector("[data-expression]")).toBeNull();
+  });
+
+  it("결과가 아직 다 안 채워졌어도(일부만 도착) 홈으로 튕기지 않고 있는 결과를 렌더한다", () => {
+    // /session이 마지막 addResult 직후 push("/result")를 하는 흐름에서 /result가
+    // 마운트되는 찰나 Context가 마지막 결과를 아직 반영 못 했을 수 있다. 예전엔
+    // 이때 홈으로 하드 리다이렉트돼 복구가 안 됐다. 이제는 렌더하고 리렌더로 채운다.
+    mockResults = completeResults().slice(0, 2);
+    aggregate.mockReturnValue({ average: 100, grade: "safe" });
+
+    render(<ResultPage />);
+    expect(replace).not.toHaveBeenCalledWith("/");
+    expect(screen.getByRole("heading", { name: /결과/ })).toBeDefined();
+    expect(screen.getByText(/종합 정답률/)).toBeDefined();
   });
 
   it("reviewItems가 있으면 O/X 표(table)가 렌더되고 항목 라벨이 노출된다", () => {

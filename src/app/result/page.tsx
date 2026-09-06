@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/session-context";
-import { EXPERIENCE_MODULES } from "@/lib/registry";
 import { aggregateResults, describeGradeThresholds } from "@/lib/scoring";
 import { getRemediationEntry } from "@/data/remediation";
 import { EXPERIENCE_TYPE_LABELS } from "@/data/experience-types";
@@ -19,20 +18,27 @@ export default function ResultPage() {
   const router = useRouter();
   const { results, resetSession } = useSession();
 
-  const isComplete = results.length === EXPERIENCE_MODULES.length;
-  // "다시 체험하기" 클릭 시 resetSession()이 results를 비워 isComplete가 false로
-  // 바뀌는데, 이 컴포넌트가 아직 마운트된 채로 그 상태를 보고 아래 useEffect가
-  // /로 리다이렉트해버리면 곧이어 호출한 router.push("/session")과 경쟁해 언제나
-  // 리다이렉트가 이긴다. 의도된 재시작 중에는 이 가드를 건너뛰기 위한 플래그.
+  // 세션을 하나도 안 거치고 /result에 직접 들어온 경우에만 홈으로 돌려보낸다.
+  // 예전에는 "results.length === 전체 유형 수"로 완료를 판정했는데, /session이
+  // 마지막 addResult 직후 push("/result")를 하는 흐름에서 /result가 마운트되는
+  // 찰나에 Context가 아직 마지막 결과를 반영하지 못하면(동시성 렌더/StrictMode
+  // 재마운트 등) 완료된 세션인데도 "미완료"로 오판해 홈으로 튕겼고, 한 번 튕기면
+  // 결과가 채워져도 이미 언마운트돼 복구되지 않았다. 결과가 1건이라도 있으면
+  // 렌더하고, 뒤늦게 도착하는 결과는 리렌더로 자연히 채운다.
+  const hasSession = results.length > 0;
+  // "다시 체험하기" 클릭 시 resetSession()이 results를 비우는데, 이 컴포넌트가 아직
+  // 마운트된 채로 그 빈 상태를 보고 아래 useEffect가 /로 리다이렉트해버리면 곧이어
+  // 호출한 router.push("/session")과 경쟁해 리다이렉트가 이긴다. 의도된 재시작
+  // 중에는 이 가드를 건너뛰기 위한 플래그.
   const isRetryingRef = useRef(false);
 
   useEffect(() => {
-    if (!isComplete && !isRetryingRef.current) {
+    if (!hasSession && !isRetryingRef.current) {
       router.replace("/");
     }
-  }, [isComplete, router]);
+  }, [hasSession, router]);
 
-  if (!isComplete) {
+  if (!hasSession) {
     return null;
   }
 
