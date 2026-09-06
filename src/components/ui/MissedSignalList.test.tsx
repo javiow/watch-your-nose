@@ -17,6 +17,20 @@ describe("MissedSignalList", () => {
     expect(strongs[0].textContent).not.toContain("위험 신호입니다");
   });
 
+  it("title·description의 {{term:...}}·** 마커를 리터럴로 노출하지 않고 치환한다", () => {
+    const signals: MissedSignal[] = [
+      {
+        title: "{{term:신탁등기|신탁 등기}} 발견",
+        description: "**신탁회사 동의서**가 누락됨",
+      },
+    ];
+    const { container } = render(<MissedSignalList signals={signals} />);
+    expect(container.textContent).not.toContain("{{term:");
+    expect(container.textContent).not.toContain("**");
+    expect(container.textContent).toContain("신탁 등기");
+    expect(container.textContent).toContain("신탁회사 동의서");
+  });
+
   it("source가 있으면 (출처: …) 줄이 나오고 없으면 안 나온다", () => {
     const { container: withSource } = render(
       <MissedSignalList signals={[{ title: "A", source: "경찰청" }]} />

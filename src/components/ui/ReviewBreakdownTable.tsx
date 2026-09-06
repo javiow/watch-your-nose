@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { ReviewItem } from "@/types/experience";
+import { renderInlineMarkup } from "./inline-markup";
 
 interface ReviewBreakdownTableProps {
   items: ReviewItem[];
@@ -9,6 +10,8 @@ interface ReviewBreakdownTableProps {
  * 결과 페이지 "문항별 리뷰"의 O/X 표. 카드/매물마다 한 행으로
  * 내 판단 · 정답 · 정오를 보여준다. 항목이 없으면 아무것도 렌더하지 않는다.
  * page.test.tsx가 리뷰 문항을 <li>로 세므로 표는 반드시 <table>로 렌더한다.
+ * label은 팀이 채운 정적 콘텐츠(카드 제목·매물명)라 {{term:...}}·** 마커가 섞일 수
+ * 있어 renderInlineMarkup으로 치환한다. verdict는 코드에서 만든 고정 문구라 그대로 둔다.
  */
 export function ReviewBreakdownTable({ items }: ReviewBreakdownTableProps): ReactNode {
   if (items.length === 0) return null;
@@ -28,7 +31,7 @@ export function ReviewBreakdownTable({ items }: ReviewBreakdownTableProps): Reac
           {items.map((item, i) => (
             <tr key={i}>
               <td className="border-t border-border py-2 pr-3 text-muted">
-                {item.label}
+                {renderInlineMarkup(item.label)}
               </td>
               <td className="border-t border-border py-2 pr-3 text-subtle">
                 {item.userVerdict}

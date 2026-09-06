@@ -249,6 +249,28 @@ describe("ResultPage 마스코트", () => {
     expect(li.textContent).toContain("선입금은 위험 신호입니다.");
   });
 
+  it("놓친 위험 신호의 {{term:...}} 마커가 결과 화면에 리터럴로 새지 않는다", () => {
+    const overrides = EXPERIENCE_MODULES.map((_, i) =>
+      i === 0
+        ? {
+            isCorrect: false,
+            missedSignals: [
+              {
+                title:
+                  "{{term:신탁등기|신탁 등기}} 발견 — 신탁회사({{term:수탁자}}) 동의 없이는 계약 권한이 없을 수 있음",
+              },
+            ],
+          }
+        : {}
+    );
+    mockResults = completeResults(overrides);
+    aggregate.mockReturnValue({ average: 60, grade: "caution" });
+
+    const { container } = render(<ResultPage />);
+    expect(container.textContent).not.toContain("{{term:");
+    expect(container.textContent).toContain("신탁 등기");
+  });
+
   it("단일 판정 오답 결과의 detail은 표 아래 문단으로 렌더된다", () => {
     const overrides = EXPERIENCE_MODULES.map((_, i) =>
       i === 0
