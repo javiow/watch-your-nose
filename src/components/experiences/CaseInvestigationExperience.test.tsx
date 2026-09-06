@@ -489,6 +489,60 @@ describe("CaseInvestigationExperience", () => {
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.explanation).toContain(jeonse001.hiddenTruth.explanation.slice(0, 20));
+    expect(result.explanation).not.toContain("**놓친 위험 신호");
+  });
+
+  it("reviewItems 단일 행에 내 판단·정답·정오가 담긴다", () => {
+    const onComplete = vi.fn();
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
+    startInvestigating();
+    goToDecision();
+    fireEvent.click(screen.getByText("계약을 진행한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0] as ModuleResult;
+    expect(result.reviewItems).toHaveLength(1);
+    expect(result.reviewItems![0]).toMatchObject({
+      label: "이 계약 판단",
+      userVerdict: "계약 진행 가능",
+      correctVerdict: "추가 확인 필요",
+      isCorrect: false,
+    });
+  });
+
+  it("오답이면 missedSignals가 evidenceDefinitions.description 기반 title 배열로 채워진다", () => {
+    const onComplete = vi.fn();
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
+    startInvestigating();
+    goToDecision();
+    fireEvent.click(screen.getByText("계약을 진행한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0] as ModuleResult;
+    expect(Array.isArray(result.missedSignals)).toBe(true);
+    const descriptions = jeonse001.evidenceDefinitions.map((d) => d.description);
+    for (const signal of result.missedSignals!) {
+      expect(typeof signal.title).toBe("string");
+      expect(descriptions).toContain(signal.title);
+      expect(signal.description).toBeUndefined();
+    }
+  });
+
+  it("정답이면 reviewItems가 정답으로 표시되고 missedSignals가 없다", () => {
+    const onComplete = vi.fn();
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
+    startInvestigating();
+    goToDecision();
+    fireEvent.click(screen.getByText("추가로 확인한 뒤 결정한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0] as ModuleResult;
+    expect(result.reviewItems![0]).toMatchObject({
+      userVerdict: "추가 확인 필요",
+      correctVerdict: "추가 확인 필요",
+      isCorrect: true,
+    });
+    expect(result.missedSignals).toBeUndefined();
   });
 
   it("result.typeId와 contentId가 올바르다", () => {

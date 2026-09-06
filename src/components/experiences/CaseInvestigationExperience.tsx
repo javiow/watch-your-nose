@@ -5,6 +5,7 @@ import type {
   CaseFinalDecision,
   CaseInvestigation,
   CaseInvestigationContent,
+  MissedSignal,
   ModuleResult,
 } from "@/types/experience";
 import {
@@ -61,25 +62,22 @@ function isUnlocked(
 
 function buildExplanation(
   content: CaseInvestigationContent,
-  breakdown: CaseInvestigationScoreBreakdown,
   bestOptionComment: string
 ): string {
-  let explanation = content.hiddenTruth.explanation;
+  return `${content.hiddenTruth.explanation} ${bestOptionComment}`;
+}
 
-  if (breakdown.missedRiskPatterns.length > 0) {
-    const missedDescriptions = breakdown.missedRiskPatterns
-      .map(
-        (pattern) =>
-          content.evidenceDefinitions.find((def) => def.pattern === pattern)?.description
-      )
-      .filter((description): description is string => Boolean(description));
-
-    if (missedDescriptions.length > 0) {
-      explanation += ` **놓친 위험 신호: ${missedDescriptions.join(", ")}.**`;
-    }
-  }
-
-  return `${explanation} ${bestOptionComment}`;
+function buildMissedSignals(
+  content: CaseInvestigationContent,
+  breakdown: CaseInvestigationScoreBreakdown
+): MissedSignal[] {
+  return breakdown.missedRiskPatterns
+    .map(
+      (pattern) =>
+        content.evidenceDefinitions.find((def) => def.pattern === pattern)?.description
+    )
+    .filter((description): description is string => Boolean(description))
+    .map((description) => ({ title: description }));
 }
 
 export function CaseInvestigationExperience({
@@ -173,8 +171,18 @@ export function CaseInvestigationExperience({
       userChoice: DECISION_LABELS[decision],
       correctChoice: DECISION_LABELS[bestOption.decision],
       isCorrect,
-      explanation: buildExplanation(content, breakdown, bestOption.comment),
+      explanation: buildExplanation(content, bestOption.comment),
       mistakeTag,
+      reviewItems: [
+        {
+          label: "이 계약 판단",
+          userVerdict: DECISION_LABELS[decision],
+          correctVerdict: DECISION_LABELS[bestOption.decision],
+          isCorrect,
+          detail: isCorrect ? undefined : content.hiddenTruth.explanation,
+        },
+      ],
+      missedSignals: isCorrect ? undefined : buildMissedSignals(content, breakdown),
     });
   };
 
