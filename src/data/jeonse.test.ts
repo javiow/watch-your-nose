@@ -47,6 +47,15 @@ describe("JEONSE_HOUSES", () => {
       expect(count).toBeGreaterThanOrEqual(5);
     }
   });
+
+  it("explain/lesson 본문이 짧게 유지된다 (explain ≤ 260, lesson ≤ 140)", () => {
+    for (const h of JEONSE_HOUSES) {
+      expect(h.explain.length, `house ${h.id} explain`).toBeLessThanOrEqual(260);
+      expect(h.lesson.length, `house ${h.id} lesson`).toBeLessThanOrEqual(140);
+      expect(h.explain.startsWith("\n")).toBe(false);
+      expect(h.explain.endsWith("\n")).toBe(false);
+    }
+  });
 });
 
 describe("JEONSE_HOUSE_SETS", () => {

@@ -57,6 +57,16 @@ describe("getRemediation", () => {
 });
 
 describe("getRemediationEntry", () => {
+  it("모든 태그의 message가 짧게(≤200자) 유지되고 문단은 3개 이하다", () => {
+    for (const tag of [...TAGS, undefined]) {
+      const { message } = getRemediationEntry(tag);
+      expect(message.length).toBeLessThanOrEqual(200);
+      expect(message.split("\n\n").length).toBeLessThanOrEqual(3);
+      expect(message.startsWith("\n")).toBe(false);
+      expect(message.endsWith("\n")).toBe(false);
+    }
+  });
+
   it("모든 태그가 짧은 불릿 2~3개를 가진다 (각 25자 이내)", () => {
     for (const tag of TAGS) {
       const { bullets } = getRemediationEntry(tag);

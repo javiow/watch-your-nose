@@ -70,7 +70,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       riskPatterns: ["HIGH_JEONSE_RATIO", "URGENCY"],
       requiredEvidence: ["HIGH_JEONSE_RATIO"],
       explanation:
-        "이 매물은 전세금이 주변 시세보다 높게 책정된, 이른바 '깡통전세' 위험이 있는 사례입니다. 전세가율이 높을수록 매매가가 하락하거나 집이 경매로 넘어갈 경우 보증금을 온전히 돌려받지 못할 가능성이 커집니다.",
+        "이 매물은 전세금이 주변 시세보다 높게 책정된, 이른바 '깡통전세' 위험이 있는 사례입니다.\n\n전세가율이 높을수록 매매가가 하락하거나 집이 경매로 넘어갈 경우 보증금을 온전히 돌려받지 못할 가능성이 커집니다.",
     },
     evidenceDefinitions: [
       {
@@ -235,7 +235,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       ],
       requiredEvidence: ["MULTIPLE_PROPERTY_ACQUISITION", "HIGH_JEONSE_RATIO"],
       explanation:
-        "임대인이 짧은 기간 여러 채를 연달아 매입한 정황은 '무자본 갭투자'의 전형적인 패턴입니다. 세입자에게 받은 보증금으로 다음 매물을 매입하는 방식이라, 임대인의 자금 사정이 악화되면 여러 세입자가 동시에 보증금을 돌려받지 못하는 사고로 이어질 수 있습니다.",
+        "임대인이 짧은 기간 여러 채를 연달아 매입한 정황은 '무자본 갭투자'의 전형적인 패턴입니다.\n\n세입자에게 받은 보증금으로 다음 매물을 매입하는 방식이라, 임대인의 자금 사정이 악화되면 여러 세입자가 동시에 보증금을 돌려받지 못하는 사고로 이어질 수 있습니다.",
     },
     evidenceDefinitions: [
       {
@@ -444,7 +444,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       riskPatterns: ["TRUST_REGISTRATION", "VERIFICATION_BLOCK", "URGENCY"],
       requiredEvidence: ["TRUST_REGISTRATION", "VERIFICATION_BLOCK"],
       explanation:
-        "이 매물은 신탁회사에 신탁 등기가 되어 있는 '신탁부동산'이었습니다. 신탁 부동산은 등기부상 소유자가 아니라 신탁회사(수탁자)가 처분·관리 권한을 갖기 때문에, 수탁자의 동의 없이 체결된 임대차 계약은 무효가 되거나 임차인이 보증금을 지키지 못할 위험이 있습니다. 중개사의 '집주인이 직접 계약하면 문제없다'는 설명은 이 사실과 정면으로 배치됩니다.",
+        "이 매물은 신탁회사에 신탁 등기가 되어 있는 '신탁부동산'이었습니다.\n\n신탁 부동산은 등기부상 소유자가 아니라 신탁회사(수탁자)가 처분·관리 권한을 갖기 때문에, 수탁자의 동의 없이 체결된 임대차 계약은 무효가 되거나 임차인이 보증금을 지키지 못할 위험이 있습니다. 중개사의 '집주인이 직접 계약하면 문제없다'는 설명은 이 사실과 정면으로 배치됩니다.",
     },
     evidenceDefinitions: [
       {
@@ -664,7 +664,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       riskPatterns: ["FAKE_AUTHORITY", "FAKE_WEBSITE", "URGENCY", "PAYMENT_PRESSURE"],
       requiredEvidence: ["FAKE_AUTHORITY", "FAKE_WEBSITE"],
       explanation:
-        "이 문자는 건설사를 사칭한 분양 사기 시도였습니다. 실제 특별공급 당첨자는 청약Home을 통해서만 개별 통지되며, 문자로 개인 계좌 입금을 요구하는 경우가 없습니다. 공식 도메인과 다른 가짜 사이트, 법인이 아닌 개인 명의 계좌가 이 사기를 드러내는 결정적 단서였습니다.",
+        "이 문자는 건설사를 사칭한 분양 사기 시도였습니다.\n\n실제 특별공급 당첨자는 청약Home을 통해서만 개별 통지되며, 문자로 개인 계좌 입금을 요구하는 경우가 없습니다. 공식 도메인과 다른 가짜 사이트, 법인이 아닌 개인 명의 계좌가 이 사기를 드러내는 결정적 단서였습니다.",
     },
     evidenceDefinitions: [
       {
@@ -882,7 +882,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       riskPatterns: ["LIMITED_GUARANTEE_PERIOD"],
       requiredEvidence: ["LIMITED_GUARANTEE_PERIOD"],
       explanation:
-        "이 사례는 위험 신호가 있었지만 치명적인 사기는 아니었습니다. 인허가와 분양보증은 정상이었고, 유일하게 주의할 부분은 수익보장 기간이 3년으로 제한되어 있다는 점이었습니다. 이 조건을 정확히 이해하고 진행했다면 합리적인 선택일 수 있습니다 — 모든 위험 신호가 곧 사기를 의미하지는 않습니다.",
+        "이 사례는 위험 신호가 있었지만 치명적인 사기는 아니었습니다.\n\n인허가와 분양보증은 정상이었고, 유일하게 주의할 부분은 수익보장 기간이 3년으로 제한되어 있다는 점이었습니다. 이 조건을 정확히 이해하고 진행했다면 합리적인 선택일 수 있습니다 — 모든 위험 신호가 곧 사기를 의미하지는 않습니다.",
     },
     evidenceDefinitions: [
       {
@@ -1082,7 +1082,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       ],
       requiredEvidence: ["HIGH_JEONSE_RATIO", "EXCESSIVE_MORTGAGE", "VERIFICATION_BLOCK"],
       explanation:
-        "전세가율 92%, 최근 소유권 변경, 근저당권 설정, 보증보험 미확인까지 여러 위험 신호가 동시에 발견된 사례입니다. 이렇게 위험 요소가 겹칠 때는 확신 없이 '사기다'라고 단정하기보다, 오늘 계약을 보류하고 추가로 확인하는 것이 가장 안전한 판단입니다.",
+        "전세가율 92%, 최근 소유권 변경, 근저당권 설정, 보증보험 미확인까지 여러 위험 신호가 동시에 발견된 사례입니다.\n\n이렇게 위험 요소가 겹칠 때는 확신 없이 '사기다'라고 단정하기보다, 오늘 계약을 보류하고 추가로 확인하는 것이 가장 안전한 판단입니다.",
     },
     evidenceDefinitions: [
       {
