@@ -100,6 +100,8 @@ const gatingFixture: CaseInvestigationContent = {
 };
 
 function startInvestigating() {
+  // 알림 팝업(gate) → "상황 보기"로 닫기 → 상황 제시 화면의 "조사 시작"으로 조사 진입
+  fireEvent.click(screen.getByText("상황 보기"));
   fireEvent.click(screen.getByText("조사 시작"));
 }
 
@@ -131,6 +133,29 @@ describe("CaseInvestigationExperience", () => {
     render(<CaseInvestigationExperience content={jeonse001} onComplete={vi.fn()} />);
     expect(screen.getByRole("dialog")).toBeDefined();
     expect(screen.getByText(/조사를 많이 할수록 단서는 늘지만/)).toBeDefined();
+  });
+
+  it("마운트 직후에는 '조사 시작' 버튼이 없고, 알림 팝업을 닫아야 상황 제시 화면과 함께 나타난다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    expect(screen.queryByText("조사 시작")).toBeNull();
+
+    fireEvent.click(screen.getByText("상황 보기"));
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByText("테스트 설명")).toBeDefined();
+    expect(screen.getByText("테스트 매물 위치")).toBeDefined();
+    expect(screen.getByText(/테스트 중개사 대사/)).toBeDefined();
+    expect(screen.getByRole("button", { name: "조사 시작" })).toBeDefined();
+    expect(screen.queryByText("판단하기")).toBeNull();
+  });
+
+  it("상황 제시 화면에서 '조사 시작'을 눌러야 조사 화면으로 전환된다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    fireEvent.click(screen.getByText("상황 보기"));
+    expect(screen.queryByText("판단하기")).toBeNull();
+
+    fireEvent.click(screen.getByText("조사 시작"));
+    expect(screen.getByText("판단하기")).toBeDefined();
   });
 
   it("조사 화면에서 '안내 다시 보기'로 모달을 다시 열고 닫을 수 있다", () => {
@@ -492,7 +517,7 @@ describe("CaseInvestigationExperience", () => {
     expect(result.explanation).not.toContain("**놓친 위험 신호");
   });
 
-  it("reviewItems 단일 행에 내 판단·정답·정오가 담긴다", () => {
+  it("결과에 단일행 표(reviewItems)를 담지 않고 내 판단·정답만 전달한다", () => {
     const onComplete = vi.fn();
     render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
     startInvestigating();
@@ -501,13 +526,10 @@ describe("CaseInvestigationExperience", () => {
     fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
-    expect(result.reviewItems).toHaveLength(1);
-    expect(result.reviewItems![0]).toMatchObject({
-      label: "이 계약 판단",
-      userVerdict: "계약 진행 가능",
-      correctVerdict: "추가 확인 필요",
-      isCorrect: false,
-    });
+    expect(result.reviewItems).toBeUndefined();
+    expect(result.userChoice).toBe("계약 진행 가능");
+    expect(result.correctChoice).toBe("추가 확인 필요");
+    expect(result.isCorrect).toBe(false);
   });
 
   it("오답이면 missedSignals가 evidenceDefinitions.description 기반 title 배열로 채워진다", () => {
@@ -528,7 +550,7 @@ describe("CaseInvestigationExperience", () => {
     }
   });
 
-  it("정답이면 reviewItems가 정답으로 표시되고 missedSignals가 없다", () => {
+  it("정답이면 isCorrect가 true이고 missedSignals가 없다", () => {
     const onComplete = vi.fn();
     render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
     startInvestigating();
@@ -537,11 +559,9 @@ describe("CaseInvestigationExperience", () => {
     fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
-    expect(result.reviewItems![0]).toMatchObject({
-      userVerdict: "추가 확인 필요",
-      correctVerdict: "추가 확인 필요",
-      isCorrect: true,
-    });
+    expect(result.userChoice).toBe("추가 확인 필요");
+    expect(result.correctChoice).toBe("추가 확인 필요");
+    expect(result.isCorrect).toBe(true);
     expect(result.missedSignals).toBeUndefined();
   });
 

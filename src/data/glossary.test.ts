@@ -23,6 +23,20 @@ const REQUIRED_KEYS = [
   "대환대출",
   "WHOIS 조회",
   "HUG",
+  "등기부등본",
+  "전세권",
+  "대항력",
+  "전입신고",
+  "우선변제",
+  "위임장",
+  "역전세",
+  "깡통전세",
+  "갭투자",
+  "보증보험",
+  "분양보증",
+  "가등기",
+  "선순위",
+  "다가구주택",
 ];
 
 describe("GLOSSARY_TERMS", () => {
@@ -59,6 +73,14 @@ describe("resolveGlossaryKey", () => {
 
   it("별칭 '수탁사'는 '수탁자' 항목을 반환한다", () => {
     expect(resolveGlossaryKey("수탁사")).toBe(GLOSSARY_TERMS["수탁자"]);
+  });
+
+  it("별칭 '근저당'은 '근저당권' 항목을 반환한다", () => {
+    expect(resolveGlossaryKey("근저당")).toBe(GLOSSARY_TERMS["근저당권"]);
+  });
+
+  it("별칭 '전세보증금반환보증'은 '보증보험' 항목을 반환한다", () => {
+    expect(resolveGlossaryKey("전세보증금반환보증")).toBe(GLOSSARY_TERMS["보증보험"]);
   });
 
   it("존재하지 않는 키는 undefined를 반환한다 (에러를 던지지 않는다)", () => {

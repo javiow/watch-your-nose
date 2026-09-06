@@ -59,7 +59,10 @@ export function LandingHero() {
           <p className="text-sm font-medium text-accent">Watch Your Nose</p>
           <h1 className="text-6xl font-bold tracking-tight text-foreground sm:text-7xl">코심코심</h1>
           <p className="text-base text-muted">
-            나는 절대 안 속아? 그 자신감, 지금 바로 확인해보자.
+            눈 뜨고 코 베이지 않도록, 다양한 금융 사기를 미리 겪어보는 학습 서비스.
+          </p>
+          <p className="text-sm text-subtle">
+            서울로 갓 상경한 코심이가 &ldquo;코 조심, 코 조심&rdquo; 되뇌며 사기 수법을 익히는 이야기예요.
           </p>
         </div>
 

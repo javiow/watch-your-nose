@@ -40,11 +40,18 @@ describe("JEONSE_HOUSES", () => {
     expect(difficulties.has("hard")).toBe(true);
   });
 
-  it("easy/medium/hard 난이도가 각각 5채 이상 존재한다", () => {
-    // step3의 전세매물 즉석 5채 세트 구성이 fallback 없이 동작하기 위한 전제.
+  it("난이도별 매물 수가 즉석 세트(쉬움3/중간4/어려움5)를 fallback 없이 뽑을 만큼 있다", () => {
+    const minByLevel = { easy: 3, medium: 4, hard: 5 } as const;
     for (const level of ["easy", "medium", "hard"] as const) {
       const count = JEONSE_HOUSES.filter((h) => h.difficulty === level).length;
-      expect(count).toBeGreaterThanOrEqual(5);
+      expect(count).toBeGreaterThanOrEqual(minByLevel[level]);
+    }
+  });
+
+  it("모든 매물의 fields에 용어 사전 마커({{term:...}})가 최소 1개 있다", () => {
+    for (const house of JEONSE_HOUSES) {
+      const joined = house.fields.flat().join(" ");
+      expect(joined, `house ${house.id}`).toMatch(/\{\{term:/);
     }
   });
 

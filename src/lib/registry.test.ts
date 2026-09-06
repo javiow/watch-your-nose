@@ -97,13 +97,14 @@ describe("EXPERIENCE_MODULES 난이도 선택", () => {
     }
   });
 
-  it("jeonse 모듈은 각 난이도에 대해 그 난이도의 5채 배열을 반환한다", () => {
+  it("jeonse 모듈은 난이도별로 매물 수를 다르게 반환한다 (쉬움 3 / 중간 4 / 어려움 5)", () => {
     const jeonse = EXPERIENCE_MODULES.find((mod) => mod.typeId === "jeonse");
     expect(jeonse).toBeDefined();
+    const expectedLength: Record<Difficulty, number> = { easy: 3, medium: 4, hard: 5 };
     for (const d of ["easy", "medium", "hard"] as Difficulty[]) {
       for (let i = 0; i < 10; i += 1) {
         const houses = jeonse!.pickRandomContent(d) as { difficulty: Difficulty }[];
-        expect(houses).toHaveLength(5);
+        expect(houses).toHaveLength(expectedLength[d]);
         expect(houses.every((h) => h.difficulty === d)).toBe(true);
       }
     }

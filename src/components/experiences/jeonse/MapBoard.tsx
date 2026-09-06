@@ -44,21 +44,36 @@ function DirectionIcon({ dir }: { dir: "up" | "down" | "left" | "right" }) {
   );
 }
 
-function blocked(x: number, y: number): boolean {
-  return LAYOUT.some(
-    (l) => x + PLAYER_SIZE > l.x && x < l.x + HOUSE_WIDTH && y + PLAYER_SIZE > l.y && y < l.y + HOUSE_HEIGHT
-  );
-}
-
 interface MapBoardProps {
   houses: JeonseHouse[];
   answers: Record<number, boolean>;
   onAnswer: (index: number, risky: boolean) => void;
-  hintUsedIndex: number | null;
+  hintedIndexes: ReadonlySet<number>;
+  hintsRemaining: number;
+  hintBudget: number;
   onUseHint: (index: number) => void;
 }
 
-export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }: MapBoardProps) {
+export function MapBoard({
+  houses,
+  answers,
+  onAnswer,
+  hintedIndexes,
+  hintsRemaining,
+  hintBudget,
+  onUseHint,
+}: MapBoardProps) {
+  // 난이도에 따라 매물이 3~5채로 달라진다. LAYOUT은 최대치(5) superset이므로
+  // 실제로 배치된 슬롯만 충돌/문 판정에 쓴다. houses는 컴포넌트 수명 동안
+  // 안정적이다(상위 session/page.tsx가 key로 리마운트 + content는 useMemo).
+  const activeLayout = LAYOUT.slice(0, houses.length);
+
+  function blocked(x: number, y: number): boolean {
+    return activeLayout.some(
+      (l) => x + PLAYER_SIZE > l.x && x < l.x + HOUSE_WIDTH && y + PLAYER_SIZE > l.y && y < l.y + HOUSE_HEIGHT
+    );
+  }
+
   const posRef = useRef({ ...START_POS });
   const [renderPos, setRenderPos] = useState(START_POS);
   const facingRef = useRef<Facing>("down");
@@ -112,7 +127,7 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
     function checkDoor() {
       const cx = posRef.current.x + PLAYER_SIZE / 2;
       const cy = posRef.current.y + PLAYER_SIZE / 2;
-      LAYOUT.forEach((l, i) => {
+      activeLayout.forEach((l, i) => {
         if (Math.abs(cx - l.dx) < 30 && Math.abs(cy - l.dy) < 30) enter(i);
       });
     }
@@ -207,13 +222,18 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
             </p>
             <p>
               서류를 읽고 위험 신호가 있으면 O, 없으면 X로 판정하세요. 서류의 위험도 표시는 가려져
-              있고, <strong className="text-foreground">힌트는 매물 전체에서 딱 1번</strong> 쓸 수 있습니다.
+              있고, <strong className="text-foreground">힌트는 이번 난이도에서 {hintBudget}번</strong> 쓸 수 있습니다.
             </p>
           </div>
         </div>
-        <p className="shrink-0 text-sm text-subtle">
-          점검 {answeredCount} / {houses.length}
-        </p>
+        <div className="shrink-0 space-y-1 text-right text-sm text-subtle">
+          <p>
+            점검 {answeredCount} / {houses.length}
+          </p>
+          <p>
+            힌트 {hintsRemaining} / {hintBudget}
+          </p>
+        </div>
       </div>
 
       <p className="flex flex-wrap gap-4 text-xs text-subtle">
@@ -389,8 +409,8 @@ export function MapBoard({ houses, answers, onAnswer, hintUsedIndex, onUseHint }
           answer={answers[activeIndex]}
           onAnswer={(risky) => onAnswer(activeIndex, risky)}
           onClose={closeDialog}
-          hintRevealed={hintUsedIndex === activeIndex}
-          hintAvailable={hintUsedIndex === null}
+          hintRevealed={activeIndex !== null && hintedIndexes.has(activeIndex)}
+          hintAvailable={hintsRemaining > 0}
           onUseHint={() => onUseHint(activeIndex)}
         />
       )}

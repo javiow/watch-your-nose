@@ -137,15 +137,6 @@ export function VoicePhishingExperience({
         isCorrect,
         explanation,
         mistakeTag,
-        reviewItems: [
-          {
-            label: "이 전화 대응",
-            userVerdict: choice.text,
-            correctVerdict: correctChoiceText,
-            isCorrect,
-            detail: isCorrect ? undefined : explanation,
-          },
-        ],
       });
     }, 600);
   };

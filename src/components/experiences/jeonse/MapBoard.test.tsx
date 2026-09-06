@@ -34,30 +34,61 @@ function makeHouse(id: string, risky: boolean): JeonseHouse {
 
 const houses: JeonseHouse[] = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, id === "1"));
 
-function renderBoard(overrides: { answers?: Record<number, boolean>; hintUsedIndex?: number | null; onAnswer?: (index: number, risky: boolean) => void; onUseHint?: (index: number) => void } = {}) {
+interface BoardOverrides {
+  houses?: JeonseHouse[];
+  answers?: Record<number, boolean>;
+  hintedIndexes?: ReadonlySet<number>;
+  hintsRemaining?: number;
+  hintBudget?: number;
+  onAnswer?: (index: number, risky: boolean) => void;
+  onUseHint?: (index: number) => void;
+}
+
+function renderBoard(overrides: BoardOverrides = {}) {
+  const hintedIndexes = overrides.hintedIndexes ?? new Set<number>();
+  const hintBudget = overrides.hintBudget ?? 1;
+  const hintsRemaining =
+    overrides.hintsRemaining ?? hintBudget - hintedIndexes.size;
   return render(
     <MapBoard
-      houses={houses}
+      houses={overrides.houses ?? houses}
       answers={overrides.answers ?? {}}
       onAnswer={overrides.onAnswer ?? vi.fn()}
-      hintUsedIndex={overrides.hintUsedIndex ?? null}
+      hintedIndexes={hintedIndexes}
+      hintsRemaining={hintsRemaining}
+      hintBudget={hintBudget}
       onUseHint={overrides.onUseHint ?? vi.fn()}
     />
   );
 }
 
 describe("MapBoard", () => {
-  it("5채의 매물 버튼을 렌더링한다", () => {
+  it("주어진 매물 수만큼 매물 버튼을 렌더링한다", () => {
     renderBoard();
     for (const house of houses) {
       expect(screen.getByRole("button", { name: `${house.short} 입장` })).toBeDefined();
     }
   });
 
-  it("진행 상황을 점검 N/5 형태로만 보여주고 정답 수는 노출하지 않는다", () => {
+  it("매물이 3채면 버튼 3개와 점검 0/3만 보여준다", () => {
+    const threeHouses = houses.slice(0, 3);
+    renderBoard({ houses: threeHouses });
+    for (const house of threeHouses) {
+      expect(screen.getByRole("button", { name: `${house.short} 입장` })).toBeDefined();
+    }
+    expect(screen.queryByRole("button", { name: `${houses[3].short} 입장` })).toBeNull();
+    expect(screen.getByText(/점검\s*0\s*\/\s*3/)).toBeDefined();
+  });
+
+  it("진행 상황을 점검 N/전체 형태로만 보여주고 정답 수는 노출하지 않는다", () => {
     renderBoard({ answers: { 0: true } });
     expect(screen.getByText(/점검\s*1\s*\/\s*5/)).toBeDefined();
     expect(screen.queryByText(/정답/)).toBeNull();
+  });
+
+  it("힌트 잔여/예산을 점검 진행도와 함께 보여준다", () => {
+    renderBoard({ hintBudget: 3, hintsRemaining: 2 });
+    expect(screen.getByText(/힌트\s*2\s*\/\s*3/)).toBeDefined();
   });
 
   it("완료된 매물은 완료로, 그 외는 미점검으로만 표시하고 정답/오답은 표시하지 않는다", () => {
@@ -118,27 +149,34 @@ describe("MapBoard", () => {
 
   it("힌트 버튼 클릭 시 onUseHint가 현재 입장한 집의 인덱스와 함께 호출된다", () => {
     const onUseHint = vi.fn();
-    renderBoard({ hintUsedIndex: null, onUseHint });
+    renderBoard({ onUseHint });
     fireEvent.click(screen.getByRole("button", { name: `${houses[3].short} 입장` }));
     fireEvent.click(screen.getByText("확인"));
     fireEvent.click(screen.getByRole("button", { name: "힌트 사용" }));
     expect(onUseHint).toHaveBeenCalledWith(3);
   });
 
-  it("hintUsedIndex가 입장한 집과 같으면 확인 직후 바로 서류 상태가 보인다", () => {
-    renderBoard({ hintUsedIndex: 2 });
+  it("입장한 집이 힌트로 공개된 집이면 확인 직후 바로 서류 상태가 보인다", () => {
+    renderBoard({ hintedIndexes: new Set([2]), hintsRemaining: 0 });
     fireEvent.click(screen.getByRole("button", { name: `${houses[2].short} 입장` }));
     fireEvent.click(screen.getByText("확인"));
     expect(screen.getAllByText("정상").length).toBeGreaterThan(0);
     expect(screen.queryByRole("button", { name: "힌트 사용" })).toBeNull();
   });
 
-  it("hintUsedIndex가 다른 집을 가리키면 힌트 버튼이 비활성화되고 상태는 안 보인다", () => {
-    renderBoard({ hintUsedIndex: 0 });
+  it("남은 힌트가 없으면 미공개 집의 힌트 버튼이 비활성화되고 상태는 안 보인다", () => {
+    renderBoard({ hintedIndexes: new Set([0]), hintsRemaining: 0 });
     fireEvent.click(screen.getByRole("button", { name: `${houses[1].short} 입장` }));
     fireEvent.click(screen.getByText("확인"));
     expect(screen.getByRole("button", { name: "힌트 사용" })).toBeDisabled();
     expect(screen.queryByText("정상")).toBeNull();
+  });
+
+  it("남은 힌트가 있으면 아직 공개되지 않은 다른 집에서도 힌트 버튼을 쓸 수 있다", () => {
+    renderBoard({ hintBudget: 3, hintedIndexes: new Set([0]), hintsRemaining: 2 });
+    fireEvent.click(screen.getByRole("button", { name: `${houses[1].short} 입장` }));
+    fireEvent.click(screen.getByText("확인"));
+    expect(screen.getByRole("button", { name: "힌트 사용" })).not.toBeDisabled();
   });
 
   it("방향키 버튼은 텍스트 드래그/선택이 되지 않도록 select-none/touch-none이 적용돼 있다", () => {

@@ -488,7 +488,7 @@ describe("VoicePhishingExperience", () => {
     expect(screen.getByText("본인 확인 차 전화드렸습니다.")).toBeDefined();
   });
 
-  it("reviewItems 단일 행이 내 선택·정답·정오를 담고 missedSignals는 없다", () => {
+  it("결과에 단일행 표(reviewItems)를 담지 않고 내 선택·정답·해설만 전달한다", () => {
     const onComplete = vi.fn();
     render(
       <VoicePhishingExperience content={scamScenario} onComplete={onComplete} />
@@ -502,14 +502,13 @@ describe("VoicePhishingExperience", () => {
     fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0];
-    expect(result.reviewItems).toHaveLength(1);
-    expect(result.reviewItems[0].userVerdict).toBe("전화를 끊는다");
-    expect(result.reviewItems[0].correctVerdict).toBe(result.correctChoice);
-    expect(result.reviewItems[0].isCorrect).toBe(result.isCorrect);
+    expect(result.reviewItems).toBeUndefined();
+    expect(result.userChoice).toBe("전화를 끊는다");
+    expect(result.correctChoice).toBeDefined();
     expect(result.missedSignals).toBeUndefined();
   });
 
-  it("오답이면 reviewItems[0].detail에 해설이 담긴다", () => {
+  it("오답이면 explanation에 해설이 담긴다", () => {
     const onComplete = vi.fn();
     render(
       <VoicePhishingExperience content={scamScenario} onComplete={onComplete} />
@@ -524,6 +523,7 @@ describe("VoicePhishingExperience", () => {
 
     const result = onComplete.mock.calls[0][0];
     expect(result.isCorrect).toBe(false);
-    expect(result.reviewItems[0].detail).toBe(result.explanation);
+    expect(result.reviewItems).toBeUndefined();
+    expect(result.explanation.length).toBeGreaterThan(0);
   });
 });

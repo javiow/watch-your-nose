@@ -32,13 +32,20 @@ export function pickByDifficulty<T extends { difficulty?: Difficulty }>(
   return source[Math.floor(Math.random() * source.length)];
 }
 
-const JEONSE_SET_SIZE = 5;
+// 난이도가 올라갈수록 판정할 매물이 늘고 힌트는 줄어든다(힌트 예산은
+// JeonseExperience가 매물 수에서 파생). 난이도 미지정 경로는 정적 세트(5채)를 쓴다.
+const JEONSE_SET_SIZE_BY_DIFFICULTY: Record<Difficulty, number> = {
+  easy: 3,
+  medium: 4,
+  hard: 5,
+};
 
 function pickJeonseSet(difficulty?: Difficulty): JeonseHouse[] {
   if (difficulty) {
+    const size = JEONSE_SET_SIZE_BY_DIFFICULTY[difficulty];
     const pool = JEONSE_HOUSES.filter((h) => h.difficulty === difficulty);
-    if (pool.length >= JEONSE_SET_SIZE) {
-      return shuffle(pool).slice(0, JEONSE_SET_SIZE);
+    if (pool.length >= size) {
+      return shuffle(pool).slice(0, size);
     }
   }
   return JEONSE_HOUSE_SETS[Math.floor(Math.random() * JEONSE_HOUSE_SETS.length)];

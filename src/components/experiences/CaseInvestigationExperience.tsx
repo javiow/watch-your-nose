@@ -98,6 +98,8 @@ export function CaseInvestigationExperience({
   const [isClassifying, setIsClassifying] = useState(false);
   const [selectedDecision, setSelectedDecision] = useState<CaseFinalDecision | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+  // 알림 팝업(gate)을 닫으면 곧바로 조사로 넘어가지 않고 "상황 제시" 화면에 머문다.
+  const [gateDismissed, setGateDismissed] = useState(false);
   const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
   // "다음으로 넘어가기"를 누르기 전까지는 잘못 누른 판단을 다시 골라 바꿀 수 있다.
   // 확정(다음으로 넘어가기 클릭) 이후에만 판단 버튼을 잠근다.
@@ -189,15 +191,6 @@ export function CaseInvestigationExperience({
       isCorrect,
       explanation: buildExplanation(content, bestOption.comment),
       mistakeTag,
-      reviewItems: [
-        {
-          label: "이 계약 판단",
-          userVerdict: DECISION_LABELS[decision],
-          correctVerdict: DECISION_LABELS[bestOption.decision],
-          isCorrect,
-          detail: isCorrect ? undefined : content.hiddenTruth.explanation,
-        },
-      ],
       missedSignals: isCorrect ? undefined : buildMissedSignals(content, breakdown),
     });
   };
@@ -210,6 +203,8 @@ export function CaseInvestigationExperience({
   };
 
   if (phase === "briefing") {
+    const showGate = !gateDismissed && !visitedInvestigatingRef.current;
+    const showPrimary = gateDismissed || visitedInvestigatingRef.current;
     return (
       <>
         <div className="space-y-6">
@@ -228,26 +223,26 @@ export function CaseInvestigationExperience({
             <Prose className="mt-4" text={content.scenario.description} size="sm" />
             <p className="mt-2 text-sm font-medium text-muted">{content.scenario.goal}</p>
           </div>
-          {visitedInvestigatingRef.current && (
+          {showPrimary && (
             <div className="flex justify-end">
               <button
                 type="button"
                 onClick={goToInvestigating}
                 className={primaryButtonClass}
               >
-                조사로 돌아가기
+                {visitedInvestigatingRef.current ? "조사로 돌아가기" : "조사 시작"}
               </button>
             </div>
           )}
         </div>
 
-        {!visitedInvestigatingRef.current && (
+        {showGate && (
           <IntroDialog
             mode="gate"
             format={EXPERIENCE_FORMAT["case-investigation"]}
             intro={EXPERIENCE_INTRO["case-investigation"]}
-            confirmLabel="조사 시작"
-            onConfirm={goToInvestigating}
+            confirmLabel="상황 보기"
+            onConfirm={() => setGateDismissed(true)}
           />
         )}
       </>
@@ -360,10 +355,14 @@ export function CaseInvestigationExperience({
                           : "border-border bg-surface text-muted hover:border-accent"
                       }`}
                     >
+                      {/* 증거 블록은 <button>이라 용어 툴팁(<button>)을 중첩할 수 없다.
+                          이 텍스트에는 마커를 넣지 않고, 아래 "확인:" 설명에서 용어를 푼다. */}
                       {block.text}
                     </button>
                     {registered && definition && (
-                      <p className="mt-1 text-sm text-subtle">확인: {definition.description}</p>
+                      <p className="mt-1 text-sm text-subtle">
+                        확인: <GlossaryTermText text={definition.description} />
+                      </p>
                     )}
                   </div>
                 );

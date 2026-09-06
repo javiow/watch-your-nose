@@ -76,7 +76,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       {
         pattern: "HIGH_JEONSE_RATIO",
         importance: 2,
-        description: "전세금이 주변 실거래가보다 높음 (전세가율 과다)",
+        description: "전세금이 주변 실거래가보다 높음 ({{term:전세가율}} 과다)",
       },
       {
         pattern: "URGENCY",
@@ -246,7 +246,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       {
         pattern: "MULTIPLE_PROPERTY_ACQUISITION",
         importance: 2,
-        description: "임대인이 짧은 기간 다수의 부동산을 추가 매입함 (무자본 갭투자 의심)",
+        description: "임대인이 짧은 기간 다수의 부동산을 추가 매입함 ({{term:갭투자|무자본 갭투자}} 의심)",
       },
       {
         pattern: "HIGH_JEONSE_RATIO",
@@ -450,7 +450,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       {
         pattern: "TRUST_REGISTRATION",
         importance: 2,
-        description: "신탁 등기 발견 — 신탁회사(수탁자) 동의 없이는 계약 권한이 없을 수 있음",
+        description: "{{term:신탁등기|신탁 등기}} 발견 — 신탁회사({{term:수탁자}}) 동의 없이는 계약 권한이 없을 수 있음",
       },
       {
         pattern: "RECENT_OWNERSHIP_CHANGE",
@@ -465,7 +465,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       {
         pattern: "VERIFICATION_BLOCK",
         importance: 2,
-        description: "계약 권한을 확인할 수 있는 서류(신탁회사 동의서)가 누락됨",
+        description: "계약 권한을 확인할 수 있는 서류({{term:신탁회사}} 동의서)가 누락됨",
       },
     ],
     investigations: [
@@ -1088,7 +1088,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       {
         pattern: "HIGH_JEONSE_RATIO",
         importance: 2,
-        description: "전세가율 92% — 매매가 대비 전세금 비중이 매우 높음",
+        description: "{{term:전세가율}} 92% — 매매가 대비 전세금 비중이 매우 높음",
       },
       {
         pattern: "RECENT_OWNERSHIP_CHANGE",
@@ -1098,7 +1098,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       {
         pattern: "EXCESSIVE_MORTGAGE",
         importance: 2,
-        description: "근저당권이 설정되어 있어 경매 시 보증금 회수가 어려울 수 있음",
+        description: "{{term:근저당권}}이 설정되어 있어 경매 시 보증금 회수가 어려울 수 있음",
       },
       {
         pattern: "URGENCY",
@@ -1108,7 +1108,7 @@ export const CASE_INVESTIGATION_CASES: CaseInvestigationContent[] = [
       {
         pattern: "VERIFICATION_BLOCK",
         importance: 2,
-        description: "보증보험 가입 여부를 확인할 서류가 제공되지 않음",
+        description: "{{term:보증보험}} 가입 여부를 확인할 서류가 제공되지 않음",
       },
     ],
     investigations: [
