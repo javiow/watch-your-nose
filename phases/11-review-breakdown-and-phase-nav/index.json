@@ -25,7 +25,8 @@
     {
       "step": 3,
       "name": "voice-phishing-review-payload",
-      "status": "pending"
+      "status": "completed",
+      "summary": "VoicePhishingExperience.tsx finishScenario: correctChoice 문자열을 지역 상수 correctChoiceText로 추출(content.isNormalCase 분기), buildExplanation 결과도 지역 변수 explanation으로 추출. setPendingResult에 correctChoice: correctChoiceText, explanation, 그리고 reviewItems: [{ label: '이 전화 대응', userVerdict: choice.text, correctVerdict: correctChoiceText, isCorrect, detail: isCorrect ? undefined : explanation }] 추가. missedSignals는 넣지 않음(undefined). buildExplanation 본문·타이머·pathRisks 무수정. VoicePhishingExperience.test.tsx에 reviewItems 단일 행 검증 + 오답 detail 검증 2케이스 추가(총 19). vitest 통과."
     },
     {
       "step": 4,
