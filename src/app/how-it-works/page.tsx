@@ -19,9 +19,18 @@ export default function HowItWorksPage() {
           className="mx-auto text-center"
           size="base"
           text={
-            "코심코심은 전화·문자·온라인 거래·계약 확인처럼 일상에서 마주칠 수 있는 상황을 사전 안내 없이 체험합니다.\n\n직접 겪어 보며 내가 정말 안 속을지 점검하는 것이 목표입니다."
+            "코심코심은 전화·문자·온라인 거래·계약처럼 일상에서 마주치는 금융 사기 상황을 사전 안내 없이 체험합니다.\n\n여러 사기 수법을 직접 겪어 보고, 위험 신호를 알아보는 눈을 기르는 것이 목표입니다."
           }
         />
+      </div>
+
+      <div className="space-y-3 rounded-xl border border-border bg-surface p-6 text-left shadow-sm">
+        <p className="text-sm font-medium text-muted">코심코심?</p>
+        <p className="text-sm leading-relaxed text-muted">
+          도시에 갓 상경한 코심이는 &ldquo;눈 뜨고 코 베인다&rdquo;는 속담을 들었어요. 정신
+          차리지 않으면 코 베이기 십상이라는 말에, 코심이는 &ldquo;코 조심, 코 조심&rdquo;
+          되뇌며 사기 수법을 하나씩 익히기로 했죠. 그 연습을 함께 하는 곳이 코심코심이에요.
+        </p>
       </div>
 
       <ul className="flex justify-center gap-6 text-sm text-muted">

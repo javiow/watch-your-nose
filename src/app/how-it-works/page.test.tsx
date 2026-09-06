@@ -10,6 +10,12 @@ describe("HowItWorksPage", () => {
     expect(screen.getByText(/정답과 오답을 알려주지 않습니다/)).toBeDefined();
   });
 
+  it("코심코심 이름의 배경(속담·마스코트)을 소개한다", () => {
+    render(<HowItWorksPage />);
+    expect(screen.getByText("코심코심?")).toBeDefined();
+    expect(screen.getByText(/눈 뜨고 코 베인다/)).toBeDefined();
+  });
+
   it("무엇을 연습하는지 아이콘 스텝으로 보여준다", () => {
     render(<HowItWorksPage />);
     expect(screen.getByText("위험 신호 포착")).toBeDefined();
