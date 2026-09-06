@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { PlayerAgeGroup, PlayerGender, PlayerInfo } from "@/types/player";
 
 const AGE_GROUPS: PlayerAgeGroup[] = ["10대", "20대", "30대", "40대", "50대 이상"];
-const JOBS = ["학생", "사회초년생", "직장인", "신혼부부", "자영업자", "프리랜서"];
+const JOBS = ["학생", "직장인", "자영업자", "프리랜서", "무직", "전업주부"];
 const GENDERS: PlayerGender[] = ["남성", "여성", "선택 안 함"];
 
 interface PlayerSetupFormProps {

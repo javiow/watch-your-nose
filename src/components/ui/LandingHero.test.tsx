@@ -24,6 +24,11 @@ describe("LandingHero", () => {
     expect(screen.getByRole("button", { name: "시작하기" })).toBeDefined();
   });
 
+  it("마스코트 옆에 '코심이' 라벨을 표시한다", () => {
+    renderHero();
+    expect(screen.getByText("코심이")).toBeDefined();
+  });
+
   it("장식용 마스코트 이미지가 있다", () => {
     const { container } = renderHero();
     const wrapper = container.querySelector("[data-expression]");

@@ -48,12 +48,17 @@ export function LandingHero() {
           </div>
         ))}
 
-        <Mascot
-          interactive
-          priority
-          proximityRef={stageRef}
-          className="h-52 w-52 sm:h-64 sm:w-64"
-        />
+        <div className="flex flex-col items-center gap-2">
+          <Mascot
+            interactive
+            priority
+            proximityRef={stageRef}
+            className="h-52 w-52 sm:h-64 sm:w-64"
+          />
+          <span className="rounded-full border border-border bg-surface/90 px-3 py-1 text-xs font-medium text-muted">
+            코심이
+          </span>
+        </div>
 
         <div className="space-y-3">
           <p className="text-sm font-medium text-accent">Watch Your Nose</p>

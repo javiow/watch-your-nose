@@ -3,6 +3,15 @@ import { describe, expect, it, vi } from "vitest";
 import { PlayerSetupForm } from "./PlayerSetupForm";
 
 describe("PlayerSetupForm", () => {
+  it("직업 선택지에 무직·전업주부가 있고 사회초년생·신혼부부는 없다", () => {
+    render(<PlayerSetupForm onComplete={vi.fn()} />);
+
+    expect(screen.getByRole("button", { name: "무직" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "전업주부" })).toBeDefined();
+    expect(screen.queryByRole("button", { name: "사회초년생" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "신혼부부" })).toBeNull();
+  });
+
   it("나이대/직업/성별 중 하나라도 선택되지 않으면 시작하기 버튼이 비활성 상태다", () => {
     render(<PlayerSetupForm onComplete={vi.fn()} />);
 
