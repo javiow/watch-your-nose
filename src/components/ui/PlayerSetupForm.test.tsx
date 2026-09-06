@@ -12,10 +12,10 @@ describe("PlayerSetupForm", () => {
     expect(screen.queryByRole("button", { name: "신혼부부" })).toBeNull();
   });
 
-  it("나이대/직업/성별 중 하나라도 선택되지 않으면 시작하기 버튼이 비활성 상태다", () => {
+  it("나이대/직업/성별 중 하나라도 선택되지 않으면 다음 버튼이 비활성 상태다", () => {
     render(<PlayerSetupForm onComplete={vi.fn()} />);
 
-    const startButton = screen.getByRole("button", { name: "시작하기" });
+    const startButton = screen.getByRole("button", { name: "다음" });
     expect(startButton).toBeDisabled();
 
     fireEvent.click(screen.getByRole("button", { name: "20대" }));
@@ -33,7 +33,7 @@ describe("PlayerSetupForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "직장인" }));
     fireEvent.click(screen.getByRole("button", { name: "여성" }));
 
-    const startButton = screen.getByRole("button", { name: "시작하기" });
+    const startButton = screen.getByRole("button", { name: "다음" });
     expect(startButton).not.toBeDisabled();
 
     fireEvent.click(startButton);

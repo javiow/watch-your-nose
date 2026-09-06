@@ -41,12 +41,12 @@ describe("DifficultyPage", () => {
     expect(replace).toHaveBeenCalledWith("/");
   });
 
-  it("playerInfo가 있으면 카드 선택 + 시작하기로 setDifficulty와 router.push('/session')를 호출한다", () => {
+  it("playerInfo가 있으면 카드 선택 + 체험 시작하기로 setDifficulty와 router.push('/session')를 호출한다", () => {
     mockPlayerInfo = samplePlayerInfo;
     render(<DifficultyPage />);
 
     fireEvent.click(screen.getByRole("button", { name: /어려움/ }));
-    fireEvent.click(screen.getByRole("button", { name: "시작하기" }));
+    fireEvent.click(screen.getByRole("button", { name: "체험 시작하기" }));
 
     expect(setDifficulty).toHaveBeenCalledTimes(1);
     expect(setDifficulty).toHaveBeenCalledWith("hard");

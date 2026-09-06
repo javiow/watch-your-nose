@@ -68,7 +68,7 @@ export default function HowItWorksPage() {
           href="/setup"
           className="min-h-11 rounded-xl bg-accent px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
         >
-          시작하기
+          알겠어요
         </Link>
       </div>
     </main>

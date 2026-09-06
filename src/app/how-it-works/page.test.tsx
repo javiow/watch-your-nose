@@ -30,9 +30,9 @@ describe("HowItWorksPage", () => {
     ).toBeNull();
   });
 
-  it("시작하기 CTA는 /setup으로 이동하는 링크다", () => {
+  it("진행 CTA는 /setup으로 이동하는 링크다", () => {
     render(<HowItWorksPage />);
-    const cta = screen.getByRole("link", { name: "시작하기" });
+    const cta = screen.getByRole("link", { name: "알겠어요" });
     expect(cta).toHaveAttribute("href", "/setup");
   });
 });

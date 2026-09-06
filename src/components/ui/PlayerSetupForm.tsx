@@ -82,7 +82,7 @@ export function PlayerSetupForm({ onComplete }: PlayerSetupFormProps) {
           disabled={!isComplete}
           className="min-h-11 rounded-xl bg-accent px-8 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-subtle"
         >
-          시작하기
+          다음
         </button>
       </div>
     </div>
