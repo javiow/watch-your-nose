@@ -43,7 +43,8 @@
     {
       "step": 6,
       "name": "result-page-wire-review",
-      "status": "pending"
+      "status": "completed",
+      "summary": "src/app/result/page.tsx: ReviewBreakdownTable·MissedSignalList import 추가. results.map <li> 안 <Prose explanation> 다음, remediation 블록 앞에 삽입 — {result.reviewItems && <ReviewBreakdownTable items={result.reviewItems} />}; {result.missedSignals?.length>0 && <div space-y-2><p text-xs text-danger>놓친 위험 신호</p><MissedSignalList/></div>}; {!result.missedSignals && reviewItems?.some(!isCorrect && detail) && <Prose text={첫 미정답 detail}/>}. '내 선택 … · 정답 …' <p>와 <Prose explanation>·remediation 블록·<li> 컨테이너 무변경. page.test.tsx: completeResults override 타입에 reviewItems/missedSignals(unknown) 추가, 4케이스 추가(O/X 표 렌더, 놓친 위험 신호 목록+제목만 볼드+출처 줄, 단일판정 detail 문단, 신규필드 없으면 추가 블록 0) — 총 16. 기존 폴백 경로 테스트 무수정 통과. vitest 통과."
     },
     {
       "step": 7,
