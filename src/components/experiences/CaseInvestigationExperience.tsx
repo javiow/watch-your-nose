@@ -355,10 +355,14 @@ export function CaseInvestigationExperience({
                           : "border-border bg-surface text-muted hover:border-accent"
                       }`}
                     >
+                      {/* 증거 블록은 <button>이라 용어 툴팁(<button>)을 중첩할 수 없다.
+                          이 텍스트에는 마커를 넣지 않고, 아래 "확인:" 설명에서 용어를 푼다. */}
                       {block.text}
                     </button>
                     {registered && definition && (
-                      <p className="mt-1 text-sm text-subtle">확인: {definition.description}</p>
+                      <p className="mt-1 text-sm text-subtle">
+                        확인: <GlossaryTermText text={definition.description} />
+                      </p>
                     )}
                   </div>
                 );
