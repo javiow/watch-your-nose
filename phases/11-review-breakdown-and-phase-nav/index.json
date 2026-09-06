@@ -37,7 +37,8 @@
     {
       "step": 5,
       "name": "review-result-components",
-      "status": "pending"
+      "status": "completed",
+      "summary": "src/components/ui/ReviewBreakdownTable.tsx 신규: props { items: ReviewItem[] }, items.length===0이면 null. <div overflow-x-auto><table w-full text-sm> — thead 4열(항목/내 판단/정답/결과, text-xs text-subtle), tbody tr마다 td(border-t border-border py-2), 결과 셀은 page.tsx 관용구 <span aria-hidden className={isCorrect?'text-safe':'text-danger'}>✓|✗</span> + <span sr-only>정답|오답</span>. ul/li 미사용(table). src/components/ui/MissedSignalList.tsx 신규: props { signals: MissedSignal[] }, 빈 배열이면 null. <ul space-y-3><li space-y-1>: <p><strong font-semibold text-foreground>{title}</strong></p> + {description && <p text-sm text-muted>} + {source && <p text-xs text-subtle>(출처: {source})</p>}. 평문 노드만, renderInlineMarkup/dangerouslySetInnerHTML 미사용. 테스트 ReviewBreakdownTable 4 + MissedSignalList 4 = 8 신규. 새 의존성 없음. vitest 통과."
     },
     {
       "step": 6,
