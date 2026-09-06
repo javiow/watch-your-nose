@@ -117,6 +117,14 @@ export function VoicePhishingExperience({
       : content.isNormalCase
         ? "blind-refusal"
         : "fell-for-scam";
+    const correctChoiceText = content.isNormalCase
+      ? "정상적으로 응대를 이어간다"
+      : "의심스러운 요청을 거절하고 전화를 끊는다";
+    const explanation = buildExplanation(
+      content.isNormalCase,
+      isCorrect,
+      cautionCount
+    );
 
     addTimer(() => {
       setPendingResult({
@@ -125,16 +133,19 @@ export function VoicePhishingExperience({
         score,
         grade: computeGrade(score),
         userChoice: choice.text,
-        correctChoice: content.isNormalCase
-          ? "정상적으로 응대를 이어간다"
-          : "의심스러운 요청을 거절하고 전화를 끊는다",
+        correctChoice: correctChoiceText,
         isCorrect,
-        explanation: buildExplanation(
-          content.isNormalCase,
-          isCorrect,
-          cautionCount
-        ),
+        explanation,
         mistakeTag,
+        reviewItems: [
+          {
+            label: "이 전화 대응",
+            userVerdict: choice.text,
+            correctVerdict: correctChoiceText,
+            isCorrect,
+            detail: isCorrect ? undefined : explanation,
+          },
+        ],
       });
     }, 600);
   };
