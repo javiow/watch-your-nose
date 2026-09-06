@@ -75,15 +75,17 @@ export function MissedSignalList({ signals }: { signals: MissedSignal[] }): Reac
 
 ## Acceptance Criteria
 
+> 메모리 절약: 전체 Next 빌드 / 전체 테스트 대신 **타입체크 + 린트 + 이 step 관련 테스트만** 실행한다. 전체 `npm run build && npm test`는 phase 종료 후 운영자가 한 번 돌린다.
+
 ```bash
-npm run build
+npx tsc --noEmit
 npm run lint
-npm test
+npx vitest run src/components/ui/ReviewBreakdownTable.test.tsx src/components/ui/MissedSignalList.test.tsx
 ```
 
 ## 검증 절차
 
-1. 위 AC 커맨드를 실행한다. **프로젝트 전체 테스트가 통과해야 한다.**
+1. 위 AC 커맨드를 실행한다. **위 타입체크·린트·관련 테스트가 모두 통과해야 한다.**
 2. 아키텍처 체크리스트:
    - 두 컴포넌트가 `src/components/ui/`에 있는가?
    - `grep -rn "dangerouslySetInnerHTML" src/` → 0건인가?

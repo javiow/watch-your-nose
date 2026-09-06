@@ -19,7 +19,8 @@
     {
       "step": 2,
       "name": "jeonse-review-payload",
-      "status": "pending"
+      "status": "completed",
+      "summary": "JeonseExperience.tsx: buildExplanation(isCorrect: boolean)로 축소 — 정답 '제시된 매물의 위험 신호를 모두 정확히 판정했습니다.' / 오답 '일부 매물을 잘못 판정했습니다. 놓친 위험 신호를 확인하세요.' (** 없음). 신규 verdictLabel(risky: boolean) = risky ? 'O (위험 있음)' : 'X (위험 없음)'. buildReviewItems(content: JeonseHouse[], answers: Record<number, boolean>): ReviewItem[] — 매물당 1행, label=house.short, userVerdict=verdictLabel(answers[i]), correctVerdict=verdictLabel(house.risky), isCorrect=answers[i]===house.risky. buildMissedSignals(동일): answers[i]!==house.risky인 매물만 { title: house.short, description: house.reason } (source 없음). handleAnswer setPendingResult에 reviewItems/missedSignals 추가, explanation=buildExplanation(isCorrect). MapBoard 무수정. JeonseExperience.test.tsx: 기존 explanation.toContain(reason) 2줄 → missedSignals.toContainEqual + explanation.not.toContain('**'), reviewItems 검증 + 만점 missedSignals undefined 2케이스 추가. vitest JeonseExperience(12) 통과."
     },
     {
       "step": 3,

@@ -90,16 +90,18 @@ import 1줄 추가.
 
 ## Acceptance Criteria
 
+> 메모리 절약: 전체 Next 빌드 / 전체 테스트 대신 **타입체크 + 린트 + 이 step 관련 테스트만** 실행한다. 전체 `npm run build && npm test`는 phase 종료 후 운영자가 한 번 돌린다.
+
 ```bash
-npm run build
+npx tsc --noEmit
 npm run lint
-npm test
+npx vitest run src/components/experiences/case-investigation/DecisionRecapPanel.test.tsx src/components/experiences/CaseInvestigationExperience.test.tsx
 ```
 
 ## 검증 절차
 
-1. 위 AC 커맨드를 실행한다. **프로젝트 전체 테스트가 통과해야 한다.**
-2. `npm run dev`로 계약 사기 케이스를 decision 단계까지 진행해 "상황 다시 보기"를 펼치고: 현재 상황 서술 + 화자 인용 + 목표 + 확인한 정보 목록 + NPC 문답이 보인다. `<summary>` 클릭으로 접힌다.
+1. 위 AC 커맨드를 실행한다. **위 타입체크·린트·관련 테스트가 모두 통과해야 한다.**
+2. (선택, 자동 실행 세션에서는 생략 — `npm run dev`는 종료되지 않으므로 실행하지 마라) 로컬 육안 확인 시 `npm run dev`로 계약 사기 케이스를 decision 단계까지 진행해 "상황 다시 보기"를 펼치고: 현재 상황 서술 + 화자 인용 + 목표 + 확인한 정보 목록 + NPC 문답이 보인다. `<summary>` 클릭으로 접힌다.
 3. 체크리스트:
    - `importance` / 스포일러 필드가 패널에 노출되지 않는가?
    - `<details>`가 `open` 기본값인가?

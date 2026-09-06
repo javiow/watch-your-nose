@@ -57,16 +57,18 @@ step5에서 `ReviewBreakdownTable` / `MissedSignalList`를 만들었고, step1~4
 
 ## Acceptance Criteria
 
+> 메모리 절약: 전체 Next 빌드 / 전체 테스트 대신 **타입체크 + 린트 + 이 step 관련 테스트만** 실행한다. 전체 `npm run build && npm test`는 phase 종료 후 운영자가 한 번 돌린다.
+
 ```bash
-npm run build
+npx tsc --noEmit
 npm run lint
-npm test
+npx vitest run src/app/result/page.test.tsx
 ```
 
 ## 검증 절차
 
-1. 위 AC 커맨드를 실행한다. **`result/page.test.tsx` 전체 + 프로젝트 전체가 통과해야 한다.**
-2. `npm run dev`로 세션을 한 번 완주(사기 카드·전세 매물 각 1개 이상 오답, 보이스피싱 오답, 케이스조사 비최선 판단)해 `/result`를 연다:
+1. 위 AC 커맨드를 실행한다. **`result/page.test.tsx` 전체가 통과해야 한다.**
+2. (선택, 자동 실행 세션에서는 생략 — `npm run dev`는 종료되지 않으므로 실행하지 마라) 로컬 육안 확인 시 `npm run dev`로 세션을 한 번 완주(사기 카드·전세 매물 각 1개 이상 오답, 보이스피싱 오답, 케이스조사 비최선 판단)해 `/result`를 연다:
    - 각 오답 문항에 짧은 요약 문장 → O/X 표(항목·내 판단·정답·결과) → "놓친 위험 신호" 불릿(굵은 제목, 평문 설명 줄, 별도 `(출처: …)` 줄)이 순서대로 보인다.
    - 화면에 run-on 전체 볼드 문장이 없다.
    - 정답 문항은 요약 + (있으면) O/X 표만, "놓친 위험 신호" 블록 없음.
