@@ -47,10 +47,10 @@ export default function ResultPage() {
 
   return (
     <main className="mx-auto max-w-5xl space-y-8 px-4 py-10 md:px-8">
-      <h1 className="text-4xl font-semibold text-foreground">결과</h1>
+      <h1 className="text-4xl font-semibold text-foreground">결과 📊</h1>
 
       <section className="rounded-xl border border-border bg-surface p-6 shadow-sm">
-        <p className="text-sm font-medium text-muted">종합 정답률</p>
+        <p className="text-sm font-medium text-muted">종합 정답률 🎯</p>
         <div className="mt-3 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Mascot
             expression={GRADE_EXPRESSION[grade]}
@@ -64,12 +64,12 @@ export default function ResultPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-medium text-muted">유형별 점수</h2>
+        <h2 className="text-sm font-medium text-muted">유형별 점수 📈</h2>
         <ScoreBarChart results={results} />
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-medium text-muted">문항별 리뷰</h2>
+        <h2 className="text-sm font-medium text-muted">문항별 리뷰 📝</h2>
         <ul className="flex flex-col gap-3">
           {results.map((result, index) => {
             const remediation = result.isCorrect
@@ -105,7 +105,7 @@ export default function ResultPage() {
 
                 {result.missedSignals && result.missedSignals.length > 0 && (
                   <div className="space-y-2">
-                    <p className="text-xs font-medium text-danger">놓친 위험 신호</p>
+                    <p className="text-xs font-medium text-danger">놓친 위험 신호 🚩</p>
                     <MissedSignalList signals={result.missedSignals} />
                   </div>
                 )}
@@ -125,7 +125,7 @@ export default function ResultPage() {
 
                 {remediation && (
                   <div className="space-y-2 rounded-lg border border-border bg-surface-muted p-3">
-                    <p className="text-xs font-medium text-accent">이렇게 대응하세요</p>
+                    <p className="text-xs font-medium text-accent">이렇게 대응하세요 🛡️</p>
                     <Prose text={remediation.message} size="sm" />
                     <ul className="flex flex-col gap-1.5">
                       {remediation.bullets.map((bullet) => (
@@ -170,7 +170,7 @@ export default function ResultPage() {
           onClick={handleRetry}
           className="min-h-11 rounded-xl bg-accent px-6 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
         >
-          다시 체험하기
+          다시 체험하기 🔄
         </button>
       </div>
     </main>

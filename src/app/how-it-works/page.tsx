@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Prose } from "@/components/ui/Prose";
 
 const LEARNING_STEPS = [
   { icon: "🔍", label: "위험 신호 포착" },
@@ -13,19 +12,25 @@ export default function HowItWorksPage() {
       <div className="space-y-3 text-center">
         <p className="text-sm font-medium text-accent">Watch Your Nose</p>
         <h1 className="text-3xl font-bold text-foreground">
-          시작하기 전에 잠깐 알려드릴게요
+          시작하기 전에 잠깐! 👀
         </h1>
-        <Prose
-          className="mx-auto text-center"
-          size="base"
-          text={
-            "코심코심은 전화·문자·온라인 거래·계약처럼 일상에서 마주치는 금융 사기 상황을 사전 안내 없이 체험합니다.\n\n여러 사기 수법을 직접 겪어 보고, 위험 신호를 알아보는 눈을 기르는 것이 목표입니다."
-          }
-        />
+        <div className="mx-auto max-w-prose space-y-3 text-base leading-relaxed text-muted">
+          <p>
+            코심코심은 전화, 문자, 온라인 거래, 계약처럼
+            <br />
+            <span className="inline-block pl-4">
+              일상에서 마주치는 금융 사기 상황을 체험해보는 서비스입니다.
+            </span>
+          </p>
+          <p>
+            여러 사기 수법을 직접 겪어 보고, 위험 신호를 알아보는 눈을 기르는 것이
+            목표입니다.
+          </p>
+        </div>
       </div>
 
       <div className="space-y-3 rounded-xl border border-border bg-surface p-6 text-left shadow-sm">
-        <p className="text-sm font-medium text-muted">코심코심?</p>
+        <p className="text-sm font-medium text-muted">코심코심? 🐘</p>
         <p className="text-sm leading-relaxed text-muted">
           도시에 갓 상경한 코심이는 &ldquo;눈 뜨고 코 베인다&rdquo;는 속담을 들었어요. 정신
           차리지 않으면 코 베이기 십상이라는 말에, 코심이는 &ldquo;코 조심, 코 조심&rdquo;
@@ -48,7 +53,7 @@ export default function HowItWorksPage() {
       </ul>
 
       <div className="space-y-3 rounded-xl border border-border bg-surface p-6 text-left shadow-sm">
-        <p className="text-sm font-medium text-muted">진행 방식</p>
+        <p className="text-sm font-medium text-muted">📋 진행 방식</p>
         <ul className="space-y-2 text-sm leading-relaxed text-muted">
           <li>여러 단계로 진행됩니다.</li>
           <li>
