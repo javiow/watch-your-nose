@@ -97,7 +97,9 @@
     {
       "step": 13,
       "name": "globals-line-height",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T09:05:00+0900",
+      "summary": "src/app/globals.css body 규칙에 line-height: 1.6 한 줄 추가. p/heading margin·.prose·@tailwindcss/typography 미도입(space-y-* 유틸과 충돌 방지, ADR-002). 마스코트/히어로 @keyframes 무변경. build/lint/test(전체 385) 통과"
     }
   ],
   "created_at": "2026-09-06T08:25:17+0900"
