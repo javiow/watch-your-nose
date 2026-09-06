@@ -31,7 +31,8 @@
     {
       "step": 4,
       "name": "case-investigation-review-payload",
-      "status": "pending"
+      "status": "completed",
+      "summary": "CaseInvestigationExperience.tsx: buildExplanation(content, bestOptionComment) 축소 — `${content.hiddenTruth.explanation} ${bestOptionComment}`만, ` **놓친 위험 신호: …**` append 블록 삭제(breakdown 인자 제거). 신규 buildMissedSignals(content, breakdown): MissedSignal[] — breakdown.missedRiskPatterns → evidenceDefinitions.find(pattern).description (truthy 필터) → { title: description } (description/source 없음). handleDecision setPendingResult에 reviewItems: [{ label: '이 계약 판단', userVerdict: DECISION_LABELS[decision], correctVerdict: DECISION_LABELS[bestOption.decision], isCorrect, detail: isCorrect ? undefined : content.hiddenTruth.explanation }], missedSignals: isCorrect ? undefined : buildMissedSignals(content, breakdown) 추가. importance/스포일러 미노출 유지. scoring.ts 무수정. phase state/렌더 블록 무수정(단계이동은 step7). CaseInvestigationExperience.test.tsx: 기존 explanation 테스트에 not.toContain('**놓친 위험 신호') 추가 + reviewItems/missedSignals 3케이스 추가(총 37). vitest 통과."
     },
     {
       "step": 5,
