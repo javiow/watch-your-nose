@@ -517,7 +517,7 @@ describe("CaseInvestigationExperience", () => {
     expect(result.explanation).not.toContain("**놓친 위험 신호");
   });
 
-  it("reviewItems 단일 행에 내 판단·정답·정오가 담긴다", () => {
+  it("결과에 단일행 표(reviewItems)를 담지 않고 내 판단·정답만 전달한다", () => {
     const onComplete = vi.fn();
     render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
     startInvestigating();
@@ -526,13 +526,10 @@ describe("CaseInvestigationExperience", () => {
     fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
-    expect(result.reviewItems).toHaveLength(1);
-    expect(result.reviewItems![0]).toMatchObject({
-      label: "이 계약 판단",
-      userVerdict: "계약 진행 가능",
-      correctVerdict: "추가 확인 필요",
-      isCorrect: false,
-    });
+    expect(result.reviewItems).toBeUndefined();
+    expect(result.userChoice).toBe("계약 진행 가능");
+    expect(result.correctChoice).toBe("추가 확인 필요");
+    expect(result.isCorrect).toBe(false);
   });
 
   it("오답이면 missedSignals가 evidenceDefinitions.description 기반 title 배열로 채워진다", () => {
@@ -553,7 +550,7 @@ describe("CaseInvestigationExperience", () => {
     }
   });
 
-  it("정답이면 reviewItems가 정답으로 표시되고 missedSignals가 없다", () => {
+  it("정답이면 isCorrect가 true이고 missedSignals가 없다", () => {
     const onComplete = vi.fn();
     render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
     startInvestigating();
@@ -562,11 +559,9 @@ describe("CaseInvestigationExperience", () => {
     fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
-    expect(result.reviewItems![0]).toMatchObject({
-      userVerdict: "추가 확인 필요",
-      correctVerdict: "추가 확인 필요",
-      isCorrect: true,
-    });
+    expect(result.userChoice).toBe("추가 확인 필요");
+    expect(result.correctChoice).toBe("추가 확인 필요");
+    expect(result.isCorrect).toBe(true);
     expect(result.missedSignals).toBeUndefined();
   });
 

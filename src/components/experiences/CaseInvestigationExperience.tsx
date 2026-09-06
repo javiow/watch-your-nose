@@ -191,15 +191,6 @@ export function CaseInvestigationExperience({
       isCorrect,
       explanation: buildExplanation(content, bestOption.comment),
       mistakeTag,
-      reviewItems: [
-        {
-          label: "이 계약 판단",
-          userVerdict: DECISION_LABELS[decision],
-          correctVerdict: DECISION_LABELS[bestOption.decision],
-          isCorrect,
-          detail: isCorrect ? undefined : content.hiddenTruth.explanation,
-        },
-      ],
       missedSignals: isCorrect ? undefined : buildMissedSignals(content, breakdown),
     });
   };
