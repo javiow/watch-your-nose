@@ -88,11 +88,13 @@ describe("ResultPage 마스코트", () => {
     aggregate.mockReturnValue({ average: 80, grade: "safe" });
 
     render(<ResultPage />);
-    expect(screen.getByText("종합 정답률")).toBeDefined();
+    expect(screen.getByRole("heading", { name: "결과 📊" })).toBeDefined();
+    expect(screen.getByText("종합 정답률 🎯")).toBeDefined();
     expect(screen.getByRole("img", { name: /80.*안전/ })).toBeDefined();
     expect(screen.getByText(/80% 이상 안전/)).toBeDefined();
-    expect(screen.getByText("유형별 점수")).toBeDefined();
-    expect(screen.getByText("문항별 리뷰")).toBeDefined();
+    expect(screen.getByText("유형별 점수 📈")).toBeDefined();
+    expect(screen.getByText("문항별 리뷰 📝")).toBeDefined();
+    expect(screen.getByRole("button", { name: "다시 체험하기 🔄" })).toBeDefined();
   });
 
   it("문항별 리뷰의 각 항목에 체험 유형 라벨이 노출된다", () => {
@@ -119,7 +121,7 @@ describe("ResultPage 마스코트", () => {
     render(<ResultPage />);
     // 별도 "대응 방안" 섹션은 없어지고 문항 리뷰 안에 "이렇게 대응하세요"로 들어간다.
     expect(screen.queryByText("대응 방안")).toBeNull();
-    expect(screen.getByText("이렇게 대응하세요")).toBeDefined();
+    expect(screen.getByText("이렇게 대응하세요 🛡️")).toBeDefined();
     // 유형별 점수 막대 1곳 + 문항별 리뷰 1곳, 총 2곳에 전세매물 라벨이 노출된다.
     expect(
       screen.getAllByText(new RegExp(EXPERIENCE_TYPE_LABELS.jeonse))
@@ -131,7 +133,7 @@ describe("ResultPage 마스코트", () => {
     aggregate.mockReturnValue({ average: 100, grade: "safe" });
 
     render(<ResultPage />);
-    expect(screen.queryByText("이렇게 대응하세요")).toBeNull();
+    expect(screen.queryByText("이렇게 대응하세요 🛡️")).toBeNull();
   });
 
   it("오답 대응 블록이 해당 문항(N번) 리뷰 항목 안에 위치한다", () => {
@@ -236,7 +238,7 @@ describe("ResultPage 마스코트", () => {
     aggregate.mockReturnValue({ average: 60, grade: "caution" });
 
     render(<ResultPage />);
-    const heading = screen.getByText("놓친 위험 신호");
+    const heading = screen.getByText("놓친 위험 신호 🚩");
     expect(screen.getByText("(출처: 경찰청)")).toBeDefined();
 
     const list = heading.nextElementSibling!; // MissedSignalList의 <ul>
@@ -279,6 +281,6 @@ describe("ResultPage 마스코트", () => {
 
     const { container } = render(<ResultPage />);
     expect(container.querySelector("table")).toBeNull();
-    expect(screen.queryByText("놓친 위험 신호")).toBeNull();
+    expect(screen.queryByText("놓친 위험 신호 🚩")).toBeNull();
   });
 });

@@ -8,13 +8,19 @@ interface DifficultySelectFormProps {
   onComplete: (difficulty: Difficulty) => void;
 }
 
+const DIFFICULTY_EMOJI: Record<Difficulty, string> = {
+  easy: "🟢",
+  medium: "🟡",
+  hard: "🔴",
+};
+
 export function DifficultySelectForm({ onComplete }: DifficultySelectFormProps) {
   const [selected, setSelected] = useState<Difficulty | null>(null);
 
   return (
     <div className="w-full space-y-8">
       <div className="space-y-3">
-        <p className="text-sm font-medium text-muted">난이도</p>
+        <p className="text-sm font-medium text-muted">🎚️ 난이도</p>
         <div className="space-y-3">
           {DIFFICULTY_OPTIONS.map((opt) => (
             <button
@@ -27,7 +33,10 @@ export function DifficultySelectForm({ onComplete }: DifficultySelectFormProps) 
                   : "border-border bg-surface text-muted"
               }`}
             >
-              <span className="block text-sm font-medium">{opt.label}</span>
+              <span className="flex items-center gap-1.5">
+                <span aria-hidden="true">{DIFFICULTY_EMOJI[opt.id]}</span>
+                <span className="text-sm font-medium">{opt.label}</span>
+              </span>
               <span className="block text-sm text-subtle">{opt.description}</span>
             </button>
           ))}

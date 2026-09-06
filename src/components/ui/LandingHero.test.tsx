@@ -29,6 +29,18 @@ describe("LandingHero", () => {
     expect(screen.getByText("코심이")).toBeDefined();
   });
 
+  it("설명 문구는 각 문장을 중간에서 줄바꿈해 두 줄로 나눈다", () => {
+    const { container } = renderHero();
+    const lead = screen.getByText(/눈 뜨고 코 베이지 않도록,/);
+    expect(lead.closest("p")?.querySelector("br")).not.toBeNull();
+    expect(screen.getByText(/다양한 금융 사기를 미리 겪어보는 학습 서비스\./)).toBeDefined();
+
+    const story = screen.getByText(/코심이가 .*되뇌며/);
+    expect(story.closest("p")?.querySelector("br")).not.toBeNull();
+    expect(screen.getByText(/사기 수법을 익히는 이야기예요\./)).toBeDefined();
+    expect(container.querySelectorAll("p br").length).toBeGreaterThanOrEqual(2);
+  });
+
   it("장식용 마스코트 이미지가 있다", () => {
     const { container } = renderHero();
     const wrapper = container.querySelector("[data-expression]");
