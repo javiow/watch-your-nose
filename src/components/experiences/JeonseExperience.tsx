@@ -1,7 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
-import type { JeonseHouse, ModuleResult } from "@/types/experience";
+import type {
+  JeonseHouse,
+  MissedSignal,
+  ModuleResult,
+  ReviewItem,
+} from "@/types/experience";
 import { computeGrade } from "@/lib/scoring";
 import { NextStepButton } from "@/components/ui/NextStepButton";
 import { IntroDialog } from "@/components/ui/IntroDialog";
@@ -14,19 +19,35 @@ interface JeonseExperienceProps {
   onComplete: (result: ModuleResult) => void;
 }
 
-function buildExplanation(
+function buildExplanation(isCorrect: boolean): string {
+  return isCorrect
+    ? "제시된 매물의 위험 신호를 모두 정확히 판정했습니다."
+    : "일부 매물을 잘못 판정했습니다. 놓친 위험 신호를 확인하세요.";
+}
+
+function verdictLabel(risky: boolean): string {
+  return risky ? "O (위험 있음)" : "X (위험 없음)";
+}
+
+function buildReviewItems(
   content: JeonseHouse[],
-  answers: Record<number, boolean>,
-  isCorrect: boolean
-): string {
-  if (isCorrect) {
-    return "제시된 매물 모두 위험 신호를 정확히 판정했습니다.";
-  }
-  const missed = content
+  answers: Record<number, boolean>
+): ReviewItem[] {
+  return content.map((house, i) => ({
+    label: house.short,
+    userVerdict: verdictLabel(answers[i]),
+    correctVerdict: verdictLabel(house.risky),
+    isCorrect: answers[i] === house.risky,
+  }));
+}
+
+function buildMissedSignals(
+  content: JeonseHouse[],
+  answers: Record<number, boolean>
+): MissedSignal[] {
+  return content
     .filter((house, i) => answers[i] !== house.risky)
-    .slice(0, 3)
-    .map((house) => `${house.short}: ${house.reason}`);
-  return `놓친 위험 신호가 있습니다 — **${missed.join("; ")}**`;
+    .map((house) => ({ title: house.short, description: house.reason }));
 }
 
 export function JeonseExperience({ content, onComplete }: JeonseExperienceProps) {
@@ -66,8 +87,10 @@ export function JeonseExperience({ content, onComplete }: JeonseExperienceProps)
         userChoice: `${content.length}채 중 ${correctCount}채 정답 판정`,
         correctChoice: `${content.length}채 모두 정확히 판정`,
         isCorrect,
-        explanation: buildExplanation(content, next, isCorrect),
+        explanation: buildExplanation(isCorrect),
         mistakeTag: isCorrect ? undefined : "missed-lease-fraud-signal",
+        reviewItems: buildReviewItems(content, next),
+        missedSignals: isCorrect ? undefined : buildMissedSignals(content, next),
       });
     }
   };
