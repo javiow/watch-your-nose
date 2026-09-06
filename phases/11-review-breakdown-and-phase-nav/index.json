@@ -55,7 +55,8 @@
     {
       "step": 8,
       "name": "decision-recap-panel",
-      "status": "pending"
+      "status": "completed",
+      "summary": "src/components/experiences/case-investigation/DecisionRecapPanel.tsx 신규: props { scenario, confirmedInfo: string[], npcAnswers: {question,answer}[] }. <details open><summary>상황 다시 보기</summary> — <Prose description> + propertyLocation·propertyPriceDescription + speakerLabel/brokerLine 인용 카드 + goal + '확인한 정보' <ul>(없으면 '등록한 증거가 없습니다.') + '{speakerLabel} 답변' <ul>(「q」 → a, 없으면 '물어본 질문이 없습니다.'). importance/스포일러 미노출, dangerouslySetInnerHTML 미사용. CaseInvestigationExperience.tsx decision 블록: '이전' 버튼 다음, '이제 판단을…' 카드 앞에 <DecisionRecapPanel scenario={content.scenario} confirmedInfo={evidenceDefinitions.filter(registeredEvidence.has(pattern)).map(description)} npcAnswers={chatLog.map(userText→question, npcText→answer)} />. 테스트: DecisionRecapPanel 4 신규 + CaseInvestigationExperience +3(패널 기본 펼침, 등록 증거 노출, NPC 문답 노출) = 총 47. vitest 통과."
     }
   ],
   "created_at": "2026-09-06T09:55:48+0900"
