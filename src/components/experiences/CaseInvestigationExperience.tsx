@@ -22,6 +22,7 @@ import { IntroDialog } from "@/components/ui/IntroDialog";
 import { Prose } from "@/components/ui/Prose";
 import { EXPERIENCE_FORMAT } from "@/data/experience-format";
 import { EXPERIENCE_INTRO } from "@/data/experience-intro";
+import { DecisionRecapPanel } from "./case-investigation/DecisionRecapPanel";
 
 interface ChatEntry {
   key: string;
@@ -497,6 +498,18 @@ export function CaseInvestigationExperience({
           </button>
         </div>
       )}
+
+      <DecisionRecapPanel
+        scenario={content.scenario}
+        confirmedInfo={content.evidenceDefinitions
+          .filter((def) => registeredEvidence.has(def.pattern))
+          .map((def) => def.description)}
+        npcAnswers={chatLog.map((entry) => ({
+          question: entry.userText,
+          answer: entry.npcText,
+        }))}
+      />
+
       <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
         <p className="text-sm font-medium text-muted">이제 판단을 내려주세요.</p>
       </div>

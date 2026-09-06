@@ -597,4 +597,35 @@ describe("CaseInvestigationExperience", () => {
     expect(screen.queryByRole("button", { name: "이전" })).toBeNull();
     expect(screen.getByText("계약을 진행한다").closest("button")).toBeDisabled();
   });
+
+  it("판단 단계에 '상황 다시 보기' 요약 패널이 기본 펼침으로 노출된다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    goToDecision();
+
+    expect(screen.getByText("상황 다시 보기")).toBeDefined();
+    expect(screen.getByText("테스트 설명")).toBeDefined();
+    expect(screen.getByText("테스트 목표")).toBeDefined();
+  });
+
+  it("등록한 증거의 설명이 판단 단계 요약 패널에 보인다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    fireEvent.click(screen.getByRole("button", { name: /저렴한 조사/ }));
+    fireEvent.click(screen.getByRole("button", { name: "증거 블록 텍스트입니다" }));
+    fireEvent.click(screen.getByText("목록으로"));
+    goToDecision();
+
+    expect(screen.getByText("패턴 A 확인 문구")).toBeDefined();
+  });
+
+  it("NPC에게 물어본 질문과 답변이 판단 단계 요약 패널에 보인다", async () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    fireEvent.click(screen.getByRole("button", { name: "질문 1" }));
+    await screen.findByText("NPC 대사 1입니다");
+    goToDecision();
+
+    expect(screen.getByText("「질문 1」 → NPC 대사 1입니다")).toBeDefined();
+  });
 });
