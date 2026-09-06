@@ -98,6 +98,8 @@ export function CaseInvestigationExperience({
   const [isClassifying, setIsClassifying] = useState(false);
   const [selectedDecision, setSelectedDecision] = useState<CaseFinalDecision | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+  // 알림 팝업(gate)을 닫으면 곧바로 조사로 넘어가지 않고 "상황 제시" 화면에 머문다.
+  const [gateDismissed, setGateDismissed] = useState(false);
   const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
   // "다음으로 넘어가기"를 누르기 전까지는 잘못 누른 판단을 다시 골라 바꿀 수 있다.
   // 확정(다음으로 넘어가기 클릭) 이후에만 판단 버튼을 잠근다.
@@ -210,6 +212,8 @@ export function CaseInvestigationExperience({
   };
 
   if (phase === "briefing") {
+    const showGate = !gateDismissed && !visitedInvestigatingRef.current;
+    const showPrimary = gateDismissed || visitedInvestigatingRef.current;
     return (
       <>
         <div className="space-y-6">
@@ -228,26 +232,26 @@ export function CaseInvestigationExperience({
             <Prose className="mt-4" text={content.scenario.description} size="sm" />
             <p className="mt-2 text-sm font-medium text-muted">{content.scenario.goal}</p>
           </div>
-          {visitedInvestigatingRef.current && (
+          {showPrimary && (
             <div className="flex justify-end">
               <button
                 type="button"
                 onClick={goToInvestigating}
                 className={primaryButtonClass}
               >
-                조사로 돌아가기
+                {visitedInvestigatingRef.current ? "조사로 돌아가기" : "조사 시작"}
               </button>
             </div>
           )}
         </div>
 
-        {!visitedInvestigatingRef.current && (
+        {showGate && (
           <IntroDialog
             mode="gate"
             format={EXPERIENCE_FORMAT["case-investigation"]}
             intro={EXPERIENCE_INTRO["case-investigation"]}
-            confirmLabel="조사 시작"
-            onConfirm={goToInvestigating}
+            confirmLabel="상황 보기"
+            onConfirm={() => setGateDismissed(true)}
           />
         )}
       </>

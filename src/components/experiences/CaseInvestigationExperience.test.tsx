@@ -100,6 +100,8 @@ const gatingFixture: CaseInvestigationContent = {
 };
 
 function startInvestigating() {
+  // 알림 팝업(gate) → "상황 보기"로 닫기 → 상황 제시 화면의 "조사 시작"으로 조사 진입
+  fireEvent.click(screen.getByText("상황 보기"));
   fireEvent.click(screen.getByText("조사 시작"));
 }
 
@@ -131,6 +133,29 @@ describe("CaseInvestigationExperience", () => {
     render(<CaseInvestigationExperience content={jeonse001} onComplete={vi.fn()} />);
     expect(screen.getByRole("dialog")).toBeDefined();
     expect(screen.getByText(/조사를 많이 할수록 단서는 늘지만/)).toBeDefined();
+  });
+
+  it("마운트 직후에는 '조사 시작' 버튼이 없고, 알림 팝업을 닫아야 상황 제시 화면과 함께 나타난다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    expect(screen.queryByText("조사 시작")).toBeNull();
+
+    fireEvent.click(screen.getByText("상황 보기"));
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByText("테스트 설명")).toBeDefined();
+    expect(screen.getByText("테스트 매물 위치")).toBeDefined();
+    expect(screen.getByText(/테스트 중개사 대사/)).toBeDefined();
+    expect(screen.getByRole("button", { name: "조사 시작" })).toBeDefined();
+    expect(screen.queryByText("판단하기")).toBeNull();
+  });
+
+  it("상황 제시 화면에서 '조사 시작'을 눌러야 조사 화면으로 전환된다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    fireEvent.click(screen.getByText("상황 보기"));
+    expect(screen.queryByText("판단하기")).toBeNull();
+
+    fireEvent.click(screen.getByText("조사 시작"));
+    expect(screen.getByText("판단하기")).toBeDefined();
   });
 
   it("조사 화면에서 '안내 다시 보기'로 모달을 다시 열고 닫을 수 있다", () => {
