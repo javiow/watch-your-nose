@@ -201,7 +201,30 @@ describe("FraudJudgmentExperience", () => {
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
 
-  it("오답이 있으면 explanation에 해당 카드의 title과 출처가 포함된다", () => {
+  it("오답이 있으면 missedSignals가 오판한 카드의 title/explanation/source를 항목화하고, explanation에는 ** 도 출처도 없다", () => {
+    const onComplete = vi.fn();
+    render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
+    start();
+    // fraudCard를 safe로, safeCard2를 fraud로 오판
+    answerAll(["safe", "safe", "fraud", "fraud"]);
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0] as ModuleResult;
+    expect(result.missedSignals).toContainEqual({
+      title: fraudCard.title,
+      description: fraudCard.explanation,
+      source: fraudCard.source,
+    });
+    expect(result.missedSignals).toContainEqual({
+      title: safeCard2.title,
+      description: safeCard2.explanation,
+      source: safeCard2.source,
+    });
+    expect(result.explanation).not.toContain("**");
+    expect(result.explanation).not.toContain(fraudCard.source);
+  });
+
+  it("4장 mixed 답안의 reviewItems가 카드별 userVerdict/correctVerdict/isCorrect를 정확히 채운다", () => {
     const onComplete = vi.fn();
     render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
     start();
@@ -209,8 +232,26 @@ describe("FraudJudgmentExperience", () => {
     fireEvent.click(screen.getByText("다음으로 넘어가기"));
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
-    expect(result.explanation).toContain(fraudCard.title);
-    expect(result.explanation).toContain(fraudCard.source);
+    expect(result.reviewItems).toHaveLength(fourCards.length);
+    expect(result.reviewItems).toEqual([
+      { label: `1번 — ${fraudCard.title}`, userVerdict: "정상", correctVerdict: "사기", isCorrect: false },
+      { label: `2번 — ${safeCard.title}`, userVerdict: "정상", correctVerdict: "정상", isCorrect: true },
+      { label: `3번 — ${fraudCard2.title}`, userVerdict: "사기", correctVerdict: "사기", isCorrect: true },
+      { label: `4번 — ${safeCard2.title}`, userVerdict: "사기", correctVerdict: "정상", isCorrect: false },
+    ]);
+  });
+
+  it("4장 전부 정답이면 missedSignals는 undefined이고 모든 reviewItems가 isCorrect: true다", () => {
+    const onComplete = vi.fn();
+    render(<FraudJudgmentExperience content={fourCards} onComplete={onComplete} />);
+    start();
+    answerAll(["fraud", "safe", "fraud", "safe"]);
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0] as ModuleResult;
+    expect(result.missedSignals).toBeUndefined();
+    expect(result.reviewItems).toHaveLength(fourCards.length);
+    expect(result.reviewItems?.every((item) => item.isCorrect)).toBe(true);
   });
 
   it("진행 표시(N/4)를 렌더링한다", () => {

@@ -1,7 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import type { FraudJudgmentAnswer, FraudJudgmentCard, ModuleResult } from "@/types/experience";
+import type {
+  FraudJudgmentAnswer,
+  FraudJudgmentCard,
+  MissedSignal,
+  ModuleResult,
+  ReviewItem,
+} from "@/types/experience";
 import { computeGrade } from "@/lib/scoring";
 import { NextStepButton } from "@/components/ui/NextStepButton";
 import { GlossaryTermText } from "@/components/ui/GlossaryTermText";
@@ -14,15 +20,35 @@ interface FraudJudgmentExperienceProps {
   onComplete: (result: ModuleResult) => void;
 }
 
-function buildExplanation(content: FraudJudgmentCard[], answers: Record<number, FraudJudgmentAnswer>, isCorrect: boolean): string {
-  if (isCorrect) {
-    return `제시된 사기 판별 카드 ${content.length}장 모두 정확히 판정했습니다.`;
-  }
-  const missed = content
+function buildExplanation(isCorrect: boolean): string {
+  return isCorrect
+    ? "제시된 사기 판별 카드를 모두 정확히 판정했습니다."
+    : "일부 카드를 잘못 판정했습니다. 놓친 위험 신호를 확인하세요.";
+}
+
+function buildReviewItems(
+  content: FraudJudgmentCard[],
+  answers: Record<number, FraudJudgmentAnswer>,
+): ReviewItem[] {
+  return content.map((card, i) => ({
+    label: `${i + 1}번 — ${card.title}`,
+    userVerdict: answers[i] === "fraud" ? "사기" : "정상",
+    correctVerdict: card.answer === "fraud" ? "사기" : "정상",
+    isCorrect: answers[i] === card.answer,
+  }));
+}
+
+function buildMissedSignals(
+  content: FraudJudgmentCard[],
+  answers: Record<number, FraudJudgmentAnswer>,
+): MissedSignal[] {
+  return content
     .filter((card, i) => answers[i] !== card.answer)
-    .slice(0, 3)
-    .map((card) => `${card.title}: ${card.explanation} (출처: ${card.source})`);
-  return `놓친 위험 신호가 있습니다 — **${missed.join("; ")}**`;
+    .map((card) => ({
+      title: card.title,
+      description: card.explanation,
+      source: card.source,
+    }));
 }
 
 function buildMistakeTag(content: FraudJudgmentCard[], answers: Record<number, FraudJudgmentAnswer>): string {
@@ -73,8 +99,10 @@ export function FraudJudgmentExperience({ content, onComplete }: FraudJudgmentEx
       userChoice: `${content.length}장 중 ${correctCount}장 정답 판정`,
       correctChoice: `${content.length}장 모두 정확히 판정`,
       isCorrect,
-      explanation: buildExplanation(content, next, isCorrect),
+      explanation: buildExplanation(isCorrect),
       mistakeTag: isCorrect ? undefined : buildMistakeTag(content, next),
+      reviewItems: buildReviewItems(content, next),
+      missedSignals: isCorrect ? undefined : buildMissedSignals(content, next),
     });
   };
 
