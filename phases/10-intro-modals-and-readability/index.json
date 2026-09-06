@@ -90,7 +90,9 @@
     {
       "step": 12,
       "name": "tighten-data-copy",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-09-06T09:03:00+0900",
+      "summary": "remediation.ts: 6개 REMEDIATION_ENTRIES message + DEFAULT_REMEDIATION_MESSAGE를 2문장 이하로 축약하고 문장 사이 \\n\\n(핵심 문구 ** 유지). case-investigation.ts: hiddenTruth.explanation 6개에 첫 문장 뒤 \\n\\n 삽입(첫 20자 불변 → CaseInvestigationExperience.test.tsx slice(0,20) 안전). 완결성 테스트 추가: remediation.test.ts message ≤200자·split(\\n\\n) ≤3·no leading/trailing \\n; jeonse.test.ts explain ≤260/lesson ≤140; case-investigation.test.ts hiddenTruth ≤260/comment ≤200. 기존 jeonse explain/lesson·case comment는 이미 상한 충족이라 문자열 재작성 불필요. jeonse explain/lesson은 여전히 미렌더. build/lint/test(전체 385) 통과"
     },
     {
       "step": 13,
