@@ -21,6 +21,24 @@ export interface ModuleResult {
   isCorrect: boolean;
   explanation: string; // 왜 그게 정답인지 (결과 리뷰용)
   mistakeTag?: string; // 오답일 때만: remediation.ts 매핑 키
+  reviewItems?: ReviewItem[]; // 신규 (선택)
+  missedSignals?: MissedSignal[]; // 신규 (선택) — 오답일 때만 채움
+}
+
+/** 결과 페이지 "문항별 리뷰"의 O/X 표 한 행. 단일 판정 체험(보이스피싱·케이스조사)도 1행짜리로 채운다. */
+export interface ReviewItem {
+  label: string; // 행 제목: "1번 — 먼저 입금해주면…" / "빌라 A" / "이 계약 판단"
+  userVerdict: string; // 표시용 판정: "사기" | "정상" | "O (위험 있음)" | "계약 중단" …
+  correctVerdict: string; // userVerdict와 같은 어휘 체계
+  isCorrect: boolean;
+  detail?: string; // 단일 판정 체험에서 놓쳤을 때만: 평문 해설 (\n\n 허용)
+}
+
+/** 결과 페이지 "놓친 위험 신호" 불릿 한 개. 오답일 때만 존재. */
+export interface MissedSignal {
+  title: string; // 굵게 표시할 제목 한 줄
+  description?: string; // 짧은 설명 (별도 줄)
+  source?: string; // 있으면 "(출처: …)" 별도 줄
 }
 
 export interface ExperienceComponentProps<TContent> {

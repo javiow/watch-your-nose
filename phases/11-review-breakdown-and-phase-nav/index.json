@@ -1,0 +1,54 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "11-review-breakdown-and-phase-nav",
+  "steps": [
+    {
+      "step": 0,
+      "name": "review-result-types",
+      "status": "completed",
+      "started_at": "2026-09-06T09:55:48+0900",
+      "summary": "src/types/experience.ts에 ReviewItem { label: string; userVerdict: string; correctVerdict: string; isCorrect: boolean; detail?: string } 와 MissedSignal { title: string; description?: string; source?: string } 인터페이스 추가. ModuleResult에 optional 필드 2개(reviewItems?: ReviewItem[], missedSignals?: MissedSignal[]) 추가, explanation은 필수 유지. 소비처 무수정 — build/lint/test(385) 전부 통과, 테스트 개수 변화 없음."
+    },
+    {
+      "step": 1,
+      "name": "fraud-judgment-review-payload",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "jeonse-review-payload",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "voice-phishing-review-payload",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "case-investigation-review-payload",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "name": "review-result-components",
+      "status": "pending"
+    },
+    {
+      "step": 6,
+      "name": "result-page-wire-review",
+      "status": "pending"
+    },
+    {
+      "step": 7,
+      "name": "case-investigation-phase-nav",
+      "status": "pending"
+    },
+    {
+      "step": 8,
+      "name": "decision-recap-panel",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-09-06T09:55:48+0900"
+}
