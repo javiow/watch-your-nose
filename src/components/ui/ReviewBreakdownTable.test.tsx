@@ -35,6 +35,23 @@ describe("ReviewBreakdownTable", () => {
     expect(rows[1].textContent).toContain("오답");
   });
 
+  it("label의 {{term:...}}·** 마커를 리터럴로 노출하지 않고 치환한다", () => {
+    const { container } = render(
+      <ReviewBreakdownTable
+        items={[
+          {
+            label: "{{term:전세가율}} 92%",
+            userVerdict: "안전",
+            correctVerdict: "위험 있음",
+            isCorrect: false,
+          },
+        ]}
+      />,
+    );
+    expect(container.textContent).not.toContain("{{term:");
+    expect(container.textContent).toContain("전세가율");
+  });
+
   it("빈 배열이면 아무것도 렌더하지 않는다", () => {
     const { container } = render(<ReviewBreakdownTable items={[]} />);
     expect(container.firstChild).toBeNull();
