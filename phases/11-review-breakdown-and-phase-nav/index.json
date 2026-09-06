@@ -49,7 +49,8 @@
     {
       "step": 7,
       "name": "case-investigation-phase-nav",
-      "status": "pending"
+      "status": "completed",
+      "summary": "CaseInvestigationExperience.tsx: visitedInvestigatingRef(useRef(false)) 추가. goToInvestigating() = ref true + setPhase('investigating'); handleBackToInvestigating() = setSelectedDecision(null) + setPendingResult(null) + goToInvestigating(). briefing: 게이트 IntroDialog는 !visitedInvestigatingRef.current일 때만, onConfirm={goToInvestigating}; 되돌아온 경우 시나리오 카드 아래 인라인 '조사로 돌아가기'(primaryButtonClass) 버튼. investigating 하단 바: flex justify-between으로 바꾸고 좌측 '이전'(outlineButtonClass) → setPhase('briefing'), 우측 기존 '판단하기'. decision: 최상단에 {!confirmed && <div flex justify-start><button 이전 onClick={handleBackToInvestigating}></div>}. points/registeredEvidence/chatLog/completedInvestigationIds는 뒤로가기 시 초기화 안 함(왕복 유지). confirmed 후 '이전' 미렌더. Context 미사용. CaseInvestigationExperience.test.tsx +3케이스(조사→이전→briefing 게이트 없음+조사로 돌아가기+증거 유지, 판단→이전→조사 화면+다음으로 넘어가기 사라짐, 확정 후 이전 없음) — 총 40. vitest 통과."
     },
     {
       "step": 8,
