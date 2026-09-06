@@ -19,6 +19,9 @@ interface JeonseExperienceProps {
   onComplete: (result: ModuleResult) => void;
 }
 
+// 매물 수 = 난이도 신호. 쉬움(3채)=힌트3, 중간(4채)=2, 어려움(5채)=1.
+const HINT_BUDGET_BY_LISTING_COUNT: Record<number, number> = { 3: 3, 4: 2, 5: 1 };
+
 function buildExplanation(isCorrect: boolean): string {
   return isCorrect
     ? "제시된 매물의 위험 신호를 모두 정확히 판정했습니다."
@@ -55,12 +58,18 @@ export function JeonseExperience({ content, onComplete }: JeonseExperienceProps)
   const [showHelp, setShowHelp] = useState(false);
   const [answers, setAnswers] = useState<Record<number, boolean>>({});
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [hintUsedIndex, setHintUsedIndex] = useState<number | null>(null);
+  const [hintedIndexes, setHintedIndexes] = useState<Set<number>>(() => new Set());
   const [pendingResult, setPendingResult] = useState<ModuleResult | null>(null);
   const nextStepSubmittedRef = useRef(false);
 
+  const hintBudget = HINT_BUDGET_BY_LISTING_COUNT[content.length] ?? 1;
+  const hintsRemaining = hintBudget - hintedIndexes.size;
+
   const handleUseHint = (index: number) => {
-    setHintUsedIndex((prev) => (prev === null ? index : prev));
+    setHintedIndexes((prev) => {
+      if (prev.has(index) || prev.size >= hintBudget) return prev;
+      return new Set(prev).add(index);
+    });
   };
 
   const handleAnswer = (index: number, risky: boolean) => {
@@ -140,7 +149,9 @@ export function JeonseExperience({ content, onComplete }: JeonseExperienceProps)
         houses={content}
         answers={answers}
         onAnswer={handleAnswer}
-        hintUsedIndex={hintUsedIndex}
+        hintedIndexes={hintedIndexes}
+        hintsRemaining={hintsRemaining}
+        hintBudget={hintBudget}
         onUseHint={handleUseHint}
       />
 

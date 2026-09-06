@@ -240,7 +240,7 @@ describe("JeonseExperience", () => {
     expect(screen.queryByRole("button", { name: "힌트 사용" })).toBeNull();
   });
 
-  it("한 집에서 힌트를 쓰면 다른 집에서는 힌트 버튼이 비활성화된다", () => {
+  it("한 집에서 힌트를 쓰면 다른 집에서는 힌트 버튼이 비활성화된다 (어려움 = 5채 = 힌트 1)", () => {
     const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
     render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
     startJeonse();
@@ -254,5 +254,58 @@ describe("JeonseExperience", () => {
     fireEvent.click(screen.getByText("확인"));
     expect(screen.getByRole("button", { name: "힌트 사용" })).toBeDisabled();
     expect(screen.queryAllByText("정상")).toHaveLength(0);
+  });
+
+  function useHintOn(house: JeonseHouse) {
+    fireEvent.click(screen.getByRole("button", { name: `${house.short} 입장` }));
+    fireEvent.click(screen.getByText("확인"));
+    fireEvent.click(screen.getByRole("button", { name: "힌트 사용" }));
+    fireEvent.keyDown(window, { key: "Escape" });
+  }
+
+  it("쉬움 = 3채 = 힌트 3: 서로 다른 세 집에서 힌트를 쓸 수 있다", () => {
+    const houses = ["1", "2", "3"].map((id) => makeHouse(id, false));
+    render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+    startJeonse();
+
+    expect(screen.getByText(/힌트\s*3\s*\/\s*3/)).toBeDefined();
+    useHintOn(houses[0]);
+    useHintOn(houses[1]);
+
+    fireEvent.click(screen.getByRole("button", { name: `${houses[2].short} 입장` }));
+    fireEvent.click(screen.getByText("확인"));
+    expect(screen.getByRole("button", { name: "힌트 사용" })).not.toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: "힌트 사용" }));
+    expect(screen.getAllByText("정상")).toHaveLength(8);
+  });
+
+  it("중간 = 4채 = 힌트 2: 두 번 쓰고 나면 힌트 버튼이 비활성화된다", () => {
+    const houses = ["1", "2", "3", "4"].map((id) => makeHouse(id, false));
+    render(<JeonseExperience content={houses} onComplete={vi.fn()} />);
+    startJeonse();
+
+    expect(screen.getByText(/힌트\s*2\s*\/\s*2/)).toBeDefined();
+    useHintOn(houses[0]);
+    useHintOn(houses[1]);
+
+    fireEvent.click(screen.getByRole("button", { name: `${houses[2].short} 입장` }));
+    fireEvent.click(screen.getByText("확인"));
+    expect(screen.getByRole("button", { name: "힌트 사용" })).toBeDisabled();
+    expect(screen.queryAllByText("정상")).toHaveLength(0);
+  });
+
+  it("쉬움 = 3채면 3채만 판정해도 완료되고 만점 채점된다", () => {
+    const houses = ["1", "2", "3"].map((id) => makeHouse(id, false));
+    const onComplete = vi.fn();
+    render(<JeonseExperience content={houses} onComplete={onComplete} />);
+    startJeonse();
+
+    houses.forEach((house, i) => judgeHouse(i, house, false));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    const result = onComplete.mock.calls[0][0];
+    expect(result.score).toBe(100);
+    expect(result.reviewItems).toHaveLength(3);
   });
 });
