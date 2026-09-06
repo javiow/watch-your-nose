@@ -557,4 +557,44 @@ describe("CaseInvestigationExperience", () => {
     expect(result.typeId).toBe("case-investigation");
     expect(result.contentId).toBe("JEONSE_001");
   });
+
+  it("조사 단계에서 '이전'을 누르면 상황 화면으로 돌아가고 게이트 모달 없이 '조사로 돌아가기'가 보인다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    fireEvent.click(screen.getByRole("button", { name: /저렴한 조사/ }));
+    fireEvent.click(screen.getByRole("button", { name: "증거 블록 텍스트입니다" }));
+    fireEvent.click(screen.getByText("목록으로"));
+
+    fireEvent.click(screen.getByRole("button", { name: "이전" }));
+
+    expect(screen.getByText("테스트 설명")).toBeDefined();
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "조사로 돌아가기" }));
+    expect(screen.getByText(/등록된 증거.*1/)).toBeDefined();
+  });
+
+  it("판단 단계에서 '이전'을 누르면 조사 화면으로 돌아가고 staged 판단이 초기화된다", () => {
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={vi.fn()} />);
+    startInvestigating();
+    goToDecision();
+    fireEvent.click(screen.getByText("계약을 진행한다"));
+    expect(screen.getByText("다음으로 넘어가기")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "이전" }));
+
+    expect(screen.getByText("판단하기")).toBeDefined();
+    expect(screen.queryByText("다음으로 넘어가기")).toBeNull();
+  });
+
+  it("판단을 확정한 뒤에는 '이전' 버튼이 사라진다", () => {
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={vi.fn()} />);
+    startInvestigating();
+    goToDecision();
+    fireEvent.click(screen.getByText("계약을 진행한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    expect(screen.queryByRole("button", { name: "이전" })).toBeNull();
+    expect(screen.getByText("계약을 진행한다").closest("button")).toBeDisabled();
+  });
 });

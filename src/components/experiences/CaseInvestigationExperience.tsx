@@ -102,6 +102,21 @@ export function CaseInvestigationExperience({
   // 확정(다음으로 넘어가기 클릭) 이후에만 판단 버튼을 잠근다.
   const [confirmed, setConfirmed] = useState(false);
   const nextStepSubmittedRef = useRef(false);
+  // investigating 단계를 한 번이라도 지난 뒤에는 briefing으로 돌아와도 게이트 모달을
+  // 다시 띄우지 않고 "조사로 돌아가기" 버튼만 보여준다.
+  const visitedInvestigatingRef = useRef(false);
+
+  const goToInvestigating = () => {
+    visitedInvestigatingRef.current = true;
+    setPhase("investigating");
+  };
+
+  const handleBackToInvestigating = () => {
+    // 판단 단계를 벗어나면 낡은 state로 계산된 결과가 제출되지 않도록 초기화한다.
+    setSelectedDecision(null);
+    setPendingResult(null);
+    goToInvestigating();
+  };
 
   const handleStartInvestigation = (inv: CaseInvestigation) => {
     setPoints((prev) => prev - inv.cost);
@@ -212,15 +227,28 @@ export function CaseInvestigationExperience({
             <Prose className="mt-4" text={content.scenario.description} size="sm" />
             <p className="mt-2 text-sm font-medium text-muted">{content.scenario.goal}</p>
           </div>
+          {visitedInvestigatingRef.current && (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={goToInvestigating}
+                className={primaryButtonClass}
+              >
+                조사로 돌아가기
+              </button>
+            </div>
+          )}
         </div>
 
-        <IntroDialog
-          mode="gate"
-          format={EXPERIENCE_FORMAT["case-investigation"]}
-          intro={EXPERIENCE_INTRO["case-investigation"]}
-          confirmLabel="조사 시작"
-          onConfirm={() => setPhase("investigating")}
-        />
+        {!visitedInvestigatingRef.current && (
+          <IntroDialog
+            mode="gate"
+            format={EXPERIENCE_FORMAT["case-investigation"]}
+            intro={EXPERIENCE_INTRO["case-investigation"]}
+            confirmLabel="조사 시작"
+            onConfirm={goToInvestigating}
+          />
+        )}
       </>
     );
   }
@@ -436,7 +464,14 @@ export function CaseInvestigationExperience({
           </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-between gap-3">
+          <button
+            type="button"
+            onClick={() => setPhase("briefing")}
+            className={outlineButtonClass}
+          >
+            이전
+          </button>
           <button
             type="button"
             onClick={() => setPhase("decision")}
@@ -451,6 +486,17 @@ export function CaseInvestigationExperience({
 
   return (
     <div className="space-y-6">
+      {!confirmed && (
+        <div className="flex justify-start">
+          <button
+            type="button"
+            onClick={handleBackToInvestigating}
+            className={outlineButtonClass}
+          >
+            이전
+          </button>
+        </div>
+      )}
       <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
         <p className="text-sm font-medium text-muted">이제 판단을 내려주세요.</p>
       </div>
