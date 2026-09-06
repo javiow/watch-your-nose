@@ -5,6 +5,7 @@ import type {
   CaseFinalDecision,
   CaseInvestigation,
   CaseInvestigationContent,
+  MissedSignal,
   ModuleResult,
 } from "@/types/experience";
 import {
@@ -21,6 +22,7 @@ import { IntroDialog } from "@/components/ui/IntroDialog";
 import { Prose } from "@/components/ui/Prose";
 import { EXPERIENCE_FORMAT } from "@/data/experience-format";
 import { EXPERIENCE_INTRO } from "@/data/experience-intro";
+import { DecisionRecapPanel } from "./case-investigation/DecisionRecapPanel";
 
 interface ChatEntry {
   key: string;
@@ -61,25 +63,22 @@ function isUnlocked(
 
 function buildExplanation(
   content: CaseInvestigationContent,
-  breakdown: CaseInvestigationScoreBreakdown,
   bestOptionComment: string
 ): string {
-  let explanation = content.hiddenTruth.explanation;
+  return `${content.hiddenTruth.explanation} ${bestOptionComment}`;
+}
 
-  if (breakdown.missedRiskPatterns.length > 0) {
-    const missedDescriptions = breakdown.missedRiskPatterns
-      .map(
-        (pattern) =>
-          content.evidenceDefinitions.find((def) => def.pattern === pattern)?.description
-      )
-      .filter((description): description is string => Boolean(description));
-
-    if (missedDescriptions.length > 0) {
-      explanation += ` **놓친 위험 신호: ${missedDescriptions.join(", ")}.**`;
-    }
-  }
-
-  return `${explanation} ${bestOptionComment}`;
+function buildMissedSignals(
+  content: CaseInvestigationContent,
+  breakdown: CaseInvestigationScoreBreakdown
+): MissedSignal[] {
+  return breakdown.missedRiskPatterns
+    .map(
+      (pattern) =>
+        content.evidenceDefinitions.find((def) => def.pattern === pattern)?.description
+    )
+    .filter((description): description is string => Boolean(description))
+    .map((description) => ({ title: description }));
 }
 
 export function CaseInvestigationExperience({
@@ -104,6 +103,21 @@ export function CaseInvestigationExperience({
   // 확정(다음으로 넘어가기 클릭) 이후에만 판단 버튼을 잠근다.
   const [confirmed, setConfirmed] = useState(false);
   const nextStepSubmittedRef = useRef(false);
+  // investigating 단계를 한 번이라도 지난 뒤에는 briefing으로 돌아와도 게이트 모달을
+  // 다시 띄우지 않고 "조사로 돌아가기" 버튼만 보여준다.
+  const visitedInvestigatingRef = useRef(false);
+
+  const goToInvestigating = () => {
+    visitedInvestigatingRef.current = true;
+    setPhase("investigating");
+  };
+
+  const handleBackToInvestigating = () => {
+    // 판단 단계를 벗어나면 낡은 state로 계산된 결과가 제출되지 않도록 초기화한다.
+    setSelectedDecision(null);
+    setPendingResult(null);
+    goToInvestigating();
+  };
 
   const handleStartInvestigation = (inv: CaseInvestigation) => {
     setPoints((prev) => prev - inv.cost);
@@ -173,8 +187,18 @@ export function CaseInvestigationExperience({
       userChoice: DECISION_LABELS[decision],
       correctChoice: DECISION_LABELS[bestOption.decision],
       isCorrect,
-      explanation: buildExplanation(content, breakdown, bestOption.comment),
+      explanation: buildExplanation(content, bestOption.comment),
       mistakeTag,
+      reviewItems: [
+        {
+          label: "이 계약 판단",
+          userVerdict: DECISION_LABELS[decision],
+          correctVerdict: DECISION_LABELS[bestOption.decision],
+          isCorrect,
+          detail: isCorrect ? undefined : content.hiddenTruth.explanation,
+        },
+      ],
+      missedSignals: isCorrect ? undefined : buildMissedSignals(content, breakdown),
     });
   };
 
@@ -204,15 +228,28 @@ export function CaseInvestigationExperience({
             <Prose className="mt-4" text={content.scenario.description} size="sm" />
             <p className="mt-2 text-sm font-medium text-muted">{content.scenario.goal}</p>
           </div>
+          {visitedInvestigatingRef.current && (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={goToInvestigating}
+                className={primaryButtonClass}
+              >
+                조사로 돌아가기
+              </button>
+            </div>
+          )}
         </div>
 
-        <IntroDialog
-          mode="gate"
-          format={EXPERIENCE_FORMAT["case-investigation"]}
-          intro={EXPERIENCE_INTRO["case-investigation"]}
-          confirmLabel="조사 시작"
-          onConfirm={() => setPhase("investigating")}
-        />
+        {!visitedInvestigatingRef.current && (
+          <IntroDialog
+            mode="gate"
+            format={EXPERIENCE_FORMAT["case-investigation"]}
+            intro={EXPERIENCE_INTRO["case-investigation"]}
+            confirmLabel="조사 시작"
+            onConfirm={goToInvestigating}
+          />
+        )}
       </>
     );
   }
@@ -428,7 +465,14 @@ export function CaseInvestigationExperience({
           </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-between gap-3">
+          <button
+            type="button"
+            onClick={() => setPhase("briefing")}
+            className={outlineButtonClass}
+          >
+            이전
+          </button>
           <button
             type="button"
             onClick={() => setPhase("decision")}
@@ -443,6 +487,29 @@ export function CaseInvestigationExperience({
 
   return (
     <div className="space-y-6">
+      {!confirmed && (
+        <div className="flex justify-start">
+          <button
+            type="button"
+            onClick={handleBackToInvestigating}
+            className={outlineButtonClass}
+          >
+            이전
+          </button>
+        </div>
+      )}
+
+      <DecisionRecapPanel
+        scenario={content.scenario}
+        confirmedInfo={content.evidenceDefinitions
+          .filter((def) => registeredEvidence.has(def.pattern))
+          .map((def) => def.description)}
+        npcAnswers={chatLog.map((entry) => ({
+          question: entry.userText,
+          answer: entry.npcText,
+        }))}
+      />
+
       <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
         <p className="text-sm font-medium text-muted">이제 판단을 내려주세요.</p>
       </div>

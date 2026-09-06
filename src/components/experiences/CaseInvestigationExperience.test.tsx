@@ -489,6 +489,60 @@ describe("CaseInvestigationExperience", () => {
 
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.explanation).toContain(jeonse001.hiddenTruth.explanation.slice(0, 20));
+    expect(result.explanation).not.toContain("**놓친 위험 신호");
+  });
+
+  it("reviewItems 단일 행에 내 판단·정답·정오가 담긴다", () => {
+    const onComplete = vi.fn();
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
+    startInvestigating();
+    goToDecision();
+    fireEvent.click(screen.getByText("계약을 진행한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0] as ModuleResult;
+    expect(result.reviewItems).toHaveLength(1);
+    expect(result.reviewItems![0]).toMatchObject({
+      label: "이 계약 판단",
+      userVerdict: "계약 진행 가능",
+      correctVerdict: "추가 확인 필요",
+      isCorrect: false,
+    });
+  });
+
+  it("오답이면 missedSignals가 evidenceDefinitions.description 기반 title 배열로 채워진다", () => {
+    const onComplete = vi.fn();
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
+    startInvestigating();
+    goToDecision();
+    fireEvent.click(screen.getByText("계약을 진행한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0] as ModuleResult;
+    expect(Array.isArray(result.missedSignals)).toBe(true);
+    const descriptions = jeonse001.evidenceDefinitions.map((d) => d.description);
+    for (const signal of result.missedSignals!) {
+      expect(typeof signal.title).toBe("string");
+      expect(descriptions).toContain(signal.title);
+      expect(signal.description).toBeUndefined();
+    }
+  });
+
+  it("정답이면 reviewItems가 정답으로 표시되고 missedSignals가 없다", () => {
+    const onComplete = vi.fn();
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={onComplete} />);
+    startInvestigating();
+    goToDecision();
+    fireEvent.click(screen.getByText("추가로 확인한 뒤 결정한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0] as ModuleResult;
+    expect(result.reviewItems![0]).toMatchObject({
+      userVerdict: "추가 확인 필요",
+      correctVerdict: "추가 확인 필요",
+      isCorrect: true,
+    });
+    expect(result.missedSignals).toBeUndefined();
   });
 
   it("result.typeId와 contentId가 올바르다", () => {
@@ -502,5 +556,76 @@ describe("CaseInvestigationExperience", () => {
     const result = onComplete.mock.calls[0][0] as ModuleResult;
     expect(result.typeId).toBe("case-investigation");
     expect(result.contentId).toBe("JEONSE_001");
+  });
+
+  it("조사 단계에서 '이전'을 누르면 상황 화면으로 돌아가고 게이트 모달 없이 '조사로 돌아가기'가 보인다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    fireEvent.click(screen.getByRole("button", { name: /저렴한 조사/ }));
+    fireEvent.click(screen.getByRole("button", { name: "증거 블록 텍스트입니다" }));
+    fireEvent.click(screen.getByText("목록으로"));
+
+    fireEvent.click(screen.getByRole("button", { name: "이전" }));
+
+    expect(screen.getByText("테스트 설명")).toBeDefined();
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "조사로 돌아가기" }));
+    expect(screen.getByText(/등록된 증거.*1/)).toBeDefined();
+  });
+
+  it("판단 단계에서 '이전'을 누르면 조사 화면으로 돌아가고 staged 판단이 초기화된다", () => {
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={vi.fn()} />);
+    startInvestigating();
+    goToDecision();
+    fireEvent.click(screen.getByText("계약을 진행한다"));
+    expect(screen.getByText("다음으로 넘어가기")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "이전" }));
+
+    expect(screen.getByText("판단하기")).toBeDefined();
+    expect(screen.queryByText("다음으로 넘어가기")).toBeNull();
+  });
+
+  it("판단을 확정한 뒤에는 '이전' 버튼이 사라진다", () => {
+    render(<CaseInvestigationExperience content={jeonse001} onComplete={vi.fn()} />);
+    startInvestigating();
+    goToDecision();
+    fireEvent.click(screen.getByText("계약을 진행한다"));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    expect(screen.queryByRole("button", { name: "이전" })).toBeNull();
+    expect(screen.getByText("계약을 진행한다").closest("button")).toBeDisabled();
+  });
+
+  it("판단 단계에 '상황 다시 보기' 요약 패널이 기본 펼침으로 노출된다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    goToDecision();
+
+    expect(screen.getByText("상황 다시 보기")).toBeDefined();
+    expect(screen.getByText("테스트 설명")).toBeDefined();
+    expect(screen.getByText("테스트 목표")).toBeDefined();
+  });
+
+  it("등록한 증거의 설명이 판단 단계 요약 패널에 보인다", () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    fireEvent.click(screen.getByRole("button", { name: /저렴한 조사/ }));
+    fireEvent.click(screen.getByRole("button", { name: "증거 블록 텍스트입니다" }));
+    fireEvent.click(screen.getByText("목록으로"));
+    goToDecision();
+
+    expect(screen.getByText("패턴 A 확인 문구")).toBeDefined();
+  });
+
+  it("NPC에게 물어본 질문과 답변이 판단 단계 요약 패널에 보인다", async () => {
+    render(<CaseInvestigationExperience content={gatingFixture} onComplete={vi.fn()} />);
+    startInvestigating();
+    fireEvent.click(screen.getByRole("button", { name: "질문 1" }));
+    await screen.findByText("NPC 대사 1입니다");
+    goToDecision();
+
+    expect(screen.getByText("「질문 1」 → NPC 대사 1입니다")).toBeDefined();
   });
 });

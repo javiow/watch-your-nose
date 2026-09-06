@@ -487,4 +487,43 @@ describe("VoicePhishingExperience", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(screen.getByText("본인 확인 차 전화드렸습니다.")).toBeDefined();
   });
+
+  it("reviewItems 단일 행이 내 선택·정답·정오를 담고 missedSignals는 없다", () => {
+    const onComplete = vi.fn();
+    render(
+      <VoicePhishingExperience content={scamScenario} onComplete={onComplete} />
+    );
+    start();
+    advanceAllTimers();
+    fireEvent.click(screen.getByText("더 들어본다"));
+    advanceAllTimers();
+    fireEvent.click(screen.getByText("전화를 끊는다"));
+    advanceAllTimers();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0];
+    expect(result.reviewItems).toHaveLength(1);
+    expect(result.reviewItems[0].userVerdict).toBe("전화를 끊는다");
+    expect(result.reviewItems[0].correctVerdict).toBe(result.correctChoice);
+    expect(result.reviewItems[0].isCorrect).toBe(result.isCorrect);
+    expect(result.missedSignals).toBeUndefined();
+  });
+
+  it("오답이면 reviewItems[0].detail에 해설이 담긴다", () => {
+    const onComplete = vi.fn();
+    render(
+      <VoicePhishingExperience content={scamScenario} onComplete={onComplete} />
+    );
+    start();
+    advanceAllTimers();
+    fireEvent.click(screen.getByText("더 들어본다"));
+    advanceAllTimers();
+    fireEvent.click(screen.getByText("정보를 알려준다"));
+    advanceAllTimers();
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0];
+    expect(result.isCorrect).toBe(false);
+    expect(result.reviewItems[0].detail).toBe(result.explanation);
+  });
 });

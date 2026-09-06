@@ -143,8 +143,65 @@ describe("JeonseExperience", () => {
     expect(result.score).toBe(60);
     expect(result.isCorrect).toBe(false);
     expect(result.mistakeTag).toBe("missed-lease-fraud-signal");
-    expect(result.explanation).toContain(houses[0].reason);
-    expect(result.explanation).toContain(houses[1].reason);
+    expect(result.explanation).not.toContain("**");
+    expect(result.missedSignals).toContainEqual({
+      title: houses[0].short,
+      description: houses[0].reason,
+    });
+    expect(result.missedSignals).toContainEqual({
+      title: houses[1].short,
+      description: houses[1].reason,
+    });
+  });
+
+  it("reviewItems가 매물별 O/X 판단과 정오를 담는다", () => {
+    const houses = [
+      makeHouse("1", true),
+      makeHouse("2", false),
+      makeHouse("3", false),
+      makeHouse("4", false),
+      makeHouse("5", false),
+    ];
+    const onComplete = vi.fn();
+    render(<JeonseExperience content={houses} onComplete={onComplete} />);
+    startJeonse();
+
+    judgeHouse(0, houses[0], false); // risky=true인데 X → 오답
+    judgeHouse(1, houses[1], true); // risky=false인데 O → 오답
+    houses.slice(2).forEach((house, idx) => judgeHouse(idx + 2, house, false));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0];
+    expect(result.reviewItems).toHaveLength(houses.length);
+    expect(result.reviewItems[0]).toMatchObject({
+      label: houses[0].short,
+      userVerdict: "X (위험 없음)",
+      correctVerdict: "O (위험 있음)",
+      isCorrect: false,
+    });
+    expect(result.reviewItems[1]).toMatchObject({
+      userVerdict: "O (위험 있음)",
+      correctVerdict: "X (위험 없음)",
+      isCorrect: false,
+    });
+    expect(result.reviewItems[2]).toMatchObject({
+      userVerdict: "X (위험 없음)",
+      correctVerdict: "X (위험 없음)",
+      isCorrect: true,
+    });
+  });
+
+  it("만점이면 missedSignals가 undefined다", () => {
+    const houses = ["1", "2", "3", "4", "5"].map((id) => makeHouse(id, false));
+    const onComplete = vi.fn();
+    render(<JeonseExperience content={houses} onComplete={onComplete} />);
+    startJeonse();
+
+    houses.forEach((house, i) => judgeHouse(i, house, false));
+    fireEvent.click(screen.getByText("다음으로 넘어가기"));
+
+    const result = onComplete.mock.calls[0][0];
+    expect(result.missedSignals).toBeUndefined();
   });
 
   it("5채를 모두 판정한 직후에는 다음으로 넘어가기 버튼이 나타나고, 연속 클릭해도 onComplete는 1회만 호출된다", () => {

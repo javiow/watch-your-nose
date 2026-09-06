@@ -27,7 +27,13 @@ import { GRADE_EXPRESSION } from "@/lib/mascot-frames";
 import { EXPERIENCE_TYPE_LABELS } from "@/data/experience-types";
 
 function completeResults(
-  overrides?: Partial<{ isCorrect: boolean; mistakeTag: string; explanation: string }>[]
+  overrides?: Partial<{
+    isCorrect: boolean;
+    mistakeTag: string;
+    explanation: string;
+    reviewItems: unknown;
+    missedSignals: unknown;
+  }>[]
 ) {
   return EXPERIENCE_MODULES.map((mod, i) => ({
     typeId: mod.typeId,
@@ -189,5 +195,90 @@ describe("ResultPage 마스코트", () => {
     const { container } = render(<ResultPage />);
     expect(replace).toHaveBeenCalledWith("/");
     expect(container.querySelector("[data-expression]")).toBeNull();
+  });
+
+  it("reviewItems가 있으면 O/X 표(table)가 렌더되고 항목 라벨이 노출된다", () => {
+    const overrides = EXPERIENCE_MODULES.map((_, i) =>
+      i === 0
+        ? {
+            reviewItems: [
+              { label: "1번 카드", userVerdict: "정상", correctVerdict: "사기", isCorrect: false },
+              { label: "2번 카드", userVerdict: "사기", correctVerdict: "사기", isCorrect: true },
+            ],
+          }
+        : {}
+    );
+    mockResults = completeResults(overrides);
+    aggregate.mockReturnValue({ average: 75, grade: "caution" });
+
+    const { container } = render(<ResultPage />);
+    expect(screen.getByText("1번 카드")).toBeDefined();
+    expect(screen.getByText("2번 카드")).toBeDefined();
+    expect(container.querySelector("table")).not.toBeNull();
+  });
+
+  it("missedSignals가 있으면 '놓친 위험 신호' 목록이 렌더되고 제목만 볼드다", () => {
+    const overrides = EXPERIENCE_MODULES.map((_, i) =>
+      i === 0
+        ? {
+            isCorrect: false,
+            missedSignals: [
+              {
+                title: "선입금 요구",
+                description: "선입금은 위험 신호입니다.",
+                source: "경찰청",
+              },
+            ],
+          }
+        : {}
+    );
+    mockResults = completeResults(overrides);
+    aggregate.mockReturnValue({ average: 60, grade: "caution" });
+
+    render(<ResultPage />);
+    const heading = screen.getByText("놓친 위험 신호");
+    expect(screen.getByText("(출처: 경찰청)")).toBeDefined();
+
+    const list = heading.nextElementSibling!; // MissedSignalList의 <ul>
+    const li = list.querySelector("li")!;
+    const strongs = li.querySelectorAll("strong");
+    expect(strongs).toHaveLength(1);
+    expect(strongs[0].textContent).toBe("선입금 요구");
+    expect(li.textContent).toContain("선입금은 위험 신호입니다.");
+  });
+
+  it("단일 판정 오답 결과의 detail은 표 아래 문단으로 렌더된다", () => {
+    const overrides = EXPERIENCE_MODULES.map((_, i) =>
+      i === 0
+        ? {
+            isCorrect: false,
+            reviewItems: [
+              {
+                label: "이 전화 대응",
+                userVerdict: "정보를 알려준다",
+                correctVerdict: "전화를 끊는다",
+                isCorrect: false,
+                detail: "낯선 연락처의 개인정보 요청에는 응하지 않아야 합니다.",
+              },
+            ],
+          }
+        : {}
+    );
+    mockResults = completeResults(overrides);
+    aggregate.mockReturnValue({ average: 60, grade: "caution" });
+
+    render(<ResultPage />);
+    expect(
+      screen.getByText("낯선 연락처의 개인정보 요청에는 응하지 않아야 합니다.")
+    ).toBeDefined();
+  });
+
+  it("reviewItems/missedSignals가 없는 결과는 추가 블록 없이 기존대로 렌더된다", () => {
+    mockResults = completeResults();
+    aggregate.mockReturnValue({ average: 100, grade: "safe" });
+
+    const { container } = render(<ResultPage />);
+    expect(container.querySelector("table")).toBeNull();
+    expect(screen.queryByText("놓친 위험 신호")).toBeNull();
   });
 });

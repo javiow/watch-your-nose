@@ -11,6 +11,8 @@ import { Mascot } from "@/components/ui/Mascot";
 import { Prose } from "@/components/ui/Prose";
 import { ScoreGauge } from "@/components/ui/ScoreGauge";
 import { ScoreBarChart } from "@/components/ui/ScoreBarChart";
+import { ReviewBreakdownTable } from "@/components/ui/ReviewBreakdownTable";
+import { MissedSignalList } from "@/components/ui/MissedSignalList";
 import { GRADE_EXPRESSION } from "@/lib/mascot-frames";
 
 export default function ResultPage() {
@@ -96,6 +98,30 @@ export default function ResultPage() {
                   내 선택 {result.userChoice} · 정답 {result.correctChoice}
                 </p>
                 <Prose text={result.explanation} size="sm" />
+
+                {result.reviewItems && (
+                  <ReviewBreakdownTable items={result.reviewItems} />
+                )}
+
+                {result.missedSignals && result.missedSignals.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-danger">놓친 위험 신호</p>
+                    <MissedSignalList signals={result.missedSignals} />
+                  </div>
+                )}
+                {!result.missedSignals &&
+                  result.reviewItems?.some(
+                    (item) => !item.isCorrect && item.detail
+                  ) && (
+                    <Prose
+                      size="sm"
+                      text={
+                        result.reviewItems.find(
+                          (item) => !item.isCorrect && item.detail
+                        )!.detail!
+                      }
+                    />
+                  )}
 
                 {remediation && (
                   <div className="space-y-2 rounded-lg border border-border bg-surface-muted p-3">

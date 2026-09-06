@@ -1,0 +1,64 @@
+{
+  "project": "Watch Your Nose",
+  "phase": "11-review-breakdown-and-phase-nav",
+  "steps": [
+    {
+      "step": 0,
+      "name": "review-result-types",
+      "status": "completed",
+      "started_at": "2026-09-06T09:55:48+0900",
+      "summary": "src/types/experience.ts에 ReviewItem { label: string; userVerdict: string; correctVerdict: string; isCorrect: boolean; detail?: string } 와 MissedSignal { title: string; description?: string; source?: string } 인터페이스 추가. ModuleResult에 optional 필드 2개(reviewItems?: ReviewItem[], missedSignals?: MissedSignal[]) 추가, explanation은 필수 유지. 소비처 무수정 — build/lint/test(385) 전부 통과, 테스트 개수 변화 없음."
+    },
+    {
+      "step": 1,
+      "name": "fraud-judgment-review-payload",
+      "status": "completed",
+      "started_at": "2026-09-06T10:00:47+0900",
+      "summary": "FraudJudgmentExperience.tsx: buildExplanation(isCorrect: boolean)로 축소 — 정답 '제시된 사기 판별 카드를 모두 정확히 판정했습니다.' / 오답 '일부 카드를 잘못 판정했습니다. 놓친 위험 신호를 확인하세요.' (** 없음, 데이터 조인 없음). 신규 순수 함수 buildReviewItems(content: FraudJudgmentCard[], answers: Record<number, FraudJudgmentAnswer>): ReviewItem[] — 카드당 1행, label=`${i+1}번 — ${card.title}`, userVerdict/correctVerdict = 'fraud'→'사기' 아니면 '정상', isCorrect = answers[i] === card.answer, detail 생략. buildMissedSignals(동일 시그니처): MissedSignal[] — answers[i] !== card.answer인 카드만 { title: card.title, description: card.explanation, source: card.source }, 상한 없음. handleAnswer 마지막 setPendingResult에 reviewItems: buildReviewItems(content, next), missedSignals: isCorrect ? undefined : buildMissedSignals(content, next) 추가. userChoice/correctChoice 집계 문자열 유지. answers는 onComplete 페이로드에만. tsc+lint+FraudJudgmentExperience.test.tsx(18) 통과."
+    },
+    {
+      "step": 2,
+      "name": "jeonse-review-payload",
+      "status": "completed",
+      "summary": "JeonseExperience.tsx: buildExplanation(isCorrect: boolean)로 축소 — 정답 '제시된 매물의 위험 신호를 모두 정확히 판정했습니다.' / 오답 '일부 매물을 잘못 판정했습니다. 놓친 위험 신호를 확인하세요.' (** 없음). 신규 verdictLabel(risky: boolean) = risky ? 'O (위험 있음)' : 'X (위험 없음)'. buildReviewItems(content: JeonseHouse[], answers: Record<number, boolean>): ReviewItem[] — 매물당 1행, label=house.short, userVerdict=verdictLabel(answers[i]), correctVerdict=verdictLabel(house.risky), isCorrect=answers[i]===house.risky. buildMissedSignals(동일): answers[i]!==house.risky인 매물만 { title: house.short, description: house.reason } (source 없음). handleAnswer setPendingResult에 reviewItems/missedSignals 추가, explanation=buildExplanation(isCorrect). MapBoard 무수정. JeonseExperience.test.tsx: 기존 explanation.toContain(reason) 2줄 → missedSignals.toContainEqual + explanation.not.toContain('**'), reviewItems 검증 + 만점 missedSignals undefined 2케이스 추가. vitest JeonseExperience(12) 통과."
+    },
+    {
+      "step": 3,
+      "name": "voice-phishing-review-payload",
+      "status": "completed",
+      "summary": "VoicePhishingExperience.tsx finishScenario: correctChoice 문자열을 지역 상수 correctChoiceText로 추출(content.isNormalCase 분기), buildExplanation 결과도 지역 변수 explanation으로 추출. setPendingResult에 correctChoice: correctChoiceText, explanation, 그리고 reviewItems: [{ label: '이 전화 대응', userVerdict: choice.text, correctVerdict: correctChoiceText, isCorrect, detail: isCorrect ? undefined : explanation }] 추가. missedSignals는 넣지 않음(undefined). buildExplanation 본문·타이머·pathRisks 무수정. VoicePhishingExperience.test.tsx에 reviewItems 단일 행 검증 + 오답 detail 검증 2케이스 추가(총 19). vitest 통과."
+    },
+    {
+      "step": 4,
+      "name": "case-investigation-review-payload",
+      "status": "completed",
+      "summary": "CaseInvestigationExperience.tsx: buildExplanation(content, bestOptionComment) 축소 — `${content.hiddenTruth.explanation} ${bestOptionComment}`만, ` **놓친 위험 신호: …**` append 블록 삭제(breakdown 인자 제거). 신규 buildMissedSignals(content, breakdown): MissedSignal[] — breakdown.missedRiskPatterns → evidenceDefinitions.find(pattern).description (truthy 필터) → { title: description } (description/source 없음). handleDecision setPendingResult에 reviewItems: [{ label: '이 계약 판단', userVerdict: DECISION_LABELS[decision], correctVerdict: DECISION_LABELS[bestOption.decision], isCorrect, detail: isCorrect ? undefined : content.hiddenTruth.explanation }], missedSignals: isCorrect ? undefined : buildMissedSignals(content, breakdown) 추가. importance/스포일러 미노출 유지. scoring.ts 무수정. phase state/렌더 블록 무수정(단계이동은 step7). CaseInvestigationExperience.test.tsx: 기존 explanation 테스트에 not.toContain('**놓친 위험 신호') 추가 + reviewItems/missedSignals 3케이스 추가(총 37). vitest 통과."
+    },
+    {
+      "step": 5,
+      "name": "review-result-components",
+      "status": "completed",
+      "summary": "src/components/ui/ReviewBreakdownTable.tsx 신규: props { items: ReviewItem[] }, items.length===0이면 null. <div overflow-x-auto><table w-full text-sm> — thead 4열(항목/내 판단/정답/결과, text-xs text-subtle), tbody tr마다 td(border-t border-border py-2), 결과 셀은 page.tsx 관용구 <span aria-hidden className={isCorrect?'text-safe':'text-danger'}>✓|✗</span> + <span sr-only>정답|오답</span>. ul/li 미사용(table). src/components/ui/MissedSignalList.tsx 신규: props { signals: MissedSignal[] }, 빈 배열이면 null. <ul space-y-3><li space-y-1>: <p><strong font-semibold text-foreground>{title}</strong></p> + {description && <p text-sm text-muted>} + {source && <p text-xs text-subtle>(출처: {source})</p>}. 평문 노드만, renderInlineMarkup/dangerouslySetInnerHTML 미사용. 테스트 ReviewBreakdownTable 4 + MissedSignalList 4 = 8 신규. 새 의존성 없음. vitest 통과."
+    },
+    {
+      "step": 6,
+      "name": "result-page-wire-review",
+      "status": "completed",
+      "summary": "src/app/result/page.tsx: ReviewBreakdownTable·MissedSignalList import 추가. results.map <li> 안 <Prose explanation> 다음, remediation 블록 앞에 삽입 — {result.reviewItems && <ReviewBreakdownTable items={result.reviewItems} />}; {result.missedSignals?.length>0 && <div space-y-2><p text-xs text-danger>놓친 위험 신호</p><MissedSignalList/></div>}; {!result.missedSignals && reviewItems?.some(!isCorrect && detail) && <Prose text={첫 미정답 detail}/>}. '내 선택 … · 정답 …' <p>와 <Prose explanation>·remediation 블록·<li> 컨테이너 무변경. page.test.tsx: completeResults override 타입에 reviewItems/missedSignals(unknown) 추가, 4케이스 추가(O/X 표 렌더, 놓친 위험 신호 목록+제목만 볼드+출처 줄, 단일판정 detail 문단, 신규필드 없으면 추가 블록 0) — 총 16. 기존 폴백 경로 테스트 무수정 통과. vitest 통과."
+    },
+    {
+      "step": 7,
+      "name": "case-investigation-phase-nav",
+      "status": "completed",
+      "summary": "CaseInvestigationExperience.tsx: visitedInvestigatingRef(useRef(false)) 추가. goToInvestigating() = ref true + setPhase('investigating'); handleBackToInvestigating() = setSelectedDecision(null) + setPendingResult(null) + goToInvestigating(). briefing: 게이트 IntroDialog는 !visitedInvestigatingRef.current일 때만, onConfirm={goToInvestigating}; 되돌아온 경우 시나리오 카드 아래 인라인 '조사로 돌아가기'(primaryButtonClass) 버튼. investigating 하단 바: flex justify-between으로 바꾸고 좌측 '이전'(outlineButtonClass) → setPhase('briefing'), 우측 기존 '판단하기'. decision: 최상단에 {!confirmed && <div flex justify-start><button 이전 onClick={handleBackToInvestigating}></div>}. points/registeredEvidence/chatLog/completedInvestigationIds는 뒤로가기 시 초기화 안 함(왕복 유지). confirmed 후 '이전' 미렌더. Context 미사용. CaseInvestigationExperience.test.tsx +3케이스(조사→이전→briefing 게이트 없음+조사로 돌아가기+증거 유지, 판단→이전→조사 화면+다음으로 넘어가기 사라짐, 확정 후 이전 없음) — 총 40. vitest 통과."
+    },
+    {
+      "step": 8,
+      "name": "decision-recap-panel",
+      "status": "completed",
+      "summary": "src/components/experiences/case-investigation/DecisionRecapPanel.tsx 신규: props { scenario, confirmedInfo: string[], npcAnswers: {question,answer}[] }. <details open><summary>상황 다시 보기</summary> — <Prose description> + propertyLocation·propertyPriceDescription + speakerLabel/brokerLine 인용 카드 + goal + '확인한 정보' <ul>(없으면 '등록한 증거가 없습니다.') + '{speakerLabel} 답변' <ul>(「q」 → a, 없으면 '물어본 질문이 없습니다.'). importance/스포일러 미노출, dangerouslySetInnerHTML 미사용. CaseInvestigationExperience.tsx decision 블록: '이전' 버튼 다음, '이제 판단을…' 카드 앞에 <DecisionRecapPanel scenario={content.scenario} confirmedInfo={evidenceDefinitions.filter(registeredEvidence.has(pattern)).map(description)} npcAnswers={chatLog.map(userText→question, npcText→answer)} />. 테스트: DecisionRecapPanel 4 신규 + CaseInvestigationExperience +3(패널 기본 펼침, 등록 증거 노출, NPC 문답 노출) = 총 47. vitest 통과."
+    }
+  ],
+  "created_at": "2026-09-06T09:55:48+0900",
+  "completed_at": "2026-09-06T10:17:00+0900"
+}
